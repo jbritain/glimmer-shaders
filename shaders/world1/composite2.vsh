@@ -3,4 +3,4 @@
 #define vsh
 #define WORLD_THE_END
 
-#include "/program/composite5.glsl"
+#include "/program/composite2.glsl"

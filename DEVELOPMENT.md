@@ -26,9 +26,11 @@
     deferred1       : Distant Horizons SSAO
 
     composite       : Generate combined depth buffer    
-    composite1      : Water & water fog
+    composite1      : Godrays mask
+    composite2      : VL/Godrays
+    composite3      : Water & water fog
 
-    composite3      : Godrays mask
+
     composite4      : Godrays
     composite5      : Fog
 

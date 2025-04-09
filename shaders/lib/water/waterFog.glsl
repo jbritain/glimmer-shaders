@@ -21,7 +21,7 @@
 
 const vec3 waterExtinction = clamp01(WATER_ABSORPTION + WATER_SCATTERING);
 
-vec3 waterFog(vec3 color, vec3 a, vec3 b, float dhFactor){
+vec3 waterFog(vec3 color, vec3 a, vec3 b, float dhFactor, vec3 scatterFactor){
   if(dhFactor > 0.0){
     vec3 sunTransmittance = exp(-waterExtinction * WATER_DENSITY * dhFactor);
     color.rgb *= sunTransmittance;
@@ -31,15 +31,21 @@ vec3 waterFog(vec3 color, vec3 a, vec3 b, float dhFactor){
   vec3 transmittance = exp(-opticalDepth);
 
 
-  vec3 scatter = (sunVisibilitySmooth * sunlightColor * getMiePhase(dot(normalize(b - a), lightDir)) + EBS.y * skylightColor);
+  vec3 scatter = (sunlightColor * getMiePhase(dot(normalize(b - a), lightDir)) + EBS.y * skylightColor);
+
+  #if GODRAYS == 0
+  scatter *= sunVisibilitySmooth;
+  #endif
+
   scatter *= (1.0 - transmittance) * (WATER_SCATTERING / waterExtinction);
+  scatter *= scatterFactor;
 
   return color * transmittance + scatter;
   return color;
 }
 
-vec3 waterFog(vec3 color, vec3 a, vec3 b){
-  return waterFog(color, a, b, 0.0);
+vec3 waterFog(vec3 color, vec3 a, vec3 b, vec3 scatterFactor){
+  return waterFog(color, a, b, 0.0, scatterFactor);
 }
 
 #endif

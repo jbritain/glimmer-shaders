@@ -13,6 +13,49 @@
 */
 
 #include "/lib/common.glsl"
+#include "/lib/shadowSpace.glsl"
+
+#ifdef csh
+
+layout (local_size_x = 1, local_size_y = 1) in;
+const ivec3 workGroups = ivec3(1, 1, 1);
+
+void main(){
+    if(frameCounter == 0){
+        sunVisibilitySmooth = 0.0;
+        return;
+    }
+
+
+
+    vec2 lightScreenPos = viewSpaceToScreenSpace(shadowLightPosition).xy;
+    
+    // isn't this some fun syntax
+    float sunVisibility = float(texture(depthtex1, lightScreenPos).r == 1.0
+    #ifdef DISTANT_HORIZONS
+     && texture(dhDepthTex1, lightScreenPos).r == 1.0
+    #endif
+    );
+    
+
+    if(clamp01(lightScreenPos) != lightScreenPos){
+        #ifdef SHADOWS
+        vec4 shadowClipPos = getShadowClipPos(vec3(0.0));
+        vec3 shadowScreenPos = getShadowScreenPos(shadowClipPos);
+
+        sunVisibility = shadow2D(shadowtex1HW, shadowScreenPos).r;
+        #else
+        sunVisibility = EB.y;
+        #endif
+    }
+
+    sunVisibility *= (1.0 - wetness);
+
+
+    sunVisibilitySmooth = mix(sunVisibility, sunVisibilitySmooth, clamp01(exp2(frameTime * -10.0)));
+}
+
+#endif
 
 #ifdef vsh
 
@@ -28,110 +71,66 @@
 // ===========================================================================================
 
 #ifdef fsh
+    #include "/lib/atmosphere/sky/sky.glsl"
+    #include "/lib/atmosphere/fog.glsl"
+
     in vec2 texcoord;
 
     #include "/lib/dh.glsl"
-    #include "/lib/shadowSpace.glsl"
-    #include "/lib/atmosphere/clouds.glsl"
+    #include "/lib/util/packing.glsl"
 
-    /* RENDERTARGETS: 4 */
-    layout(location = 0) out vec3 scattering;
+    /* RENDERTARGETS: 0 */
+    layout(location = 0) out vec4 color;
 
     void main() {
-        scattering = vec3(0.0);
+        color = texture(colortex0, texcoord);
+        float depth = texture(depthtex0, texcoord).r;
+        float opaqueDepth = texture(depthtex1, texcoord).r;
+        vec4 data1 = texture(colortex1, texcoord);
+        vec3 worldNormal = decodeNormal(data1.xy);
+        int materialID = int(data1.a * 255 + 0.5) + 1000;
+        bool isWater = materialIsWater(materialID);
+        if(isEyeInWater == 1){
+            return;
+        }
 
-        #if GODRAYS == 1
-            vec2 sampleCoord = texcoord;
+        vec3 viewPos = screenSpaceToViewSpace(vec3(texcoord, depth));
+        vec3 opaqueViewPos = screenSpaceToViewSpace(vec3(texcoord, opaqueDepth));
+        dhOverride(depth, viewPos, false);
+        dhOverride(opaqueDepth, opaqueViewPos, true);
 
-            if(lightDir.z > 0.0){ // not facing sun
-                float facingFactor = dot(vec3(0.0, -1.0, 0.0), lightDir);
-                scattering = vec3(facingFactor);
-                return;
+        bool infiniteOceanMask = false;
+
+        #if defined INFINITE_OCEAN && defined WORLD_OVERWORLD
+        if(depth == 1.0 && cameraPosition.y > SEA_LEVEL){
+            vec3 feetPlayerPos = vec3(0.0);
+            if(rayPlaneIntersection(vec3(0.0, 0.0, 0.0), normalize(mat3(gbufferModelViewInverse) * viewPos), SEA_LEVEL - cameraPosition.y, feetPlayerPos)){
+                viewPos = (gbufferModelView * vec4(feetPlayerPos, 1.0)).xyz;
+                depth = 0.5;
+                isWater = true;
+                infiniteOceanMask = true;
             }
-
-            vec3 sunScreenPos = viewSpaceToScreenSpace(shadowLightPosition);
-
-            sunScreenPos.xy = clamp(sunScreenPos.xy, vec2(-0.5), vec2(1.5));
-
-            vec2 deltaTexcoord = (texcoord - sunScreenPos.xy);
-
-            deltaTexcoord *= rcp(GODRAYS_SAMPLES) * GODRAYS_DENSITY;
-
-            float decay = 1.0;
-
-            sampleCoord -= deltaTexcoord * interleavedGradientNoise(floor(gl_FragCoord.xy), frameCounter);
-
-            for(int i = 0; i < GODRAYS_SAMPLES; i++){
-                vec3 scatterSample = texture(colortex4, sampleCoord).rgb;
-
-                scatterSample *= decay * GODRAYS_WEIGHT;
-                scattering += scatterSample;
-                decay *= GODRAYS_DECAY;
-                sampleCoord -= deltaTexcoord;
-
-                if(clamp01(sampleCoord) != sampleCoord){
-                    break;
-                }
-            }
-
-            scattering /= GODRAYS_SAMPLES;
-            scattering *= GODRAYS_EXPOSURE;
-        #elif GODRAYS == 2 && defined SHADOWS
-
-            float depth = texture(depthtex0, texcoord).r;
-            vec3 viewPos = screenSpaceToViewSpace(vec3(texcoord, depth));
-            #ifdef PIXEL_LOCKED_LIGHTING
-            viewPos = (gbufferModelViewInverse * vec4(viewPos, 1.0)).xyz + cameraPosition;
-            viewPos = floor(viewPos * PIXEL_SIZE) / PIXEL_SIZE;
-            viewPos = (gbufferModelView * vec4(viewPos - cameraPosition, 1.0)).xyz;
-            #endif
-
-            if(depth == 1.0){
-                viewPos = normalize(viewPos) * shadowDistance;
-            }
-
-            vec3 feetPlayerPos = (gbufferModelViewInverse * vec4(viewPos, 1.0)).xyz;
-
-            vec3 a = vec3(0.0);
-            vec3 b = feetPlayerPos;
-
-            vec3 aShadow = getShadowClipPos(a).xyz;
-            vec3 bShadow = getShadowClipPos(b).xyz;
-
-            vec3 sampleDelta = (b - a) * rcp(GODRAYS_SAMPLES);
-            vec3 samplePos = a;
-
-            vec3 sampleDeltaShadow = (bShadow - aShadow) * rcp(GODRAYS_SAMPLES);
-            vec3 samplePosShadow = aShadow;
-
-            float noise = interleavedGradientNoise(floor(gl_FragCoord.xy), frameCounter);
-            samplePos += sampleDelta * noise;
-            samplePosShadow += sampleDeltaShadow * noise;
-
-            for(int i = 0; i < GODRAYS_SAMPLES; i++){
-                vec3 screenSamplePos = getShadowScreenPos(vec4(samplePosShadow, 1.0));
-
-                if(clamp01(screenSamplePos) != screenSamplePos){
-                    break;
-                }
-
-                vec3 cloudShadow = vec3(1.0);
-                #ifdef CLOUD_SHADOWS
-                cloudShadow = getCloudShadow(feetPlayerPos);
-                cloudShadow = pow3(cloudShadow);
-                #endif
-                scattering += vec3(shadow2D(shadowtex0HW, screenSamplePos).r) * cloudShadow;
-
-                samplePos += sampleDelta;
-                samplePosShadow += sampleDeltaShadow;
-            }
-
-            scattering /= GODRAYS_SAMPLES;
-            scattering *= distance(a, b);
-            scattering /= (shadowDistance / 2.0);
-            scattering = pow2(scattering);
+        }
         #endif
 
+        color.rgb = defaultFog(color.rgb, viewPos);
+
+        #ifdef WORLD_OVERWORLD
+        #ifdef ATMOSPHERIC_FOG
+            if(depth != 1.0) color.rgb = atmosphericFog(color.rgb, viewPos);
+        #endif
+        #ifdef CLOUDY_FOG
+            vec3 scatterFactor = depth == 1.0 ? vec3(1.0) : vec3(sunVisibilitySmooth);
+            #if GODRAYS > 0
+            scatterFactor = texture(colortex4, texcoord).rgb;
+            #endif
+
+            color.rgb = cloudyFog(color.rgb, mat3(gbufferModelViewInverse) * viewPos, depth, scatterFactor);
+            #endif
+        #endif
+        
+        
+        
     }
 
 #endif
