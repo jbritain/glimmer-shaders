@@ -5,7 +5,7 @@
 float pack4x8F(in vec4 a) {
 	uvec4 v = uvec4(round(clamp01(a) * 255.0)) << uvec4(0, 8, 16, 24);
 	
-	return uintBitsToFloat(sum4(v));
+	return uintBitsToFloat(sumVec4(v));
 }
 
 vec4 unpack4x8F(in float encodedbuffer) {

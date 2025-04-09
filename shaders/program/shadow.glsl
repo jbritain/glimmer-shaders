@@ -126,7 +126,7 @@
             discard;
         }
 
-        const float avgWaterExtinction = sum3(waterExtinction) / 3.0;
+        const float avgWaterExtinction = sumVec3(waterExtinction) / 3.0;
 
         if(materialIsWater(materialID)){
             float opaqueDepth = texture(shadowtex1, gl_FragCoord.xy / shadowMapResolution).r;

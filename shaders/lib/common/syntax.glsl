@@ -95,6 +95,8 @@ vec4 rcp(in vec4 x) {
 #define min3(x, y, z)    min(x, min(y, z))
 #define min4(x, y, z, w) min(min(x, y), min(z, w))
 
+// TODO: this is not optimal
+
 #define minVec2(v) min(v.x, v.y)
 #define minVec3(v) min(v.x, min(v.y, v.z))
 #define minVec4(v) min(min(v.x, v.y), min(v.z, v.w))
@@ -106,9 +108,9 @@ vec4 rcp(in vec4 x) {
 #define maxVec3(v) max(v.x, max(v.y, v.z))
 #define maxVec4(v) max(max(v.x, v.y), max(v.z, v.w))
 
-#define sum2(v) ((v).x + (v).y)
-#define sum3(v) (((v).x + (v).y) + (v).z)
-#define sum4(v) (((v).x + (v).y) + ((v).z + (v).w))
+#define sumVec2(v) ((v).x + (v).y)
+#define sumVec3(v) (((v).x + (v).y) + (v).z)
+#define sumVec4(v) (((v).x + (v).y) + ((v).z + (v).w))
 
 #define clamp01(x) clamp(x, 0.0, 1.0)
 

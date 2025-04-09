@@ -15,8 +15,8 @@
 #ifndef WATER_FOG_GLSL
 #define WATER_FOG_GLSL
 
-#define WATER_ABSORPTION vec3(0.3, 0.03, 0.04)
-#define WATER_SCATTERING vec3(0.01, 0.04, 0.05)
+#define WATER_ABSORPTION vec3(0.3, 0.03, 0.04) * 2.0
+#define WATER_SCATTERING vec3(0.01, 0.08, 0.03) * 0.5
 #define WATER_DENSITY 1.0
 
 const vec3 waterExtinction = clamp01(WATER_ABSORPTION + WATER_SCATTERING);
@@ -31,8 +31,8 @@ vec3 waterFog(vec3 color, vec3 a, vec3 b, float dhFactor){
   vec3 transmittance = exp(-opticalDepth);
 
 
-  vec3 scatter = clamp01((transmittance - 1.0) / -opticalDepth) * WATER_SCATTERING * (sunVisibilitySmooth * weatherSunlightColor * getMiePhase(dot(normalize(b - a), lightDir)) + EBS.y * weatherSkylightColor);
-  
+  vec3 scatter = (sunVisibilitySmooth * sunlightColor * getMiePhase(dot(normalize(b - a), lightDir)) + EBS.y * skylightColor);
+  scatter *= (1.0 - transmittance) * (WATER_SCATTERING / waterExtinction);
 
   return color * transmittance + scatter;
   return color;
