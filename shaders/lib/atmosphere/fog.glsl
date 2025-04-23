@@ -135,7 +135,7 @@ vec3 cloudyFog(vec3 color, vec3 playerPos, float depth, vec3 scatterFactor){
 
   float costh = dot(normalize(playerPos), worldLightDir);
 
-  vec3 phase = vec3(dualHenyeyGreenstein(-0.5, 0.8, costh, 0.5));
+  vec3 phase = vec3(henyeyGreenstein(0.6, costh));
 
   vec3 radiance = weatherSunlightColor * scatterFactor * phase + weatherSkylightColor * EBS.y;
 
