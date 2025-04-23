@@ -98,6 +98,10 @@ vec3 cloudyFog(vec3 color, vec3 playerPos, float depth, vec3 scatterFactor){
     } else if(length(playerPos) < length(b)){ // terrain in the way
       b = playerPos;
     }
+
+    if(distance(a, b) > far * 2){
+      b = a + normalize(b - a) * far * 2;
+    }
     
 
     float densityA = getFogDensity(a.y + cameraPosition.y);
@@ -126,8 +130,6 @@ vec3 cloudyFog(vec3 color, vec3 playerPos, float depth, vec3 scatterFactor){
     }
 
   opticalDepth += distance(a, b) * FOG_DENSITY * fogFactor;
-
-  // opticalDepth *= (1.0 - smoothstep(far * 4.0, far * 8.0, length(playerPos)));
 
   float transmittance = exp(-opticalDepth);
 

@@ -53,11 +53,6 @@
 
         viewPos = (gl_ModelViewMatrix * gl_Vertex).xyz;
 
-        #ifdef GBUFFERS_HAND
-        gl_Position = ftransform();
-        return;
-        #endif
-
         vec3 feetPlayerPos = (gbufferModelViewInverse * vec4(viewPos, 1.0)).xyz;
 
         #ifdef WAVING_BLOCKS

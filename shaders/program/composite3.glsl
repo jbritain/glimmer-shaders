@@ -275,9 +275,9 @@
         if (inWater){
             float distanceThroughWater;
             if(isWater){
-                color.rgb = waterFog(color.rgb, vec3(0.0), translucentViewPos, scatterFactor);
+                color.rgb = waterFog(color.rgb, vec3(0.0), translucentViewPos, vec3(sunVisibilitySmooth));
             } else {
-               color.rgb = waterFog(color.rgb, vec3(0.0), opaqueViewPos, scatterFactor);
+               color.rgb = waterFog(color.rgb, vec3(0.0), opaqueViewPos, vec3(sunVisibilitySmooth));
             }
         }
     }

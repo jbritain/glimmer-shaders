@@ -41,7 +41,6 @@ vec3 waterFog(vec3 color, vec3 a, vec3 b, float dhFactor, vec3 scatterFactor){
   scatter *= scatterFactor;
 
   return color * transmittance + scatter;
-  return color;
 }
 
 vec3 waterFog(vec3 color, vec3 a, vec3 b, vec3 scatterFactor){

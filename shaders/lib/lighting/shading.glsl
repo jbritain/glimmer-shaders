@@ -20,6 +20,10 @@
 #include "/lib/util/spheremap.glsl"
 
 vec3 getShadedColor(Material material, vec3 mappedNormal, vec3 faceNormal, vec3 blocklight, vec2 lightmap, vec3 viewPos, float shadowFactor){
+    #ifdef GBUFFERS_ARMOR_GLINT
+    return material.albedo * EMISSION_STRENGTH * 0.2;
+    #endif
+
     vec3 feetPlayerPos = (gbufferModelViewInverse * vec4(viewPos, 1.0)).xyz;
 
     float scatter;

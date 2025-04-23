@@ -120,11 +120,11 @@
                 cloudShadow = getCloudShadow(feetPlayerPos);
                 cloudShadow = pow3(cloudShadow);
                 #endif
-                if(isEyeInWater == 1){
-                    scattering += vec3(texture(shadowtex1HW, screenSamplePos).r) * cloudShadow;
-                } else {
+                // if(isEyeInWater == 1){
+                //     scattering += vec3(texture(shadowtex1HW, screenSamplePos).r) * cloudShadow;
+                // } else {
                     scattering += vec3(texture(shadowtex0HW, screenSamplePos).r) * cloudShadow;
-                }
+                // }
                 
 
                 samplePos += sampleDelta;
