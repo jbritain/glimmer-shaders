@@ -89,13 +89,6 @@
         }
         #endif
 
-        #ifdef PIXEL_LOCKED_LIGHTING
-        if(isWater){
-            translucentFeetPlayerPos = floor((translucentFeetPlayerPos + cameraPosition) * PIXEL_SIZE) / PIXEL_SIZE - cameraPosition;
-            translucentViewPos = (gbufferModelView * vec4(translucentFeetPlayerPos, 1.0)).xyz;
-        }   
-        #endif
-
         vec3 viewDir = normalize(translucentViewPos);
 
         vec3 scatterFactor = texture(colortex4, texcoord).rgb;
@@ -141,10 +134,17 @@
                     opaqueDepth = texture(depthtex2, refractedPos.xy).r;
                     opaqueViewPos = refractedViewPos;
                 }  else {
-                    #ifdef PIXEL_LOCKED_LIGHTING
-                    color = texture(colortex0, viewSpaceToScreenSpace(translucentViewPos).xy);
-                    #endif
+                    // #ifdef PIXEL_LOCKED_LIGHTING
+                    // color = texture(colortex0, viewSpaceToScreenSpace(translucentViewPos).xy);
+                    // #endif
                 }
+            #endif
+
+            #ifdef PIXEL_LOCKED_LIGHTING
+            if(isWater){
+                translucentFeetPlayerPos = floor((translucentFeetPlayerPos + cameraPosition) * PIXEL_SIZE) / PIXEL_SIZE - cameraPosition;
+                translucentViewPos = (gbufferModelView * vec4(translucentFeetPlayerPos, 1.0)).xyz;
+            }   
             #endif
 
 
@@ -166,7 +166,7 @@
                 }
 
 
-                color.rgb = waterFog(color.rgb, translucentViewPos, opaqueViewPos, dhFactor, scatterFactor);
+                color.rgb = waterFog(color.rgb, translucentViewPos, opaqueViewPos, dhFactor, vec3(sunVisibilitySmooth));
                 
             }
 

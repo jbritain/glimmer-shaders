@@ -60,7 +60,7 @@
         #endif
 
         if(materialIsWater(materialID)){
-            feetPlayerPos.y += (waveHeight(feetPlayerPos.xz + cameraPosition.xz) - 0.5) * fract(feetPlayerPos.y + cameraPosition.y);
+            feetPlayerPos.y += (waveHeight(feetPlayerPos.xz + cameraPosition.xz) - 0.5) * fract(feetPlayerPos.y + cameraPosition.y) * sin(PI * 0.5 * clamp01(abs(dot(tbnMatrix[2], normalize(viewPos)))));
         }
 
         viewPos = (gbufferModelView * vec4(feetPlayerPos, 1.0)).xyz;
