@@ -30,23 +30,27 @@ void main(){
 
     vec2 lightScreenPos = viewSpaceToScreenSpace(shadowLightPosition).xy;
     
-    // isn't this some fun syntax
-    float sunVisibility = float(texture(depthtex1, lightScreenPos).r == 1.0
-    #ifdef DISTANT_HORIZONS
-     && texture(dhDepthTex1, lightScreenPos).r == 1.0
-    #endif
-    );
+
+    float sunVisibility = 1.0;
     
 
     if(clamp01(lightScreenPos) != lightScreenPos){
         #ifdef SHADOWS
-        vec4 shadowClipPos = getShadowClipPos(vec3(0.0));
+        vec4 shadowClipPos = getShadowClipPos(worldLightDir);
         vec3 shadowScreenPos = getShadowScreenPos(shadowClipPos);
 
         sunVisibility = shadow2D(shadowtex1HW, shadowScreenPos).r;
         #else
         sunVisibility = EB.y;
         #endif
+        sunVisibility = 1.0;
+    } else {
+        // isn't this some fun syntax
+        sunVisibility = float(texture(depthtex1, lightScreenPos).r == 1.0
+            #ifdef DISTANT_HORIZONS
+            && texture(dhDepthTex1, lightScreenPos).r == 1.0
+            #endif
+        );
     }
 
     sunVisibility *= (1.0 - wetness);

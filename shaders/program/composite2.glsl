@@ -135,7 +135,6 @@
             // scattering /= distance(a, b);
             // scattering /= (shadowDistance / 2.0);
             // scattering = pow2(scattering);
-            show(scattering);
         #endif
 
     }
