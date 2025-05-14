@@ -135,6 +135,7 @@ uniform sampler2D shadowcolor0;
 uniform sampler2D sunTransmittanceLUTTex;
 uniform sampler2D multipleScatteringLUTTex;
 uniform sampler2D skyViewLUTTex;
+uniform sampler3D aerialPerspectiveLUTTex;
 
 uniform sampler2D perlinNoiseTex;
 uniform sampler2D blueNoiseTex;
@@ -150,6 +151,8 @@ uniform sampler2D turbulentNoiseTex;
     uniform sampler2D dhDepthTex0;
     uniform sampler2D dhDepthTex1;
 
+    uniform float combinedFar;
+    uniform float combinedNear;
     
     uniform vec4 combinedProjection0;
     uniform vec4 combinedProjection1;

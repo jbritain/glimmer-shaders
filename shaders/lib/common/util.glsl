@@ -22,6 +22,11 @@ mat2 rotate(float a) {
 	return mat2(m.y, -m.x,  m.x, m.y);
 }
 
+float linearstep(float edge0, float edge1, float x)
+{
+  return  clamp((x - edge0) / (edge1 - edge0), 0.0, 1.0);
+}
+
 
 vec2 sincos(float x) { return vec2(sin(x), cos(x)); }
 

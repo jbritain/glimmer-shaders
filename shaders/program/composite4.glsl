@@ -35,15 +35,7 @@ void main(){
     
 
     if(clamp01(lightScreenPos) != lightScreenPos){
-        #ifdef SHADOWS
-        vec4 shadowClipPos = getShadowClipPos(worldLightDir);
-        vec3 shadowScreenPos = getShadowScreenPos(shadowClipPos);
-
-        sunVisibility = shadow2D(shadowtex1HW, shadowScreenPos).r;
-        #else
         sunVisibility = EB.y;
-        #endif
-        sunVisibility = 1.0;
     } else {
         // isn't this some fun syntax
         sunVisibility = float(texture(depthtex1, lightScreenPos).r == 1.0
@@ -133,7 +125,7 @@ void main(){
             #endif
         #endif
         
-        
+        show(texture(aerialPerspectiveLUTTex, vec3(texcoord, 0.5)).rgb);
         
     }
 

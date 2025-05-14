@@ -69,6 +69,7 @@ float getCloudDensity(vec2 pos, bool highSamples){
   }
 
   density /= weight;
+
   density = smoothstep(0.5 - 0.15 * wetness - 0.2 * thunderStrength, 1.0, density);
   // density = sqrt(density);
   density *= 0.1;
@@ -107,6 +108,7 @@ vec3 getClouds(vec3 origin, vec3 worldDir, out vec3 transmittance){
   vec3 sunExitPoint;
   rayPlaneIntersection(point, worldLightDir, CLOUD_PLANE_ALTITUDE + CLOUD_PLANE_HEIGHT, sunExitPoint);
   float totalDensityTowardsSun = getCloudDensity(mix(point.xz, sunExitPoint.xz, jitter), true) * distance(point, sunExitPoint);
+
   float costh = dot(worldDir, worldLightDir);
 
   vec3 powder = clamp01((1.0 - exp(-totalDensityTowardsSun * 2 * CLOUD_EXTINCTION_COLOR)));
@@ -120,6 +122,16 @@ vec3 getClouds(vec3 origin, vec3 worldDir, out vec3 transmittance){
   vec3 integScatter = (radiance - radiance * clamp01(transmittance)) / CLOUD_EXTINCTION_COLOR;
   vec3 scatter = integScatter * transmittance;
   scatter = mix(scatter, vec3(0.0), exp(-distance(point, cameraPosition) * 0.004));
+
+  #ifdef ANIME_CLOUDS
+  scatter = hsv(scatter);
+  scatter.b = ceil(scatter.b * 8.0 / luminance(sunlightColor)) / (8.0 / luminance(sunlightColor));
+  scatter = rgb(scatter);
+
+  transmittance = hsv(transmittance);
+  transmittance.b = floor(transmittance.b * 8.0) / 8.0;
+  transmittance = rgb(transmittance);
+  #endif
 
   scatter *= skyMultiplier;
 

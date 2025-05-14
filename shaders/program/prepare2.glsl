@@ -25,24 +25,22 @@ layout (r32ui) uniform uimage3D voxelMap;
 
 void main()
 {
+    #define SKYLIGHT_SAMPLES 8
     int samples = 0;
-    float sampleDelta = 0.4;
+    for(int x = 0; x < SKYLIGHT_SAMPLES; x++){
+        for(int y = 0; y < SKYLIGHT_SAMPLES; y++){
+            vec2 noise = vec2(x, y) / SKYLIGHT_SAMPLES;
+            
 
-    for(float phi = 0.0; phi < 2.0 * PI; phi += sampleDelta){
-        float cosPhi = cos(phi);
-        float sinPhi = sin(phi);
+            float cosTheta = sqrt(noise.x);
+            float sinTheta = sqrt(1.0 - noise.x);
+            float phi = 2.0 * PI * noise.y;
 
-        for(float theta = 0.0; theta < 0.5 * PI; theta += sampleDelta){
-            float cosTheta = cos(theta);
-            float sinTheta = sin(theta);
-
-            vec3 dir = vec3(
-                sinTheta * cosPhi,
-                cosTheta,
-                sinTheta * sinPhi
-            );
-
-            skylightColor += getSky(dir, false);
+            skylightColor += getSky(vec3(
+                cos(phi) * sinTheta,
+                sin(phi) * sinTheta,
+                cosTheta
+            ), false);
             samples++;
         }
     }

@@ -51,7 +51,7 @@
         vec3 worldNormal = decodeNormal(data1.xy);
         vec3 normal = mat3(gbufferModelView) * worldNormal;
 
-
+        bool totalInternalReflection = false;
 
         float skyLightmap = data1.z;
         int materialID = int(data1.a * 255 + 0.5) + 1000;
@@ -113,9 +113,10 @@
 
             // refraction
             #ifdef REFRACTION
-                vec3 refractionNormal = normal - waveNormal;
+                vec3 refractionNormal = inWater ? waveNormal : normal - waveNormal;
 
                 vec3 refractedDir = normalize(refract(viewDir, refractionNormal, !inWater ? rcp(1.33) : 1.33)); // when in water it should be rcp(1.33) but unless I use the actual normal (which results in snell's window) this results in no refraction
+                vec3 worldRefractedDir = mat3(gbufferModelViewInverse) * refractedDir;
                 vec3 refractedViewPos = translucentViewPos + refractedDir * distance(translucentViewPos, opaqueViewPos);
                 vec3 refractedPos = viewSpaceToScreenSpace(refractedViewPos);
 
@@ -128,15 +129,17 @@
                     dhMask = false;
                 }
                 
-
                 if(clamp01(refractedPos.xy) == refractedPos.xy && refractedDepth > translucentDepth){
                     color = texture(colortex0, refractedPos.xy);
                     opaqueDepth = texture(depthtex2, refractedPos.xy).r;
                     opaqueViewPos = refractedViewPos;
-                }  else {
-                    // #ifdef PIXEL_LOCKED_LIGHTING
-                    // color = texture(colortex0, viewSpaceToScreenSpace(translucentViewPos).xy);
-                    // #endif
+                } else if (inWater && refract(viewDir, refractionNormal, 1.33) != vec3(0.0)){
+                    color.rgb = getSky(worldRefractedDir, true) * clamp01(smoothstep(13.5 / 15.0, 14.5 / 15.0, skyLightmap));
+                    vec3 cloudTransmittance;
+                    vec3 cloudScatter = getClouds(vec3(0.0), worldRefractedDir, cloudTransmittance) * clamp01(smoothstep(13.5 / 15.0, 14.5 / 15.0, skyLightmap));
+                    color.rgb = color.rgb * cloudTransmittance + cloudScatter;
+                } else if(inWater) {
+                    totalInternalReflection = true;
                 }
             #endif
 
@@ -267,6 +270,9 @@
             
 
             vec3 fresnel = fresnel(material, dot(waveNormal, normalize(-translucentViewPos)));
+            if(totalInternalReflection){
+                fresnel = vec3(1.0);
+            }
 
             color.rgb = mix(color.rgb, reflectedColor, fresnel);
         }

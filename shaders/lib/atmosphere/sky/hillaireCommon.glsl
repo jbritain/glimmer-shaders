@@ -13,7 +13,7 @@ const vec3 sunIrradiance = vec3(1.0, 0.949, 0.937) * 12.6;
 const vec3 sunRadiance = sunIrradiance / sunAngularRadius;
 const vec3 moonIrradiance = vec3(0.5, 0.5, 1.0) * 0.5;
 
-// Units are in megameters.
+// Units are in megametres.
 const float groundRadiusMM = 6.360;
 const float atmosphereRadiusMM = 6.460;
 
@@ -92,6 +92,32 @@ vec3 getValFromMultiScattLUT(sampler2D tex, vec2 bufferRes, vec3 pos, vec3 sunDi
                    msLUTRes.y*max(0.0, min(1.0, (height - groundRadiusMM)/(atmosphereRadiusMM - groundRadiusMM))));
     uv /= bufferRes;
     return texture(tex, uv).rgb;
+}
+
+
+
+vec3 mapAerialPerspectivePos(vec3 viewPos){
+    vec3 pos;
+    #ifdef DISTANT_HORIZONS
+    pos.xy = viewSpaceToScreenSpace(viewPos, combinedProjection).xy;
+    pos.z = clamp01(abs(viewPos.z) / dhRenderDistance);
+    #else
+    pos.xy = viewSpaceToScreenSpace(viewPos).xy;
+    pos.z = clamp01(abs(viewPos.z) / far);
+    #endif
+    return pos;
+}
+
+vec3 unmapAerialPerspectivePos(vec3 pos){
+    vec3 viewPos;
+    #ifdef DISTANT_HORIZONS
+    viewPos.xy = screenSpaceToViewSpace(pos, combinedProjectionInverse).xy;
+    viewPos.z = -pos.z * dhRenderDistance;
+    #else
+    viewPos.xy = screenSpaceToViewSpace(pos).xy;
+    viewPos.z = -pos.z * far;
+    #endif
+    return viewPos;
 }
 
 #endif // HILLAIRE_COMMON_GLSL

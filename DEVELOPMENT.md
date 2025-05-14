@@ -16,6 +16,7 @@
     prepare         : Compute sky view LUT
     prepare1        : Generate sky reflection LUT
     prepare2        : Compute skylight colour by taking several hemisphere samples & Generate mipmaps for sky reflection LUT
+    prepare3        : Generate aerial perspective LUT
 
 
 

@@ -18,14 +18,10 @@
 #include "/lib/atmosphere/clouds.glsl"
 
 vec3 atmosphericFog(vec3 color, vec3 viewPos){
-  float transmittance = clamp01(exp(-length(viewPos) * 0.0004 * (EBS.y)));
-  vec3 dir = normalize(mat3(gbufferModelViewInverse) * viewPos);
-  // https://raw.githubusercontent.com/denitdao/o-rly-collection/refs/heads/main/public/book_covers/using-hacks.jpeg
-  dir.y = abs(dir.y);
-  vec3 fogColor = getSky(dir, false);
+  vec3 pos = mapAerialPerspectivePos(viewPos);
+  vec4 fog = texture(aerialPerspectiveLUTTex, clamp01(pos));
 
-  color = mix(fogColor, color.rgb, transmittance);
-  return color;
+  return color * fog.a + fog.rgb;
 }
 
 #define FOG_DENSITY 0.01
