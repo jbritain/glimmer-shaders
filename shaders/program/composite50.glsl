@@ -35,7 +35,7 @@
 
     void main() {
         color = texture(colortex0, texcoord);
-        color.rgb *= 0.01 * EXPOSURE;
+        color.rgb *= EXPOSURE;
     }
 
 #endif

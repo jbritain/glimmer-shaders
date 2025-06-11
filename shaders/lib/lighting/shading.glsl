@@ -21,7 +21,7 @@
 
 vec3 getShadedColor(Material material, vec3 mappedNormal, vec3 faceNormal, vec3 blocklight, vec2 lightmap, vec3 viewPos, float shadowFactor, float ambientOcclusion){
     #ifdef GBUFFERS_ARMOR_GLINT
-    return material.albedo * EMISSION_STRENGTH * 0.2;
+    return material.albedo * EMISSION_STRENGTH * 0.00002;
     #endif
 
     vec3 feetPlayerPos = (gbufferModelViewInverse * vec4(viewPos, 1.0)).xyz;
@@ -32,7 +32,7 @@ vec3 getShadedColor(Material material, vec3 mappedNormal, vec3 faceNormal, vec3 
     vec3 color = 
         brdf(material, mappedNormal, faceNormal, viewPos, shadow, scatter) * weatherSunlightColor;
 
-    float ambient = AMBIENT_STRENGTH;
+    float ambient = AMBIENT_STRENGTH * 0.0001;
     #ifdef WORLD_THE_NETHER
     ambient *= 4.0;
     #endif
@@ -41,7 +41,7 @@ vec3 getShadedColor(Material material, vec3 mappedNormal, vec3 faceNormal, vec3 
 
     vec3 diffuse = material.albedo * (
         weatherSkylightColor * pow2(lightmap.y) * (material.ao * 0.5 + 0.5) * ambientOcclusion +
-        blocklight * (material.ao * 0.5 + 0.5) * BLOCKLIGHT_STRENGTH * 0.2 * clamp01(1.0 - darknessLightFactor * 2.5) + 
+        blocklight * (material.ao * 0.5 + 0.5) * BLOCKLIGHT_STRENGTH * 0.002 * clamp01(1.0 - darknessLightFactor * 2.5) + 
         vec3(ambient) * material.ao * ambientOcclusion
     );
 
@@ -66,7 +66,7 @@ vec3 getShadedColor(Material material, vec3 mappedNormal, vec3 faceNormal, vec3 
     color += diffuse;
     #endif
 
-    color += material.emission * material.albedo * EMISSION_STRENGTH * clamp01(1.0 - darknessLightFactor * 2.5);;
+    color += material.emission * material.albedo * EMISSION_STRENGTH * clamp01(1.0 - darknessLightFactor * 2.5) * 0.0001;
 
     return color;
 }
