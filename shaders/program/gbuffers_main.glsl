@@ -164,8 +164,8 @@
 
 
 
-
-        vec4 albedo = texture(gtexture, texcoord) * glcolor;
+        float ambientOcclusion = glcolor.a;
+        vec4 albedo = texture(gtexture, texcoord) * vec4(glcolor.rgb, 1.0);
 
         if (albedo.a < alphaTestRef) {
             discard;
@@ -297,10 +297,10 @@
                         blocklightColor += pow(vec3(255, 152, 54), vec3(2.2)) * 1e-8 * max0(exp(-(1.0 - falloff * 10.0)));
                     #endif
 
-                    color.rgb = getShadedColor(material, mappedNormal, tbnMatrix[2], blocklightColor, lightmap, viewPos, parallaxShadow);  
+                    color.rgb = getShadedColor(material, mappedNormal, tbnMatrix[2], blocklightColor, lightmap, viewPos, parallaxShadow, ambientOcclusion);  
                 #endif
             } else {
-                color.rgb = getShadedColor(material, mappedNormal, tbnMatrix[2], lightmap, viewPos, parallaxShadow);
+                color.rgb = getShadedColor(material, mappedNormal, tbnMatrix[2], lightmap, viewPos, parallaxShadow, ambientOcclusion);
             }
 
 

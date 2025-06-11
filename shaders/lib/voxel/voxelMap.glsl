@@ -6,6 +6,10 @@ ivec3 mapVoxelPos(vec3 playerPos){
   return ivec3(floor(playerPos + cameraPositionFract) + ivec3(VOXEL_MAP_SIZE / 2));
 }
 
+vec3 unmapVoxelPos(ivec3 voxelPos){
+  return (vec3(voxelPos) - VOXEL_MAP_SIZE / 2) - cameraPositionFract;
+}
+
 bool isWithinVoxelBounds(ivec3 voxelPos){
   return all(greaterThanEqual(voxelPos, ivec3(0))) && all(lessThan(voxelPos, ivec3(VOXEL_MAP_SIZE)));
 }

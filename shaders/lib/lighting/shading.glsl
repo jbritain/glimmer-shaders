@@ -19,7 +19,7 @@
 #include "/lib/lighting/shadows.glsl"
 #include "/lib/util/spheremap.glsl"
 
-vec3 getShadedColor(Material material, vec3 mappedNormal, vec3 faceNormal, vec3 blocklight, vec2 lightmap, vec3 viewPos, float shadowFactor){
+vec3 getShadedColor(Material material, vec3 mappedNormal, vec3 faceNormal, vec3 blocklight, vec2 lightmap, vec3 viewPos, float shadowFactor, float ambientOcclusion){
     #ifdef GBUFFERS_ARMOR_GLINT
     return material.albedo * EMISSION_STRENGTH * 0.2;
     #endif
@@ -37,10 +37,12 @@ vec3 getShadedColor(Material material, vec3 mappedNormal, vec3 faceNormal, vec3 
     ambient *= 4.0;
     #endif
 
+    ambient += 2.0 * nightVision;
+
     vec3 diffuse = material.albedo * (
-        skylightColor * pow2(lightmap.y) * (material.ao * 0.5 + 0.5) +
-        blocklight * BLOCKLIGHT_STRENGTH * 0.2 +
-        vec3(ambient) * material.ao
+        weatherSkylightColor * pow2(lightmap.y) * (material.ao * 0.5 + 0.5) * ambientOcclusion +
+        blocklight * (material.ao * 0.5 + 0.5) * BLOCKLIGHT_STRENGTH * 0.2 * clamp01(1.0 - darknessLightFactor * 2.5) + 
+        vec3(ambient) * material.ao * ambientOcclusion
     );
 
     vec3 fresnel = fresnelRoughness(material, dot(mappedNormal, normalize(-viewPos)));
@@ -54,19 +56,24 @@ vec3 getShadedColor(Material material, vec3 mappedNormal, vec3 faceNormal, vec3 
 
     #ifdef ROUGH_SKY_REFLECTIONS
     vec3 specular = textureLod(colortex7, mapSphere(reflected), mipLevel).rgb * clamp01(smoothstep(13.5 / 15.0, 1.0, lightmap.y));
+
+    if(material.metalID != NO_METAL){
+        diffuse = vec3(0.0);
+    }
+
     color += mix(diffuse, specular, fresnel);
     #else
     color += diffuse;
     #endif
 
-    color += material.emission * material.albedo * EMISSION_STRENGTH;
+    color += material.emission * material.albedo * EMISSION_STRENGTH * clamp01(1.0 - darknessLightFactor * 2.5);;
 
     return color;
 }
 
-vec3 getShadedColor(Material material, vec3 mappedNormal, vec3 faceNormal, vec2 lightmap, vec3 viewPos, float shadowFactor){
+vec3 getShadedColor(Material material, vec3 mappedNormal, vec3 faceNormal, vec2 lightmap, vec3 viewPos, float shadowFactor, float ambientOcclusion){
     vec3 blocklight = vec3(1.0, 0.3, 0.03) * 5e-3 * max0(exp(-(1.0 - lightmap.x * 10.0)));
-    return getShadedColor(material, mappedNormal, faceNormal, blocklight, lightmap, viewPos, shadowFactor);
+    return getShadedColor(material, mappedNormal, faceNormal, blocklight, lightmap, viewPos, shadowFactor, ambientOcclusion);
 }
 
 #endif // SHADING_GLSL

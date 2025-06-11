@@ -123,6 +123,8 @@ vec3 getClouds(vec3 origin, vec3 worldDir, out vec3 transmittance){
   vec3 scatter = integScatter * transmittance;
   scatter = mix(scatter, vec3(0.0), exp(-distance(point, cameraPosition) * 0.004));
 
+  scatter += pow3(clamp01(1.0 - distance(point.xz, lightningBoltPosition.xz) / 10.0) * lightningBoltPosition.w * 1000.0);
+
   #ifdef ANIME_CLOUDS
   scatter = hsv(scatter);
   scatter.b = ceil(scatter.b * 8.0 / luminance(sunlightColor)) / (8.0 / luminance(sunlightColor));

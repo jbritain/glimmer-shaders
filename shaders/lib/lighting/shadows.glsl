@@ -68,12 +68,8 @@ vec3 getShadowing(vec3 feetPlayerPos, vec3 faceNormal, vec2 lightmap, Material m
       scatter = material.sss;
       sampleRadius *= (1.0 + 16.0 * material.sss);
 
-      float VoL = dot(normalize(feetPlayerPos), worldSunDir);
-      float phase1 = henyeyGreenstein(0.4, VoL) * 0.75;
-      float phase2 = henyeyGreenstein(0.1, VoL) * 0.5;
-      // float phase3 = henyeyGreenstein(0.6, VoL);
-
-      scatter *= max(phase1, phase2);
+      float VoL = abs(dot(normalize(feetPlayerPos), worldSunDir));
+      scatter *= mix(henyeyGreenstein(0.0, 0.0), henyeyGreenstein(0.7, VoL), 0.3);
     }
 
     #ifndef SHADOWS

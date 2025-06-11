@@ -98,11 +98,10 @@ vec3 getValFromMultiScattLUT(sampler2D tex, vec2 bufferRes, vec3 pos, vec3 sunDi
 
 vec3 mapAerialPerspectivePos(vec3 viewPos){
     vec3 pos;
+    pos.xy = viewSpaceToScreenSpace(viewPos).xy;
     #ifdef DISTANT_HORIZONS
-    pos.xy = viewSpaceToScreenSpace(viewPos, combinedProjection).xy;
     pos.z = clamp01(abs(viewPos.z) / dhRenderDistance);
     #else
-    pos.xy = viewSpaceToScreenSpace(viewPos).xy;
     pos.z = clamp01(abs(viewPos.z) / far);
     #endif
     return pos;
@@ -110,12 +109,11 @@ vec3 mapAerialPerspectivePos(vec3 viewPos){
 
 vec3 unmapAerialPerspectivePos(vec3 pos){
     vec3 viewPos;
-    #ifdef DISTANT_HORIZONS
-    viewPos.xy = screenSpaceToViewSpace(pos, combinedProjectionInverse).xy;
-    viewPos.z = -pos.z * dhRenderDistance;
-    #else
     viewPos.xy = screenSpaceToViewSpace(pos).xy;
-    viewPos.z = -pos.z * far;
+    #ifdef DISTANT_HORIZONS
+    viewPos.z = -abs(pos.z) * dhRenderDistance;
+    #else
+    viewPos.z = -abs(pos.z) * far;
     #endif
     return viewPos;
 }

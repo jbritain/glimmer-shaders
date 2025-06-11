@@ -34,8 +34,14 @@ void main(){
     float sunVisibility = 1.0;
     
 
-    if(clamp01(lightScreenPos) != lightScreenPos){
-        sunVisibility = EB.y;
+    if(clamp01(lightScreenPos) != lightScreenPos || shadowLightPosition.z > 0){
+        #ifdef SHADOWS
+            vec4 shadowClipPos = getShadowClipPos(worldLightDir);
+            vec3 shadowScreenPos = getShadowScreenPos(shadowClipPos);
+            sunVisibility = texture(shadowtex1HW, shadowScreenPos).r;
+        #else
+            sunVisibility = EB.y;
+        #endif
     } else {
         // isn't this some fun syntax
         sunVisibility = float(texture(depthtex1, lightScreenPos).r == 1.0
@@ -44,6 +50,7 @@ void main(){
             #endif
         );
     }
+
 
     sunVisibility *= (1.0 - wetness);
 
@@ -79,6 +86,7 @@ void main(){
     layout(location = 0) out vec4 color;
 
     void main() {
+        show(texture(aerialPerspectiveLUTTex, vec3(texcoord, 1.0)));
         color = texture(colortex0, texcoord);
         float depth = texture(depthtex0, texcoord).r;
         float opaqueDepth = texture(depthtex1, texcoord).r;
@@ -125,7 +133,7 @@ void main(){
             #endif
         #endif
         
-        show(texture(aerialPerspectiveLUTTex, vec3(texcoord, 0.5)).rgb);
+        // show(texture(aerialPerspectiveLUTTex, vec3(texcoord, 0.5)).rgb);
         
     }
 

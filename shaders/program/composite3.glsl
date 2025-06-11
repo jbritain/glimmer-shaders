@@ -46,6 +46,7 @@
 
     void main() {
         color = texture(colortex0, texcoord);
+
         vec4 data1 = texture(colortex1, texcoord);
 
         vec3 worldNormal = decodeNormal(data1.xy);

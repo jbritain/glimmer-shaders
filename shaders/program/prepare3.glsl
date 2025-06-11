@@ -31,6 +31,7 @@ vec3 raymarchScattering(vec3 pos,
     vec3 lum = vec3(0.0);
     transmittance = vec3(1.0);
     float t = 0.0;
+
     for (float i = 0.0; i < numSteps; i += 1.0) {
         float newT = ((i + 0.3)/numSteps)*tMax;
         float dt = newT - t;
@@ -49,6 +50,13 @@ vec3 raymarchScattering(vec3 pos,
         
         vec3 rayleighInScattering = rayleighScattering*(rayleighPhaseValue*sunTransmittance + psiMS);
         vec3 mieInScattering = mieScattering*(miePhaseValue*sunTransmittance + psiMS);
+
+        rayleighScattering *= 20.0;
+        mieScattering *= 20.0;
+        rayleighInScattering *= 20.0;
+        mieInScattering *= 20.0;
+        // extinction *= 20.0;
+
         vec3 inScattering = (rayleighInScattering + mieInScattering);
 
         // Integrated scattering within path segment.

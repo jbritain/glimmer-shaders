@@ -103,7 +103,12 @@
         }
 
         albedo.rgb *= 1.1;
-        albedo.rgb *= mix(0.95, 1.05, texelFetch(noisetex, noiseCoord, 0).r);
+        if(materialIsLeaves(materialID)){
+            albedo.rgb *= mix(0.7, 1.2, texelFetch(noisetex, noiseCoord, 0).r);
+        } else {
+            albedo.rgb *= mix(0.95, 1.05, texelFetch(noisetex, noiseCoord, 0).r);
+        }
+        
 
 
         albedo.rgb = pow(albedo.rgb, vec3(2.2));
@@ -143,7 +148,7 @@
             material.roughness = 0.0;
             color = vec4(0.0);
         }  else {
-            color.rgb = getShadedColor(material, normal, normal, lightmap, viewPos, 1.0);
+            color.rgb = getShadedColor(material, normal, normal, lightmap, viewPos, 1.0, 1.0);
             color.a = albedo.a;
         }
 

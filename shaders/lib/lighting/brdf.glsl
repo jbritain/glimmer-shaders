@@ -51,6 +51,13 @@ float getNoHSquared(float NoL, float NoV, float VoL, float radius) {
   return clamp(NoH * NoH / HoH, 0.0, 1.0);
 }
 
+// robobo dredged this up from somewhere
+float areaLightNormalization(float roughness, float LoH, float radius) {
+  // Decima: Still in flux
+  float roughnessSquaredLoH = roughness * roughness * (LoH + 0.001);
+  return roughnessSquaredLoH / (roughnessSquaredLoH + 0.25 * radius * (2.0 * roughness + radius));
+}
+
 float schlickGGX(float NoV, float K) {
 	float nom	 = NoV;
 	float denom = NoV * (1.0 - K) + K;
@@ -83,7 +90,8 @@ vec3 fresnel(Material material, float NoV){
 
 vec3 fresnelRoughness(Material material, float NoV){
 	if(material.metalID == NO_METAL || material.metalID == OTHER_METAL){
-		return material.f0 + (max(vec3(1.0 - material.roughness), material.f0) - material.f0) * pow(clamp(1.0 - NoV, 0.0, 1.0), 5.0);
+		// you aren't supposed to square the roughness but stuff was ending up too shiny
+		return material.f0 + (max(pow2(vec3(1.0 - material.roughness)), material.f0) - material.f0) * pow(clamp(1.0 - NoV, 0.0, 1.0), 5.0);
 	} else {
 		return material.albedo + (max(vec3(1.0 - material.roughness), material.albedo) - material.albedo) * pow(clamp(1.0 - NoV, 0.0, 1.0), 5.0);
 	}
@@ -137,6 +145,8 @@ vec3 brdf(Material material, vec3 mappedNormal, vec3 faceNormal, vec3 viewPos, v
 
 
 	vec3 Rd = material.albedo * (1.0 - F) * clamp01(NoL);
+
+	if(material.metalID != NO_METAL) Rd = vec3(0.0);
 
 	return (Rs + Rd) * shadow + (scatter * material.albedo);
 }
