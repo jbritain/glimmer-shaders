@@ -31,6 +31,7 @@
     #include "/lib/util/spheremap.glsl"
     #include "/lib/atmosphere/sky/sky.glsl"
     #include "/lib/atmosphere/clouds.glsl"
+    #include "/lib/atmosphere/fog.glsl"
 
     /* RENDERTARGETS: 7 */
     layout(location = 0) out vec3 color;
@@ -42,5 +43,6 @@
         vec3 transmittance;
         vec3 scatter = getClouds(vec3(0.0), dir, transmittance);
         color = color * transmittance + scatter;
+        color = cloudyFog(color, dir * far, 1.0, vec3(1.0));
     }
 #endif

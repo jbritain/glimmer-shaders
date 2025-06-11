@@ -48,9 +48,9 @@ void main()
     skylightColor /= float(samples);
 
 
-    if(lightningBoltPosition.xyz != vec3(0.0)){
-        skylightColor += vec3(20.0, 20.0, 40.0);
-        sunlightColor += vec3(20.0, 20.0, 40.0);
+    if(lightningBoltPosition.w > 0.5){
+        skylightColor += vec3(20.0, 20.0, 40.0) * 0.0001;
+        sunlightColor += vec3(20.0, 20.0, 40.0) * 0.0001;
     }
 
     weatherFrameTimeCounter += frameTime * (wetness + thunderStrength) * 2.0;

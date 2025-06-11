@@ -21,7 +21,7 @@
 
 vec3 getShadedColor(Material material, vec3 mappedNormal, vec3 faceNormal, vec3 blocklight, vec2 lightmap, vec3 viewPos, float shadowFactor, float ambientOcclusion){
     #ifdef GBUFFERS_ARMOR_GLINT
-    return material.albedo * EMISSION_STRENGTH * 0.00002;
+    return material.albedo * EMISSION_STRENGTH * 0.0002;
     #endif
 
     vec3 feetPlayerPos = (gbufferModelViewInverse * vec4(viewPos, 1.0)).xyz;
@@ -66,7 +66,7 @@ vec3 getShadedColor(Material material, vec3 mappedNormal, vec3 faceNormal, vec3 
     color += diffuse;
     #endif
 
-    color += material.emission * material.albedo * EMISSION_STRENGTH * clamp01(1.0 - darknessLightFactor * 2.5) * 0.0001;
+    color += material.emission * material.albedo * EMISSION_STRENGTH * clamp01(1.0 - darknessLightFactor * 2.5) * 0.001;
 
     return color;
 }

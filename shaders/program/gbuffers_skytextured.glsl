@@ -51,7 +51,7 @@
         }
 
 
-        color.rgb *= vec3(2.0, 2.0, 3.0);
+        color.rgb *= vec3(2.0, 2.0, 3.0) * 0.1;
         color.rgb = pow(color.rgb, vec3(2.2));
     }
 

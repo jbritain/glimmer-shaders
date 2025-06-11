@@ -239,7 +239,7 @@
         #endif
 
         #ifdef RAIN_PUDDLES
-        float rainFactor = clamp01(smoothstep(13.5 / 15.0, 14.5 / 15.0, lightmap.y)) * wetness;
+        float rainFactor = clamp01(smoothstep(13.5 / 15.0, 14.5 / 15.0, lightmap.y)) * wetness * clamp01(dot(tbnMatrix[2], gbufferModelView[1].xyz)) * mix(1.5, 1.0, texture(normals, texcoord).a);
 
         rainFactor *= smoothstep(0.6, 0.7, texture(noisetex, mod((playerPos.xz + cameraPosition.xz) / 2.0, 64.0) / 64.0).r);
 

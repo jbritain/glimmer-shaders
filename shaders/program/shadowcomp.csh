@@ -54,9 +54,9 @@ void main(){
   vec3 indirect = data.opacity < 1.0 ? gatherLight(pos) : vec3(0.0);
   vec3 emitted = data.color * data.emission * 32.0;
 
-  if(distance(unmapVoxelPos(pos).xz, lightningBoltPosition.xz) < 2.0 && lightningBoltPosition.w > 0.5){
-    emitted += vec3(1000.0);
-  }
+  // if(distance(unmapVoxelPos(pos).xz, lightningBoltPosition.xz) < 2.0 && lightningBoltPosition.w > 0.5){
+  //   emitted += vec3(1000.0);
+  // }
 
   // tint
   if(data.opacity < 1.0){
