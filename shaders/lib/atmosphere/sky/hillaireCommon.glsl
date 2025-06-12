@@ -6,6 +6,10 @@
     https://www.shadertoy.com/view/slSXRW
 */
 
+#define CLOUD_PLANE_ALTITUDE 1000
+#define CLOUD_PLANE_HEIGHT 50
+#define CLOUD_EXTINCTION_COLOR vec3(1.0)
+
 const float sunAngularRadius = 0.5 * PI/180.0;
 const float moonAngularRadius = 2.5 * PI / 180.0;
 

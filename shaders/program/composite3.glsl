@@ -62,7 +62,7 @@
         bool inWater = isEyeInWater == 1;
 
         float translucentDepth = texture(depthtex0, texcoord).r;
-        float opaqueDepth = texture(depthtex2, texcoord).r;
+        float opaqueDepth = texture(depthtex1, texcoord).r;
 
         vec3 translucentViewPos = screenSpaceToViewSpace(vec3(texcoord, translucentDepth));
         vec3 opaqueViewPos = screenSpaceToViewSpace(vec3(texcoord, opaqueDepth));

@@ -86,7 +86,6 @@ void main(){
     layout(location = 0) out vec4 color;
 
     void main() {
-        show(texture(aerialPerspectiveLUTTex, vec3(texcoord, 1.0)));
         color = texture(colortex0, texcoord);
         float depth = texture(depthtex0, texcoord).r;
         float opaqueDepth = texture(depthtex1, texcoord).r;

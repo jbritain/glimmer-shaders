@@ -148,7 +148,7 @@ vec3 brdf(Material material, vec3 mappedNormal, vec3 faceNormal, vec3 viewPos, v
 
 	if(material.metalID != NO_METAL) Rd = vec3(0.0);
 
-	return (Rs + Rd) * shadow + (scatter * material.albedo);
+	return (Rs + Rd) * shadow * areaLightNormalization(max(0.001, material.roughness), dot(L, H), sunAngularRadius) + (scatter * material.albedo);
 }
 
 #endif // BRDF_GLSL

@@ -15,7 +15,7 @@
 #ifndef FOG_GLSL
 #define FOG_GLSL
 
-#include "/lib/atmosphere/clouds.glsl"
+#include "/lib/atmosphere/sky/hillaireCommon.glsl"
 
 vec3 atmosphericFog(vec3 color, vec3 viewPos){
   vec3 pos = mapAerialPerspectivePos(viewPos);
@@ -24,6 +24,8 @@ vec3 atmosphericFog(vec3 color, vec3 viewPos){
   if(any(isnan(fog))){
     return color; // whar
   }
+
+  fog.rgb = mix(fog.rgb, weatherSkylightColor * luminance(fog.rgb), wetness);
 
   return color * fog.a + fog.rgb;
 }

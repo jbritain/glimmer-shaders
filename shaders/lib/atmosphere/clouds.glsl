@@ -15,9 +15,9 @@
 #ifndef CLOUDS_GLSL
 #define CLOUDS_GLSL
 
-#define CLOUD_PLANE_ALTITUDE 1000
-#define CLOUD_PLANE_HEIGHT 50
-#define CLOUD_EXTINCTION_COLOR vec3(1.0)
+#include "/lib/atmosphere/fog.glsl"
+
+
 
 float remap(float val, float oMin, float oMax, float nMin, float nMax){
   return mix(nMin, nMax, smoothstep(oMin, oMax, val));
@@ -71,8 +71,8 @@ float getCloudDensity(vec2 pos, bool highSamples){
   density /= weight;
 
   density = smoothstep(0.5 - 0.3 * wetness - 0.2 * thunderStrength, 1.0, density);
-  // density = sqrt(density);
-  density *= 0.1;
+
+  density *= 0.005;
 
   return density;
 }
@@ -136,6 +136,8 @@ vec3 getClouds(vec3 origin, vec3 worldDir, out vec3 transmittance){
   #endif
 
   scatter *= skyMultiplier;
+
+  // scatter = atmosphericFog(scatter, point);
 
   return scatter;
 }

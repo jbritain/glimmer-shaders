@@ -15,7 +15,7 @@
 #ifndef WATER_FOG_GLSL
 #define WATER_FOG_GLSL
 
-#define WATER_ABSORPTION vec3(0.3, 0.03, 0.04) * 4.0
+#define WATER_ABSORPTION vec3(0.3, 0.03, 0.04) * 2.0
 #define WATER_SCATTERING vec3(0.01, 0.05, 0.03) * 0.2
 #define WATER_DENSITY 1.0
 
@@ -31,7 +31,7 @@ vec3 waterFog(vec3 color, vec3 a, vec3 b, float dhFactor, vec3 scatterFactor){
   vec3 transmittance = exp(-opticalDepth);
 
 
-  vec3 scatter = (sunlightColor * henyeyGreenstein(0.9, dot(normalize(b - a), lightDir)) + EBS.y * skylightColor);
+  vec3 scatter = (weatherSunlightColor * henyeyGreenstein(0.9, dot(normalize(b - a), lightDir)) + EBS.y * weatherSkylightColor);
 
   #if GODRAYS == 0
   scatter *= sunVisibilitySmooth;

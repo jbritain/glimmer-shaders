@@ -35,6 +35,7 @@
     composite4      : Godrays
     composite5      : Fog
 
+    composite49     : Write luminance for auto exposure
     composite50     : Exposure
     
     composite80-88  : Bloom
