@@ -17,7 +17,22 @@
 
 #include "/lib/atmosphere/fog.glsl"
 
+// https://al-ro.github.io/projects/curl/
+vec2 curl(vec2 pos){
+  const float eps = rcp(maxVec2(textureSize(perlinNoiseTex, 0)));
 
+  float n1 = texture(perlinNoiseTex, vec2(pos.x + eps, pos.y)).r;
+  float n2 = texture(perlinNoiseTex, vec2(pos.x - eps, pos.y)).r;
+
+  float a = (n1 - n2)/(2.0 * eps);
+
+  n1 = texture(perlinNoiseTex, vec2(pos.x, pos.y + eps)).r;
+  n2 = texture(perlinNoiseTex, vec2(pos.x, pos.y - eps)).r;
+
+  float b = (n1 - n2)/(2.0 * eps);
+
+  return vec2(b, -a);
+}
 
 float remap(float val, float oMin, float oMax, float nMin, float nMax){
   return mix(nMin, nMax, smoothstep(oMin, oMax, val));
@@ -51,6 +66,8 @@ float getCloudDensity(vec2 pos, bool highSamples){
   float weight = 0.0;
 
   pos = pos / 100000;
+
+  pos += curl(pos * 0.9 - vec2(worldTimeCounter * 0.0001, 0.0)) / 5000.0;
 
   for(int i = 0; i < 16; i++){
     float sampleWeight = exp2(-float(i));
@@ -127,11 +144,11 @@ vec3 getClouds(vec3 origin, vec3 worldDir, out vec3 transmittance){
 
   #ifdef ANIME_CLOUDS
   scatter = hsv(scatter);
-  scatter.b = ceil(scatter.b * 8.0 / luminance(sunlightColor)) / (8.0 / luminance(sunlightColor));
+  scatter.b = ceil(scatter.b * 32.0 / luminance(sunlightColor)) / (32.0 / luminance(sunlightColor));
   scatter = rgb(scatter);
 
   transmittance = hsv(transmittance);
-  transmittance.b = floor(transmittance.b * 8.0) / 8.0;
+  transmittance.b = floor(transmittance.b * 32.0) /32.0;
   transmittance = rgb(transmittance);
   #endif
 

@@ -52,7 +52,6 @@
         averageLuminanceSmooth = max(averageLuminanceSmooth, 0.0001);
 
         float exposure = rcp(2.0 * averageLuminance);
-        show(exposure);
 
         // exposure = clamp(exposure, 0.001, 100.0);
 

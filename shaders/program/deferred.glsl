@@ -73,6 +73,8 @@
                     occlusion = pow2(transmittance);
                 #endif
             #endif
+
+            show(curl(texcoord));
         }
     }
 

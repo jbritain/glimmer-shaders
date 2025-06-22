@@ -117,6 +117,7 @@
                 vec3 refractionNormal = inWater ? waveNormal : normal - waveNormal;
 
                 vec3 refractedDir = normalize(refract(viewDir, refractionNormal, !inWater ? rcp(1.33) : 1.33)); // when in water it should be rcp(1.33) but unless I use the actual normal (which results in snell's window) this results in no refraction
+
                 vec3 worldRefractedDir = mat3(gbufferModelViewInverse) * refractedDir;
                 vec3 refractedViewPos = translucentViewPos + refractedDir * distance(translucentViewPos, opaqueViewPos);
                 vec3 refractedPos = viewSpaceToScreenSpace(refractedViewPos);
@@ -140,6 +141,10 @@
                     vec3 cloudScatter = getClouds(vec3(0.0), worldRefractedDir, cloudTransmittance) * clamp01(smoothstep(13.5 / 15.0, 14.5 / 15.0, skyLightmap));
                     color.rgb = color.rgb * cloudTransmittance + cloudScatter;
                 } else if(inWater) {
+                    totalInternalReflection = true;
+                }
+
+                if(refractedDir == vec3(0.0)){
                     totalInternalReflection = true;
                 }
             #endif

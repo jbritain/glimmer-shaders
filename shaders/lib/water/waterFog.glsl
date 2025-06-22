@@ -15,7 +15,7 @@
 #ifndef WATER_FOG_GLSL
 #define WATER_FOG_GLSL
 
-#define WATER_ABSORPTION vec3(0.3, 0.03, 0.04) * 2.0
+#define WATER_ABSORPTION vec3(0.3, 0.04, 0.04) * 4.0
 #define WATER_SCATTERING vec3(0.01, 0.05, 0.03) * 0.2
 #define WATER_DENSITY 1.0
 
