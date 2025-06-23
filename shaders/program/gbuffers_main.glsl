@@ -125,10 +125,11 @@
         return tbnMatrix * mappedNormal;
     }
 
-    /* RENDERTARGETS: 0,1 */
+    /* RENDERTARGETS: 0,1,8 */
 
     layout(location = 0) out vec4 color;
     layout(location = 1) out vec4 outData1;
+    layout(location = 2) out vec4 albedo;
 
     void main() {
         vec3 playerPos = (gbufferModelViewInverse * vec4(viewPos, 1.0)).xyz;
@@ -165,7 +166,7 @@
 
 
         float ambientOcclusion = glcolor.a;
-        vec4 albedo = texture(gtexture, texcoord) * vec4(glcolor.rgb, 1.0);
+        albedo = texture(gtexture, texcoord) * vec4(glcolor.rgb, 1.0);
 
         if (albedo.a < alphaTestRef) {
             discard;

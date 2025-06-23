@@ -74,7 +74,7 @@
                 #endif
             #endif
 
-            show(curl(texcoord));
+            // show(curl(texcoord));
         }
     }
 

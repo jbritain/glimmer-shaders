@@ -31,7 +31,6 @@ vec3 distort(vec3 pos) {
 	float factor = cubeLength(pos.xy) * SHADOW_DISTORTION + (1.0 - SHADOW_DISTORTION);
 	pos.xy /= factor;
 	pos.z /= 2.0;
-	// pos.xy += jitter[frameCounter % 16] * rcp(shadowMapResolution);
 	return pos;
 }
 

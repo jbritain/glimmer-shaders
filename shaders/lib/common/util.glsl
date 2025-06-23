@@ -102,9 +102,11 @@ bool rayPlaneIntersection(vec3 O, vec3 D, float height, inout vec3 point){
   return true;
 }
 
+const float goldenAngle = 2.4;
+
 vec2 vogelDiscSample(int stepIndex, int stepCount, float noise) {
     float rotation = noise * 2 * PI;
-    const float goldenAngle = 2.4;
+
 
     float r = sqrt(stepIndex + 0.5) / sqrt(float(stepCount));
     float theta = stepIndex * goldenAngle + rotation;

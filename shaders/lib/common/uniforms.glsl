@@ -131,6 +131,8 @@ uniform sampler2DShadow shadowtex1HW;
 uniform sampler2DShadow shadowtex0HW;
 
 uniform sampler2D shadowcolor0;
+uniform sampler2D shadowcolor1;
+uniform sampler2D shadowcolor2;
 
 uniform sampler2D sunTransmittanceLUTTex;
 uniform sampler2D multipleScatteringLUTTex;

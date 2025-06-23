@@ -20,7 +20,10 @@
     out vec4 glcolor;
 
     void main() {
-      gl_Position = ftransform();
+      // gl_Position = ;
+      vec3 viewPos = (gl_ModelViewMatrix * gl_Vertex).xyz;
+      viewPos = mix(viewPos, -sunPosition * sign(dot(-sunPosition, viewPos)), 0.5); // I am eternally grateful to builderb0y for this blindingly obvious solution
+      gl_Position = gl_ProjectionMatrix * vec4(viewPos, 1.0);
       texcoord = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy;
       glcolor = gl_Color;
     }

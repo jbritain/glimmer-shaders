@@ -107,6 +107,7 @@
     in vec2 texcoord;
     in vec4 glcolor;
     in mat3 tbnMatrix;
+    in vec3 normal;
     flat in int materialID;
     in vec3 shadowViewPos;
     in vec3 feetPlayerPos;
@@ -116,10 +117,15 @@
     #include "/lib/water/waterFog.glsl"
     #include "/lib/water/waveNormals.glsl"
 
-    /* RENDERTARGETS: 0 */
+    /* RENDERTARGETS: 0,1,2 */
     layout(location = 0) out vec4 color;
+    layout(location = 1) out vec3 outNormal;
+    layout(location = 2) out vec3 outShadowViewPos;
 
     void main() {
+        outNormal = normal;
+        outShadowViewPos = shadowViewPos;
+
         color = texture(gtexture, texcoord) * glcolor;
 
         if (color.a < alphaTestRef) {

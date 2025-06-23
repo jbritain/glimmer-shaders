@@ -1,6 +1,6 @@
 ```
 ---Buffers---
-    0: Main Scene Colour          
+    0: Main Scene Colour
     1: Encoded Normal, Sky Lightmap, Block ID
     2: Bloom Colour
     3: History buffer
@@ -26,7 +26,7 @@
     deferred        : Render sky
     deferred1       : Distant Horizons SSAO
 
-    composite       : Generate combined depth buffer    
+    composite       : Generate combined depth buffer
     composite1      : Godrays mask
     composite2      : VL/Godrays
     composite3      : Water & water fog
@@ -37,7 +37,7 @@
 
     composite49     : Write luminance for auto exposure
     composite50     : Exposure
-    
+
     composite80-88  : Bloom
     composite89     : Temporal filter
 

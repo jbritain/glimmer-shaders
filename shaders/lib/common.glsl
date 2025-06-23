@@ -101,6 +101,12 @@ const vec4 colortex4ClearColor = vec4(1.0, 1.0, 1.0, 1.0);
 const bool colortex7Clear = false;
 #endif
 
+/*
+    const int colortex8Format = R11F_G11F_B10F;
+    const int shadowcolor1Format = RGB16F;
+    const int shadowcolor2Format = RGB16F;
+*/
+
 #ifdef INFINITE_OCEAN
 #endif
 
