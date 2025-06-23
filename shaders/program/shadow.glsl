@@ -117,15 +117,10 @@
     #include "/lib/water/waterFog.glsl"
     #include "/lib/water/waveNormals.glsl"
 
-    /* RENDERTARGETS: 0,1,2 */
+    /* RENDERTARGETS: 0*/
     layout(location = 0) out vec4 color;
-    layout(location = 1) out vec3 outNormal;
-    layout(location = 2) out vec3 outShadowViewPos;
 
     void main() {
-        outNormal = normal;
-        outShadowViewPos = shadowViewPos;
-
         color = texture(gtexture, texcoord) * glcolor;
 
         if (color.a < alphaTestRef) {
