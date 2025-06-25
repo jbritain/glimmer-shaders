@@ -49,10 +49,19 @@
         averageLuminanceSmooth = mix(averageLuminance, averageLuminanceSmooth, clamp01(exp2(frameTime * -0.01)));
         averageLuminanceSmooth = max(averageLuminanceSmooth, 0.0001);
 
-        float exposure = rcp(9.0 * averageLuminanceSmooth);
+        const float dayAverageLuminance = pow(118.0/255.0, 2.2);
+        const float nightAverageLuminance = pow(33.0/255.0, 2.2);
+
+        float targetAverageLuminance = mix(nightAverageLuminance, dayAverageLuminance, smoothstep(-0.1, 0.1, worldSunDir.y));
+
+        color.rgb = hsv(color.rgb);
+        color.g *= smoothstep(-0.1, 0.1, worldSunDir.y) * 0.3 + 0.7;
+        color.rgb = rgb(color.rgb);
+
+        float exposure = targetAverageLuminance / averageLuminanceSmooth;
         // show(exposure);
 
-        exposure = clamp(exposure, 0.001, 100.0);
+        // exposure = clamp(exposure, 0.001, 100.0);
 
 
         color.rgb *= exposure;
