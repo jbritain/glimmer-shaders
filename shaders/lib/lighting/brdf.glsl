@@ -97,14 +97,14 @@ vec3 fresnelRoughness(Material material, float NoV){
 	}
 }
 
-vec3 brdf(Material material, vec3 mappedNormal, vec3 faceNormal, vec3 viewPos, vec3 shadow, float scatter){
+vec3 brdf(Material material, vec3 mappedNormal, vec3 faceNormal, vec3 viewPos, vec3 shadow, vec3 scatter){
 	vec3 L = lightDir;
 	float faceNoL = clamp01(dot(faceNormal, L));
 	float mappedNoL = clamp01(dot(mappedNormal, L));
 
 	float NoL = clamp01(mappedNoL * smoothstep(0.0, 0.1, faceNoL));
 
-	if(NoL + scatter < 1e-6){
+	if(NoL + maxVec3(scatter) < 1e-6){
 		return vec3(0.0);
 	}
 

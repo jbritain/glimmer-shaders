@@ -189,7 +189,7 @@
             vec3 reflectedPos = vec3(0.0);
             vec3 reflectedColor = vec3(0.0);
 
-            float scatter = 0.0;
+            vec3 scatter = vec3(0.0);
 
             #if REFLECTION_MODE > 0
                 bool doReflections = true;

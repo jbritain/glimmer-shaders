@@ -36,14 +36,14 @@ vec3 sampleShadow(vec3 shadowScreenPos){
 	return mix(shadowColor * opaqueShadow, vec3(1.0), transparentShadow);
 }
 
-vec3 getShadowing(vec3 feetPlayerPos, vec3 faceNormal, vec2 lightmap, Material material, out float scatter){
+vec3 getShadowing(vec3 feetPlayerPos, vec3 faceNormal, vec2 lightmap, Material material, out vec3 scatter){
   #ifdef PIXEL_LOCKED_LIGHTING
     feetPlayerPos += cameraPosition;
     feetPlayerPos = floor(feetPlayerPos * PIXEL_SIZE) / PIXEL_SIZE;
     feetPlayerPos -= cameraPosition;
   #endif
 
-    scatter = 0.0;
+    scatter = vec3(0.0);
     if(EBS.y == 0.0 && lightmap.y < 0.1 && constantMood > 0.2){
       return vec3(0.0);
     }
@@ -65,11 +65,12 @@ vec3 getShadowing(vec3 feetPlayerPos, vec3 faceNormal, vec2 lightmap, Material m
     float sampleRadius = SHADOW_SOFTNESS * 0.003;
 
     if(faceNoL <= 1e-6 && material.sss > 1e-6){
-      scatter = material.sss;
+      scatter = vec3(material.sss);
       sampleRadius *= (1.0 + 16.0 * material.sss);
 
       float VoL = abs(dot(normalize(feetPlayerPos), worldSunDir));
-      scatter *= mix(henyeyGreenstein(0.0, 0.0), henyeyGreenstein(0.7, VoL), 0.3);
+      scatter *= henyeyGreenstein(0.3, VoL) * 1.5;
+      // scatter *= mix(henyeyGreenstein(0.0, 0.0), henyeyGreenstein(0.7, VoL), 0.3);
     }
 
     #ifndef SHADOWS
@@ -106,7 +107,9 @@ vec3 getShadowing(vec3 feetPlayerPos, vec3 faceNormal, vec2 lightmap, Material m
 		float blockerDepthDifference = max0(shadowScreenPos.z - texture(shadowtex0, shadowScreenPos.xy + scatterSampleOffset).r);
 		float blockerDistance = blockerDepthDifference * 512;
 
-		scatter *= mix(1.0 - smoothstep(blockerDistance, 0.0, 2.0), 1.0, distFade);
+    // thanks to sixthsurge and fozy style for suggesting I use the albedo as a factor for the transmittance
+    // and quirkyplague for inspiring me to fix it because it was ass for a good while
+		scatter *= mix(vec3(exp(-blockerDistance * (rcp(material.albedo / max(0.1, sqrt(luminance(material.albedo))))))), vec3(1.0), distFade);
     
     if(faceNoL > 1e-6){
       for (int i = 0; i < SHADOW_SAMPLES; i++) {
