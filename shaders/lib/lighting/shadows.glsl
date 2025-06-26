@@ -99,11 +99,11 @@ vec3 getShadowing(vec3 feetPlayerPos, vec3 faceNormal, vec2 lightmap, Material m
     
     
 	if(distFade < 1.0){
-		float noise = interleavedGradientNoise(floor(gl_FragCoord.xy), frameCounter);
+		float noise = interleavedGradientNoise(floor(gl_FragCoord.xy), frameCounter * 2);
 
 		// scatter falloff
 		float scatterSampleAngle = noise * 2 * PI;
-		vec2 scatterSampleOffset = vec2(sin(scatterSampleAngle), cos(scatterSampleAngle)) * (sampleRadius / SHADOW_SAMPLES);
+		vec2 scatterSampleOffset = vec2(sin(scatterSampleAngle), cos(scatterSampleAngle)) * 0.03 * interleavedGradientNoise(floor(gl_FragCoord.xy), frameCounter * 2 + 1);
 		float blockerDepthDifference = max0(shadowScreenPos.z - texture(shadowtex0, shadowScreenPos.xy + scatterSampleOffset).r);
 		float blockerDistance = blockerDepthDifference * 512;
 

@@ -1,0 +1,5 @@
+shaders/lib/common/settings.glsl
+scripts/block_wrangler
+*.pyc
+*.md
+package-lock.json
