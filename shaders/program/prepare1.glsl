@@ -16,33 +16,33 @@
 
 #ifdef vsh
 
-    out vec2 texcoord;
+out vec2 texcoord;
 
-    void main() {
-        gl_Position = ftransform();
-	    texcoord = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy;
-    }
+void main() {
+  gl_Position = ftransform();
+  texcoord = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy;
+}
 
 #endif
 
 #ifdef fsh
-    in vec2 texcoord;
+in vec2 texcoord;
 
-    #include "/lib/util/spheremap.glsl"
-    #include "/lib/atmosphere/sky/sky.glsl"
-    #include "/lib/atmosphere/clouds.glsl"
-    #include "/lib/atmosphere/fog.glsl"
+#include "/lib/util/spheremap.glsl"
+#include "/lib/atmosphere/sky/sky.glsl"
+#include "/lib/atmosphere/clouds.glsl"
+#include "/lib/atmosphere/fog.glsl"
 
-    /* RENDERTARGETS: 7 */
-    layout(location = 0) out vec3 color;
+/* RENDERTARGETS: 7 */
+layout(location = 0) out vec3 color;
 
-    void main(){
-        vec3 dir = mat3(gbufferModelViewInverse) * unmapSphere(texcoord);
+void main() {
+  vec3 dir = mat3(gbufferModelViewInverse) * unmapSphere(texcoord);
 
-        color = getSky(vec3(0.0), dir, false);
-        vec3 transmittance;
-        vec3 scatter = getClouds(vec3(0.0), dir, transmittance);
-        color = color * transmittance + scatter;
-        color = cloudyFog(color, dir * far, 1.0, vec3(1.0));
-    }
+  color = getSky(vec3(0.0), dir, false);
+  vec3 transmittance;
+  vec3 scatter = getClouds(vec3(0.0), dir, transmittance);
+  color = color * transmittance + scatter;
+  color = cloudyFog(color, dir * far, 1.0, vec3(1.0));
+}
 #endif

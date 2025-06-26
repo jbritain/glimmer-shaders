@@ -29,9 +29,7 @@ jobs:
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
           curseforge-id: 1167533
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
-          
+
           files: "Glimmer-${{ github.event.release.tag_name }}.zip"
           loaders: iris
           game-versions: ">=1.20"
-
-          

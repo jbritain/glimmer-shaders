@@ -1,3 +1,5 @@
+//prettier-ignore
+
 #ifndef SETTINGS_GLSL
 #define SETTINGS_GLSL
 
