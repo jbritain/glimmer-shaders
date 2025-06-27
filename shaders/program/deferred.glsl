@@ -73,8 +73,6 @@ void main() {
     #endif
     #endif
 
-    // show(curl(texcoord));
-
   }
 }
 

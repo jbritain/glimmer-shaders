@@ -114,7 +114,8 @@ vec3 getShadowing(
     float scatterSampleAngle = noise * 2 * PI;
     vec2 scatterSampleOffset =
       vec2(sin(scatterSampleAngle), cos(scatterSampleAngle)) *
-      0.02 *
+      0.01 /
+      (shadowMapResolution / 2048.0) *
       interleavedGradientNoise(floor(gl_FragCoord.xy), frameCounter * 2 + 1);
     float blockerDepthDifference = max0(
       shadowScreenPos.z -

@@ -139,7 +139,7 @@ void main() {
       refractedDir * distance(translucentViewPos, opaqueViewPos);
     vec3 refractedPos = viewSpaceToScreenSpace(refractedViewPos);
 
-    float refractedDepth = texture(depthtex2, refractedPos.xy).r;
+    float refractedDepth = texture(depthtex1, refractedPos.xy).r;
     refractedViewPos = screenSpaceToViewSpace(
       vec3(refractedPos.xy, refractedDepth)
     );

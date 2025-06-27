@@ -19,11 +19,8 @@
 
 vec3 atmosphericFog(vec3 color, vec3 viewPos) {
   vec3 pos = mapAerialPerspectivePos(viewPos);
+  show(pos.z);
   vec4 fog = texture(aerialPerspectiveLUTTex, clamp01(pos));
-
-  if (any(isnan(fog))) {
-    return color; // whar
-  }
 
   fog.rgb = mix(fog.rgb, weatherSkylightColor * luminance(fog.rgb), wetness);
 

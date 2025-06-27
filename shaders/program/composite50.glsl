@@ -52,16 +52,18 @@
         const float dayAverageLuminance = pow(118.0/255.0, 2.2);
         const float nightAverageLuminance = pow(33.0/255.0, 2.2);
 
+        #ifdef WORLD_OVERWORLD
         float targetAverageLuminance = mix(nightAverageLuminance, dayAverageLuminance, smoothstep(-0.1, 0.1, worldSunDir.y));
-
+        
         color.rgb = hsv(color.rgb);
         color.g *= smoothstep(-0.1, 0.1, worldSunDir.y) * 0.3 + 0.7;
         color.rgb = rgb(color.rgb);
+        #else
+        float targetAverageLuminance = 10.0;
+        #endif
+
 
         float exposure = targetAverageLuminance / averageLuminanceSmooth;
-        // show(exposure);
-
-        // exposure = clamp(exposure, 0.001, 100.0);
 
 
         color.rgb *= exposure;

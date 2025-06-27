@@ -35,6 +35,8 @@ uniform int worldTime;
 uniform int worldDay;
 uniform int renderStage;
 
+uniform bool hideGUI;
+
 uniform float aspectRatio;
 uniform float blindness;
 uniform float darknessFactor;

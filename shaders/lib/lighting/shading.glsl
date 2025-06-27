@@ -81,12 +81,11 @@ vec3 getShadedColor(
   vec3 reflected = reflect(normalize(viewPos), mappedNormal);
 
   #ifdef ROUGH_SKY_REFLECTIONS
-  vec3 specular =
-    textureLod(colortex7, mapSphere(reflected), mipLevel).rgb *
-    clamp01(smoothstep(13.5 / 15.0, 1.0, lightmap.y));
+  vec3 specular = textureLod(colortex7, mapSphere(reflected), mipLevel).rgb;
+  fresnel *= clamp01(smoothstep(13.5 / 15.0, 1.0, lightmap.y));
 
   if (material.metalID != NO_METAL) {
-    diffuse = vec3(0.0);
+    diffuse *= 1.0 - clamp01(smoothstep(13.5 / 15.0, 1.0, lightmap.y));
   }
 
   color += mix(diffuse, specular, fresnel);
@@ -101,7 +100,7 @@ vec3 getShadedColor(
     clamp01(1.0 - darknessLightFactor * 2.5) *
     0.001;
 
-  return color;
+  return max0(color);
 }
 
 vec3 getShadedColor(

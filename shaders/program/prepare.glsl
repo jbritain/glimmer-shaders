@@ -77,8 +77,8 @@ vec3 raymarchScattering(
 
 void main() {
   #ifdef WORLD_THE_END
-  sunlightColor = vec3(0.8, 0.7, 1.0);
-  skylightColor = vec3(0.5, 0.4, 1.0) * 0.2;
+  sunlightColor = vec3(0.8, 0.7, 1.0) * 0.1;
+  skylightColor = vec3(0.5, 0.4, 1.0) * 0.02;
   return;
   #endif
 
