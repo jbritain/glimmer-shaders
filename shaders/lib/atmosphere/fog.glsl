@@ -19,7 +19,6 @@
 
 vec3 atmosphericFog(vec3 color, vec3 viewPos) {
   vec3 pos = mapAerialPerspectivePos(viewPos);
-  show(pos.z);
   vec4 fog = texture(aerialPerspectiveLUTTex, clamp01(pos));
 
   fog.rgb = mix(fog.rgb, weatherSkylightColor * luminance(fog.rgb), wetness);
@@ -148,7 +147,7 @@ vec3 cloudyFog(vec3 color, vec3 playerPos, float depth, vec3 scatterFactor) {
   scatter *= radiance;
   scatter *= skyMultiplier;
 
-  return color; // * transmittance + scatter;
+  return color * transmittance + scatter;
 }
 
 vec3 defaultFog(vec3 color, vec3 viewPos) {

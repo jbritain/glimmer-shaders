@@ -131,8 +131,6 @@ void main(){
             color.rgb = cloudyFog(color.rgb, mat3(gbufferModelViewInverse) * viewPos, depth, scatterFactor);
             #endif
         #endif
-
-        show(any(isnan(texture(aerialPerspectiveLUTTex, vec3(texcoord, 0.0)))));
         
     }
 

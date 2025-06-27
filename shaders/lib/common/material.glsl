@@ -92,7 +92,7 @@ Material materialFromSpecularMap(vec3 albedo, vec4 specularData) {
 
   #if PBR_MODE == 0
   material.roughness = 1.0;
-  material.f0 = vec3(0.0);
+  material.f0 = vec3(0.04);
   material.metalID = NO_METAL;
   material.porosity = 0.0;
   material.sss = 0.0;
