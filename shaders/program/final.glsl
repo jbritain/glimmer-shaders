@@ -66,19 +66,24 @@ void main() {
   #ifdef DEBUG_ENABLE
   if (hideGUI) {
     color = texture(debugtex, texcoord);
-    beginText(ivec2(gl_FragCoord.xy), ivec2(0, viewHeight));
-    printString((_D,_e,_b,_u,_g,_space,_m,_o,_d,_e,_space,_i,_s,_space,_a,_c,_t,_i,_v,_e));
-    printLine();
-    printString((_F,_r,_a,_m,_e,_colon,_space));
-    printInt(frameCounter);
-    endText(color.rgb);
-  } else {
-    beginText(ivec2(gl_FragCoord.xy), ivec2(0, viewHeight));
-    printString((_D,_e,_b,_u,_g,_space,_m,_o,_d,_e,_space,_i,_s,_space,_a,_c,_t,_i,_v,_e));
-    printLine();
-    printString((_P,_r,_e,_s,_s,_space,_F,_1,_space,_a,_n,_d,_space,_c,_a,_l,_l,_space,_s,_h,_o,_w,_opprn,_clprn));
-    endText(color.rgb);
   }
+
+  beginText(ivec2(gl_FragCoord.xy / 2.0), ivec2(0, viewHeight / 2.0) + ivec2(8, -8));
+  printString((_D,_e,_b,_u,_g,_space,_m,_o,_d,_e,_space,_i,_s,_space,_a,_c,_t,_i,_v,_e));
+  printLine();
+  printString((_F,_r,_a,_m,_e,_colon,_space));
+  printInt(frameCounter);
+  printLine();
+
+  if(!hideGUI){
+    printString((_P,_r,_e,_s,_s,_space,_F,_1,_space,_a,_n,_d,_space,_c,_a,_l,_l,_space,_s,_h,_o,_w,_opprn,_clprn));
+  }
+
+
+
+
+  endText(color.rgb);
+
   #endif
 }
 

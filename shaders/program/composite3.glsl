@@ -40,6 +40,7 @@ in vec2 texcoord;
 #include "/lib/water/waterFog.glsl"
 #include "/lib/atmosphere/fog.glsl"
 #include "/lib/atmosphere/clouds.glsl"
+#include "/lib/water/waterParallax.glsl"
 
 /* RENDERTARGETS: 0 */
 layout(location = 0) out vec4 color;
@@ -102,6 +103,7 @@ void main() {
   #endif
 
   vec3 viewDir = normalize(translucentViewPos);
+  vec3 worldDir = normalize(translucentFeetPlayerPos);
 
   vec3 scatterFactor = texture(colortex4, texcoord).rgb;
 
@@ -109,11 +111,26 @@ void main() {
     Material material = waterMaterial;
 
     #ifndef VANILLA_WATER
-    vec3 worldWaveNormal = waveNormal(
-      translucentFeetPlayerPos.xz + cameraPosition.xz,
-      worldNormal,
+
+    vec3 worldWaveNormal;
+    float heightmapFactor = sqrt(
       sin(PI * 0.5 * clamp01(abs(dot(normal, viewDir))))
     );
+    // if (worldNormal.y > 0.99) {
+    //   // only do parallax for flat water surface
+    //   worldWaveNormal = getWaterParallaxNormal(
+    //     translucentFeetPlayerPos,
+    //     worldNormal,
+    //     interleavedGradientNoise(floor(gl_FragCoord.xy), frameCounter),
+    //     heightmapFactor
+    //   );
+    // } else {
+    worldWaveNormal = waveNormal(
+      translucentFeetPlayerPos.xz + cameraPosition.xz,
+      worldNormal,
+      heightmapFactor
+    );
+    // }
     vec3 waveNormal = mat3(gbufferModelView) * worldWaveNormal;
     #else
     vec3 worldWaveNormal = worldNormal;

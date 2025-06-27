@@ -148,7 +148,7 @@ vec3 cloudyFog(vec3 color, vec3 playerPos, float depth, vec3 scatterFactor) {
   scatter *= radiance;
   scatter *= skyMultiplier;
 
-  return color * transmittance + scatter;
+  return color; // * transmittance + scatter;
 }
 
 vec3 defaultFog(vec3 color, vec3 viewPos) {

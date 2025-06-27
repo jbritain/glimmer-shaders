@@ -145,7 +145,9 @@ void main() {
         atmospherePos,
         -worldSunDir
       ) *
-      moonIrradiance;
+      moonIrradiance *
+      abs(moonPhase - 4) /
+      4.0;
 
     sunlightColor *= smoothstep(0.0, 0.005, worldLightDir.y); // fade out sunlight to stop hard transition between sun and moon
 

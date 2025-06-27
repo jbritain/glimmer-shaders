@@ -88,7 +88,7 @@ void main() {
   ivec3 texelCoord = ivec3(gl_GlobalInvocationID.xyz);
   vec3 coord = vec3(texelCoord) / 32.0;
 
-  coord.z = max(coord.z, 0.01);
+  coord.z = max(coord.z, 1e-6);
 
   vec3 viewPos = unmapAerialPerspectivePos(coord);
 
