@@ -13,8 +13,10 @@ excluded_programs = [
   "setup.csh",
   "setup1.csh",
   "prepare1.csh",
+  "prepare3.csh",
   "composite4.fsh",
-  "composite4.vsh"
+  "composite4.vsh",
+
 ]
 
 

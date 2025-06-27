@@ -52,6 +52,7 @@ void applyDirectionalLightmap(
 
   float skyFactor;
 
+  #ifdef SHADOWS
   if (length(dFdSky) > 1e-6) {
     float NoL = dot(skyDir, mappedNormal);
     float NGoL = dot(skyDir, tbnMatrix[2]);
@@ -61,6 +62,7 @@ void applyDirectionalLightmap(
     float NoL = 0.9 - dot(tbnMatrix[2], mappedNormal);
     lightmap.y -= clamp01(NoL * lightmap.y * (1.0 - sss * 0.5));
   }
+  #endif
 
   lightmap = clamp01(lightmap);
 
