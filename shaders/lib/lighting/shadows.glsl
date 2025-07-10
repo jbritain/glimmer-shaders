@@ -90,7 +90,7 @@ vec3 getShadowing(
     mat3(gbufferModelViewInverse) * faceNormal,
     faceNoL
   );
-  shadowClipPos.xyz += bias;
+  // shadowClipPos.xyz += bias;
 
   vec3 shadowScreenPos = getShadowScreenPos(shadowClipPos);
 
@@ -137,13 +137,14 @@ vec3 getShadowing(
     );
 
     if (faceNoL > 1e-6) {
-      for (int i = 0; i < SHADOW_SAMPLES; i++) {
-        vec3 offset =
-          vec3(vogelDiscSample(i, SHADOW_SAMPLES, noise), 0.0) * sampleRadius;
-        shadow += sampleShadow(shadowScreenPos + offset);
-      }
+      vec2 vsm = texture(shadowcolor1, shadowScreenPos.xy).rg;
 
-      shadow /= float(SHADOW_SAMPLES);
+      float mu = vsm.x;
+      float omegaSquared = vsm.y - pow2(vsm.x);
+
+      shadow = vec3(
+        clamp01(omegaSquared / (omegaSquared + pow2(shadowScreenPos.z - mu)))
+      );
     }
 
   }

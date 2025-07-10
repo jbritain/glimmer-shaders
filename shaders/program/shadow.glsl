@@ -121,8 +121,9 @@ in vec3 feetPlayerPos;
 #include "/lib/water/waterFog.glsl"
 #include "/lib/water/waveNormals.glsl"
 
-/* RENDERTARGETS: 0*/
+/* RENDERTARGETS: 0,1 */
 layout(location = 0) out vec4 color;
+layout(location = 1) out vec2 VSM;
 
 void main() {
   color = texture(gtexture, texcoord) * glcolor;
@@ -163,6 +164,8 @@ void main() {
   }
 
   color.rgb = pow(color.rgb, vec3(2.2));
+
+  VSM = vec2(gl_FragCoord.z, pow2(gl_FragCoord.z));
 }
 
 #endif
