@@ -69,6 +69,7 @@ const bool colortex3Clear = false;
     const int colortex0Format = RGBA16F;
     const int colortex5Format = R8;
 */
+const bool colortex0Clear = false; // only so we can keep mipmaps from the previous frame
 
 #ifdef BLOOM
 /*

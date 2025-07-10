@@ -361,7 +361,6 @@ void main() {
         transmittance
       );
       skyReflection = skyReflection * transmittance + cloudScatter;
-      skyReflection *= skyLightmap;
 
       vec3 shadow = getShadowing(
         translucentFeetPlayerPos,
@@ -394,6 +393,8 @@ void main() {
         vec3(1.0)
       );
       #endif
+
+      skyReflection *= smoothstep(0.1, 1.0, skyLightmap);
 
       reflectedColor = mix(skyReflection, reflectedColor, fadeFactor);
     }
