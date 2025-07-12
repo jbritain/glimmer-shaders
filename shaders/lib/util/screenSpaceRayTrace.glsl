@@ -66,6 +66,8 @@ bool rayIntersects(
   rayPos = viewSpaceToScreenSpace(viewOrigin, projection);
   vec3 rayDir = viewSpaceToScreenSpace(viewOrigin + viewDir, projection);
 
+  float startZ = rayPos.z;
+
   rayDir -= rayPos;
   rayDir = normalize(rayDir);
 
@@ -83,24 +85,15 @@ bool rayIntersects(
 
   for (int i = 0; i < maxSteps * 4; ++i, rayPos += rayStep) {
     if (clamp01(rayPos) != rayPos) return false; // we went offscreen
-
-    // vec3 rayPos2 = rayPos + rayStep * 0.25;
-    // vec3 rayPos3 = rayPos + rayStep * 0.5;
-    // vec3 rayPos4 = rayPos + rayStep * 0.75;
-
     float depth = getDepth(rayPos.xy, depthBuffer); // sample depth at ray position
-    // float depth2 = getDepth(rayPos2.xy, depthBuffer);
-    // float depth3 = getDepth(rayPos3.xy, depthBuffer);
-    // float depth4 = getDepth(rayPos4.xy, depthBuffer);
 
-    int hitIndex = 0;
+    if (abs(depth - startZ) < 1e-5) continue;
 
     intersect =
       depth < rayPos.z &&
       abs(depthLenience - (rayPos.z - depth)) < depthLenience &&
       rayPos.z > handDepth &&
       depth < 1.0;
-    hitIndex = intersect ? 1 : 0;
 
     if (intersect) {
       break;

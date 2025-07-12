@@ -62,13 +62,14 @@ vec3 raymarchScattering(
       rayleighScattering * (rayleighPhaseValue * sunTransmittance + psiMS);
     vec3 mieInScattering =
       mieScattering * (miePhaseValue * sunTransmittance + psiMS);
-    vec3 inScattering = rayleighInScattering + mieInScattering;
+    vec3 inScattering =
+      (rayleighInScattering + mieInScattering) * sunIrradiance;
 
     // Integrated scattering within path segment.
     vec3 scatteringIntegral =
       (inScattering - inScattering * sampleTransmittance) / extinction;
 
-    lum += scatteringIntegral * transmittance * sunIrradiance;
+    lum += scatteringIntegral * transmittance;
 
     transmittance *= sampleTransmittance;
   }
