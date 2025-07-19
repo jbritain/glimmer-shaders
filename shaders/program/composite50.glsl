@@ -43,12 +43,16 @@
     void main() {
         color = texture(colortex0, texcoord);
         #ifdef AUTO_EXPOSURE
-        int maxMipLevel = int(floor(log2(max(viewWidth, viewHeight))));
-        float averageLuminance = textureLod(colortex0, vec2(0.5), maxMipLevel).a;
         
-        averageLuminanceSmooth = mix(averageLuminance, averageLuminanceSmooth, clamp01(exp2(frameTime * -0.01)));
         
-        averageLuminanceSmooth = max(averageLuminanceSmooth, 0.0001);
+        if(gl_FragCoord.xy == vec2(0.5)){
+            int maxMipLevel = int(floor(log2(max(viewWidth, viewHeight))));
+            float averageLuminance = textureLod(colortex0, vec2(0.5), maxMipLevel).a;
+            averageLuminanceSmooth = mix(averageLuminance, averageLuminanceSmooth, clamp01(exp2(frameTime * -1)));
+        
+            averageLuminanceSmooth = max(averageLuminanceSmooth, 0.0001);
+        }
+
 
 
         #ifdef WORLD_OVERWORLD

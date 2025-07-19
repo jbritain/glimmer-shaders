@@ -105,4 +105,7 @@ const bool colortex7Clear = false;
 #ifdef INFINITE_OCEAN
 #endif
 
+#ifdef MOTION_BLUR
+#endif
+
 #endif // COMMON_GLSL

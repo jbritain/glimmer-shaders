@@ -38,6 +38,8 @@
     composite49     : Write luminance for auto exposure
     composite50     : Exposure
 
+    composite51     : Motion blur
+
     composite80-88  : Bloom
     composite89     : Temporal filter
 
