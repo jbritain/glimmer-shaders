@@ -97,11 +97,7 @@ vec3 getShadowing(
 
   vec4 shadowClipPos = getShadowClipPos(feetPlayerPos);
 
-  vec3 bias = getShadowBias(
-    shadowClipPos.xyz,
-    mat3(gbufferModelViewInverse) * worldNormal,
-    faceNoL
-  );
+  vec3 bias = getShadowBias(shadowClipPos.xyz, worldNormal, faceNoL);
   shadowClipPos.xyz += bias;
 
   vec3 shadowScreenPos = getShadowScreenPos(shadowClipPos);
