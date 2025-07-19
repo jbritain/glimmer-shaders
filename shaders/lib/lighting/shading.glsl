@@ -38,7 +38,14 @@ vec3 getShadedColor(
   vec3 scatter;
   vec3 shadow =
     shadowFactor > 1e-6
-      ? getShadowing(feetPlayerPos, faceNormal, lightmap, material, scatter) *
+      ? getShadowing(
+        feetPlayerPos,
+        faceNormal,
+        lightmap,
+        material,
+        ambientOcclusion,
+        scatter
+      ) *
       shadowFactor
       : vec3(0.0);
 
@@ -48,7 +55,7 @@ vec3 getShadedColor(
 
   float ambient = AMBIENT_STRENGTH * 0.0001;
   #ifdef WORLD_THE_NETHER
-  ambient *= 4.0;
+  ambient = max(ambient, 0.00005) *= 4.0;
   #endif
 
   ambient += 2.0 * nightVision;
@@ -83,6 +90,7 @@ vec3 getShadedColor(
   #ifdef ROUGH_SKY_REFLECTIONS
   vec3 specular = textureLod(colortex7, mapSphere(reflected), mipLevel).rgb;
   fresnel *= clamp01(smoothstep(13.5 / 15.0, 1.0, lightmap.y));
+  fresnel *= 1.0 - max0(dot(mappedNormal, -normalize(upPosition)));
 
   if (material.metalID != NO_METAL) {
     diffuse *= 1.0 - clamp01(smoothstep(13.5 / 15.0, 1.0, lightmap.y));

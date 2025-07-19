@@ -5,8 +5,11 @@
 
 #include "/lib/water/waveNormals.glsl"
 
-// this code worked first try
-// the scope of my engineering genius literally knows no bounds
+// the following was a statement I made when I wrote this code for glint probably a year or so again
+//    this code worked first try
+//    the scope of my engineering genius literally knows no bounds
+// it did not work first try in glimmer
+// in fact it still doesn't work
 
 vec3 getWaterParallaxNormal(
   vec3 playerPos,

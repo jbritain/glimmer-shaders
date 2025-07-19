@@ -65,7 +65,8 @@ void main() {
   }
   color.rgb = pow(color.rgb, vec3(2.2));
 
-  color.rgb *= 5.0;
+  color.rgb *= EMISSION_STRENGTH / 64.0;
+
   #ifdef REALLY_FUCKING_GLOWING
   color.rgb *= 2.0;
   #endif

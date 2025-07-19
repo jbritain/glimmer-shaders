@@ -42,6 +42,7 @@ vec3 getShadowing(
   vec3 faceNormal,
   vec2 lightmap,
   Material material,
+  float vanillaAO,
   out vec3 scatter
 ) {
   #ifdef PIXEL_LOCKED_LIGHTING
@@ -80,14 +81,25 @@ vec3 getShadowing(
   }
 
   #ifndef SHADOWS
+  scatter *= 0.5;
   return vec3(fakeShadow) * cloudShadow;
   #else
+
+  vec3 worldNormal = mat3(gbufferModelViewInverse) * faceNormal;
+
+  feetPlayerPos = mix(
+    floor(feetPlayerPos + worldNormal * 0.1 + cameraPositionFract) -
+      cameraPositionFract +
+      vec3(0.5),
+    feetPlayerPos,
+    smoothstep(0.0, 1.0, lightmap.y) * 0.5 + 0.5
+  );
 
   vec4 shadowClipPos = getShadowClipPos(feetPlayerPos);
 
   vec3 bias = getShadowBias(
     shadowClipPos.xyz,
-    mat3(gbufferModelViewInverse) * faceNormal,
+    mat3(gbufferModelViewInverse) * worldNormal,
     faceNoL
   );
   shadowClipPos.xyz += bias;
@@ -101,6 +113,8 @@ vec3 getShadowing(
         (dot(feetPlayerPos.xz, feetPlayerPos.xz) * rcp(pow2(shadowDistance)))
     )
   );
+
+  scatter *= (1.0 - distFade) * 0.5 + 0.5;
 
   vec3 shadow = vec3(0.0);
 

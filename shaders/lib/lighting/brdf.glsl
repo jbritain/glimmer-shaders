@@ -173,7 +173,7 @@ vec3 brdf(
     Rs = vec3(0.0);
   }
 
-  vec3 Rd = material.albedo * (1.0 - F) * clamp01(NoL);
+  vec3 Rd = material.albedo * (1.0 - F) * clamp01(NoL) / PI;
 
   if (material.metalID != NO_METAL) Rd = vec3(0.0);
 

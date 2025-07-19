@@ -47,19 +47,24 @@
         float averageLuminance = textureLod(colortex0, vec2(0.5), maxMipLevel).a;
         
         averageLuminanceSmooth = mix(averageLuminance, averageLuminanceSmooth, clamp01(exp2(frameTime * -0.01)));
+        
         averageLuminanceSmooth = max(averageLuminanceSmooth, 0.0001);
+
+
+        #ifdef WORLD_OVERWORLD
 
         const float dayAverageLuminance = pow(118.0/255.0, 2.2);
         const float nightAverageLuminance = pow(33.0/255.0, 2.2);
+        float targetAverageLuminance = mix(nightAverageLuminance, dayAverageLuminance, clamp01(smoothstep(-0.1, 0.1, worldSunDir.y)));
 
-        #ifdef WORLD_OVERWORLD
-        float targetAverageLuminance = mix(nightAverageLuminance, dayAverageLuminance, smoothstep(-0.1, 0.1, worldSunDir.y));
+        targetAverageLuminance = mix(targetAverageLuminance, targetAverageLuminance * 0.7, wetness);
         
+        // really shitty purkinje
         color.rgb = hsv(color.rgb);
         color.g *= smoothstep(-0.1, 0.1, worldSunDir.y) * 0.3 + 0.7;
         color.rgb = rgb(color.rgb);
         #else
-        float targetAverageLuminance = 10.0;
+        float targetAverageLuminance = 1.0;
         #endif
 
 

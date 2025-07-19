@@ -367,6 +367,7 @@ void main() {
         waveNormal,
         vec2(skyLightmap),
         material,
+        1.0,
         scatter
       );
 

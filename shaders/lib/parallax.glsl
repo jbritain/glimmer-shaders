@@ -70,8 +70,6 @@ vec2 getParallaxTexcoord(
     return texcoord;
   }
 
-  // pos += rayStep * jitter;
-
   depth = getDepth(localToAtlas(pos.xy), dx, dy);
 
   while (depth - pos.z > rcp(255.0)) {
@@ -80,12 +78,13 @@ vec2 getParallaxTexcoord(
     pos += rayStep;
   }
 
+  pos = previousPos;
   depth = getDepth(localToAtlas(pos.xy), dx, dy);
   // binary refinement
   for (int i = 0; i < 6; i++) {
     rayStep /= 2.0;
 
-    pos += rayStep * float(depth - pos.z > rcp(255.0));
+    pos += rayStep * (depth - pos.z > rcp(255.0) ? 1.0 : -1.0);
     depth = getDepth(localToAtlas(pos.xy), dx, dy);
 
     if (depth - pos.z > rcp(255.0)) {

@@ -59,7 +59,7 @@ layout(std430, binding = 1) buffer smoothedData {
 #define weatherSunlightColor mix(sunlightColor, sunlightColor * 0.005, pow(wetness, rcp(5.0)))
 #define weatherSkylightColor mix(skylightColor, sunlightColor * 0.04, pow(wetness, rcp(5.0)))
 
-float skyMultiplier = clamp01(constantMood > 0.9 ? 0.0 : 1.0);
+float skyMultiplier = clamp01(constantMood > 0.9 ? 0.0 : 1.0) * EBS.y;
 
 const bool colortex3Clear = false;
 

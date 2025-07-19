@@ -232,7 +232,7 @@ void main() {
     (renderStage == MC_RENDER_STAGE_TERRAIN_SOLID ||
       renderStage == MC_RENDER_STAGE_TERRAIN_TRANSLUCENT)
   ) {
-    material.emission = luminance(albedo.rgb);
+    material.emission = luminance(albedo.rgb) * emission;
   }
 
   #endif
@@ -300,17 +300,13 @@ void main() {
     ).r
   );
 
-  material.f0 = mix(
-    material.f0,
-    vec3(0.02),
-    rainFactor * (1.0 - material.porosity)
-  );
-  material.roughness = mix(
-    material.roughness,
-    0.0,
-    rainFactor * (1.0 - material.porosity) * 0.8
-  );
-  material.albedo *= 1.0 - 0.5 * rainFactor * material.porosity;
+  rainFactor *= 1.0 - material.porosity;
+
+  rainFactor += step(texture(normals, texcoord).a, 0.5);
+
+  material.f0 = mix(material.f0, vec3(0.02), rainFactor);
+  material.roughness = mix(material.roughness, 0.0, rainFactor);
+  material.albedo *= 1.0 - 0.5 * rainFactor;
   #endif
 
   parallaxShadow = mix(parallaxShadow, 1.0, material.sss * 0.5);

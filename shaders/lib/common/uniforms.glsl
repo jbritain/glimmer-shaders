@@ -82,6 +82,7 @@ uniform vec3 relativeEyePosition;
 
 uniform vec3 sunPosition;
 uniform vec3 shadowLightPosition;
+uniform vec3 upPosition;
 
 uniform vec4 entityColor;
 uniform vec4 lightningBoltPosition;

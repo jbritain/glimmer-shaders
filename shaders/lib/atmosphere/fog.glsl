@@ -23,7 +23,7 @@ vec3 atmosphericFog(vec3 color, vec3 viewPos) {
 
   fog.rgb = mix(fog.rgb, weatherSkylightColor * luminance(fog.rgb), wetness);
 
-  return color * fog.a + fog.rgb;
+  return color * fog.a + fog.rgb * skyMultiplier;
 }
 
 #define FOG_DENSITY 0.01
@@ -174,7 +174,7 @@ vec3 defaultFog(vec3 color, vec3 viewPos) {
 
   color.rgb = mix(
     color.rgb,
-    pow(fogColor, vec3(2.2)),
+    pow(fogColor, vec3(2.2)) * 0.01,
     clamp01(length(viewPos) / end)
   );
 
