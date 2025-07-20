@@ -295,6 +295,7 @@ void main() {
   float rainFactor =
     clamp01(smoothstep(13.5 / 15.0, 14.5 / 15.0, lightmap.y)) *
     wetness *
+    biomeCanRainSmooth *
     clamp01(dot(tbnMatrix[2], gbufferModelView[1].xyz)) *
     mix(1.5, 1.0, texture(normals, texcoord).a);
 

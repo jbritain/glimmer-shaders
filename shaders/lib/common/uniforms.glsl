@@ -191,4 +191,9 @@ uniform sampler3D floodfillVoxelMapTex1;
 uniform sampler3D floodfillVoxelMapTex2;
 #endif
 
+uniform float biomeCanRainSmooth;
+uniform float biomeCanPrecipitateSmooth;
+uniform float biomeCanSnowSmooth;
+uniform float humiditySmooth;
+
 #endif // UNIFORMS_GLSL
