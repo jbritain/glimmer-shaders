@@ -118,10 +118,10 @@ float getCloudDensity(vec2 pos, bool highSamples) {
 vec3 getCloudShadow(vec3 origin) {
   origin += cameraPosition;
 
-  vec3 point;
+  vec3 point = vec3(0.0);
   if (!rayPlaneIntersection(origin, worldLightDir, CLOUD_PLANE_ALTITUDE, point))
     return vec3(1.0);
-  vec3 exitPoint;
+  vec3 exitPoint = vec3(0.0);
   rayPlaneIntersection(
     origin,
     worldLightDir,

@@ -226,6 +226,7 @@ void main() {
   Material material = materialFromSpecularMap(albedo.rgb, specularData);
   material.ao = texture(normals, texcoord).z;
   #ifndef MC_TEXTURE_FORMAT_LAB_PBR
+  material.f0 = vec3(0.04);
   if (
     material.emission == 0.0 &&
     emission > 0.0 &&
@@ -248,7 +249,10 @@ void main() {
     material.roughness = 0.0;
   }
 
-  if (materialIsMaxEmission(materialID)) {
+  if (
+    materialIsMaxEmission(materialID) ||
+    renderStage == MC_RENDER_STAGE_ENTITIES && entityId == 1
+  ) {
     material.emission = 1.0;
   }
 
