@@ -26,8 +26,6 @@ void main(){
         return;
     }
 
-
-
     vec2 lightScreenPos = viewSpaceToScreenSpace(shadowLightPosition).xy;
     
 
@@ -38,7 +36,7 @@ void main(){
         #ifdef SHADOWS
             vec4 shadowClipPos = getShadowClipPos(worldLightDir);
             vec3 shadowScreenPos = getShadowScreenPos(shadowClipPos);
-            sunVisibility = texture(shadowtex1HW, shadowScreenPos).r;
+            sunVisibility = texture(shadowtex1HW, shadowScreenPos).r * skyMultiplier;
         #else
             sunVisibility = EB.y;
         #endif

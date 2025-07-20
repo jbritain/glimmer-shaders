@@ -143,6 +143,12 @@ void main() {
 
   float parallaxShadow = 1.0;
   #ifdef PARALLAX
+
+  float pomJitter = interleavedGradientNoise(
+    floor(gl_FragCoord.xy),
+    frameCounter
+  );
+
   vec3 parallaxPos;
   vec2 dx = dFdx(texcoord);
   vec2 dy = dFdy(texcoord);
@@ -160,14 +166,11 @@ void main() {
       parallaxPos,
       dx,
       dy,
-      0.0
+      pomJitter
     );
 
     #ifdef PARALLAX_SHADOW
-    float pomJitter = interleavedGradientNoise(
-      floor(gl_FragCoord.xy),
-      frameCounter
-    );
+
     parallaxShadow = getParallaxShadow(
       parallaxPos,
       tbnMatrix,
