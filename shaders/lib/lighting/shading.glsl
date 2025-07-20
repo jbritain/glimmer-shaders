@@ -53,9 +53,9 @@ vec3 getShadedColor(
     brdf(material, mappedNormal, faceNormal, viewPos, shadow, scatter) *
     weatherSunlightColor;
 
-  float ambient = AMBIENT_STRENGTH * 0.0001;
+  float ambient = AMBIENT_STRENGTH * 0.1;
   #ifdef WORLD_THE_NETHER
-  ambient = max(ambient, 0.00005) *= 4.0;
+  ambient *= 4.0;
   #endif
 
   ambient += 2.0 * nightVision;
