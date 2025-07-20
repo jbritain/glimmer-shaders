@@ -114,7 +114,7 @@ vec3 getSky(vec3 color, vec3 rayDir, bool includeSun) {
 
   lum *= skyMultiplier;
 
-  return lum;
+  return lum * (1.0 - darknessLightFactor * 2.5);
 }
 
 vec3 getSky(vec3 rayDir, bool includeSun) {

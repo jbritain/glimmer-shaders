@@ -63,6 +63,8 @@ void main() {
 
   color = postProcess(color);
 
+  color.rgb = mix(color.rgb, color.rgb * vec3(0.0, 1.0, 0.0), nightVision);
+
   #ifdef DEBUG_ENABLE
   if (hideGUI) {
     color = texture(debugtex, texcoord);

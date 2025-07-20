@@ -58,7 +58,9 @@ vec3 getShadedColor(
   ambient *= 4.0;
   #endif
 
-  ambient += 2.0 * nightVision;
+  ambient += nightVision * 0.1;
+
+  ambient *= 1.0 - darknessLightFactor * 2.5;
 
   vec3 diffuse =
     material.albedo *

@@ -152,6 +152,8 @@ void main() {
 
     sunlightColor *= smoothstep(0.0, 0.005, worldLightDir.y); // fade out sunlight to stop hard transition between sun and moon
 
+    sunlightColor *= 1.0 - darknessLightFactor * 2.5;
+
     skylightColor = vec3(0.0);
   }
 }
