@@ -101,6 +101,7 @@ const float sunPathRotation = -40.0; // [-90.0 -85.0 -80.0 -75.0 -70.0 -65.0 -60
 #define DH_AO_SAMPLES 32 // [4 8 16 32 64]
 
 // #define PARALLAX
+// #define SMOOTH_PARALLAX
 #define PARALLAX_DISTANCE 32.0 // [4.0 8.0 16.0 32.0 64.0 128.0 256.0 512.0 1024.0]
 #define PARALLAX_DISTANCE_CURVE 0.8
 #define PARALLAX_SAMPLES 32 // [4 8 16 32 64 128]
