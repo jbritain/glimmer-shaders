@@ -104,7 +104,15 @@ float getCloudDensity(vec2 pos, bool highSamples) {
 
   density /= weight;
 
-  density = smoothstep(mix(0.47, 0.99, exp(-5*humiditySmooth)), 1.0, density);
+  density = smoothstep(
+    mix(
+      0.47,
+      0.99,
+      exp(-5 * humiditySmooth) - wetness * 0.2 - thunderStrength * 0.3
+    ),
+    1.0,
+    density
+  );
 
   density *= 0.005;
 
