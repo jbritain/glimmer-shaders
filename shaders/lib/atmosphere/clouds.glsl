@@ -104,17 +104,29 @@ float getCloudDensity(vec2 pos, bool highSamples) {
 
   density /= weight;
 
+  float coverageFactor = 
+  #ifdef BIOME_CLOUDS
+  exp(-5 * humiditySmooth)
+  #else
+  1.0 - (pow2(CLOUD_COVERAGE) * 0.5 + 0.5)
+  #endif
+  ;
+
   density = smoothstep(
     mix(
+      #ifdef BIOME_CLOUDS
       0.47,
+      #else
+      0.2,
+      #endif
       0.99,
-      exp(-5 * humiditySmooth) - wetness * 0.2 - thunderStrength * 0.3
+      max0(coverageFactor - wetness * 0.2 - thunderStrength * 0.3)
     ),
     1.0,
     density
   );
 
-  density *= 0.005;
+  density *= 0.02 * CLOUD_DENSITY;
 
   return density;
 }

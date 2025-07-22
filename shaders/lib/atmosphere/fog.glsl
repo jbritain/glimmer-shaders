@@ -26,9 +26,9 @@ vec3 atmosphericFog(vec3 color, vec3 viewPos) {
   return color * fog.a + fog.rgb * skyMultiplier;
 }
 
-#define FOG_DENSITY 0.01
+#define FOG_DENSITY 0.02
 // above this height there is no fog
-#define HEIGHT_FOG_TOP_HEIGHT mix(150, CLOUD_PLANE_ALTITUDE, wetness)
+#define HEIGHT_FOG_TOP_HEIGHT mix(100, CLOUD_PLANE_ALTITUDE, wetness)
 // below this height there is a constant fog density
 #define HEIGHT_FOG_MIDDLE_HEIGHT 30
 #define HEIGHT_FOG_BOTTOM_HEIGHT 0

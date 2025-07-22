@@ -50,7 +50,7 @@ void main() {
     color.rgb,
     bloom,
     clamp01(
-      0.01 * BLOOM_STRENGTH + rain * 0.1 + wetness * 0.1 * EBS.y + blindness + 0.1 * float(isEyeInWater == 1)
+      0.01 * BLOOM_STRENGTH + rain * 0.1 + wetness * 0.1 * EBS.y * biomeCanRainSmooth + blindness + 0.1 * float(isEyeInWater == 1)
     )
   );
   color.rgb *= 1.0 - 0.8 * blindness;

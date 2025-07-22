@@ -81,7 +81,7 @@ vec3 getShadowing(
   }
 
   #ifndef SHADOWS
-  scatter *= 0.5;
+  scatter *= 0.2;
   return vec3(fakeShadow) * cloudShadow;
   #else
 
