@@ -59,7 +59,11 @@ layout(std430, binding = 1) buffer smoothedData {
 #define weatherSunlightColor mix(sunlightColor, sunlightColor * 0.005, pow(wetness, rcp(5.0)))
 #define weatherSkylightColor mix(skylightColor, sunlightColor * 0.04, pow(wetness, rcp(5.0)))
 
+#ifdef CAVE_SKY_DARKENING
 float skyMultiplier = clamp01(constantMood > 0.9 ? 0.0 : 1.0) * EBS.y;
+#else
+float skyMultiplier = 1.0;
+#endif
 
 const bool colortex3Clear = false;
 
@@ -86,7 +90,7 @@ const bool colortex0Clear = false; // only so we can keep mipmaps from the previ
 const vec4 colortex4ClearColor = vec4(1.0, 1.0, 1.0, 1.0);
 
 /*
-    const int colortex4Format = RGB8;
+    const int colortex4Format = R11F_G11F_B10F;
 */
 
 #ifdef DISTANT_HORIZONS

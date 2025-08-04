@@ -187,6 +187,12 @@ option.SSR_JITTER.comment=When enabled, §eSSR §freflections will appear noisy,
 option.REFRACTION=Refraction
 option.REFRACTION.comment=Bends light as it enters or leaves water. §aMinimal performance impact.
 
+option.WATER_SCATTERING_MOD=Water Scattering Strength
+option.WATER_SCATTERING_MOD.comment=Controls how much light scatters in the water, making it appear more foggy. §9No performance impact!
+
+option.WATER_ABSORPTION_MOD=Water Absorption Strength
+option.WATER_ABSORPTION_MOD.comment=Controls how much light water absorbs, which causes the blue tint on things which are viewed through it. §9No performance impact!
+
 option.CAUSTICS=Caustics
 option.CAUSTICS.comment=Emulates how light refracting through water appears to cast a shadow. Requires §eshadows §fto be enabled, and will look bad at lower §eshadow quality §fsettings. §aMinimal performance impact.
 
@@ -243,6 +249,9 @@ option.PARALLAX_SHADOW.comment=Allows parallax to cast a shadow. §6Moderate per
 
 option.PARALLAX_SHADOW_SAMPLES=Self-Shadow Samples
 option.PARALLAX_SHADOW_SAMPLES.comment=How many samples should be taken when computing parallax shadows. §6Moderate performance impact. 
+
+option.CAVE_SKY_DARKENING=Cave Sky Darkening
+option.CAVE_SKY_DARKENING.comment=Makes the sky dark and reduces fog when the game thinks you are underground. §9No performance impact!
 
 option.tonemap=Tonemap Operator
 option.tonemap.comment=How the final colour is graded. §2Imperceptible performance impact.

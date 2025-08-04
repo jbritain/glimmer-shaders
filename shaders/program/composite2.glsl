@@ -126,15 +126,13 @@ void main() {
     // if(isEyeInWater == 1){
     //     scattering += vec3(texture(shadowtex1HW, screenSamplePos).r) * cloudShadow;
     // } else {
-    scattering += vec3(texture(shadowtex0HW, screenSamplePos).r) * cloudShadow;
+    scattering += vec3(texture(shadowtex0HW, screenSamplePos).r) * cloudShadow * length(sampleDelta);
     // }
 
     samplePos += sampleDelta;
     samplePosShadow += sampleDeltaShadow;
   }
-
-  scattering /= GODRAYS_SAMPLES;
-  // scattering /= distance(a, b);
+  scattering /= shadowDistance;
   // scattering /= (shadowDistance / 2.0);
   // scattering = pow2(scattering);
   #endif

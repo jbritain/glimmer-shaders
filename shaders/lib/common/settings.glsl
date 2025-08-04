@@ -62,6 +62,8 @@ const float sunPathRotation = -40.0; // [-90.0 -85.0 -80.0 -75.0 -70.0 -65.0 -60
 #define FXAA_SUBPIXEL 0.5 //[0.00 0.25 0.50 0.75 1.00]
 #define FXAA_EDGE_SENSITIVITY 1 //[0 1 2]
 
+#define CAVE_SKY_DARKENING
+
 #define CLOUDS
 // #define BLOCKY_CLOUDS
 // #define ANIME_CLOUDS
@@ -92,6 +94,8 @@ const float sunPathRotation = -40.0; // [-90.0 -85.0 -80.0 -75.0 -70.0 -65.0 -60
 #define REFRACTION
 // #define CAUSTICS
 // #define VANILLA_WATER
+#define WATER_SCATTERING_MOD 1.0 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 2.0]
+#define WATER_ABSORPTION_MOD 1.0 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 2.0]
 
 // #define INFINITE_OCEAN
 #define SEA_LEVEL 63 // [-60 4 31 63]

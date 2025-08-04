@@ -112,7 +112,7 @@ vec3 getSky(vec3 color, vec3 rayDir, bool includeSun) {
   lum *= mix(0.9, 1.1, interleavedGradientNoise(floor(gl_FragCoord.xy))); // anti banding
   #endif
 
-  lum *= skyMultiplier;
+  lum *= mix(pow3(max0(dot(rayDir, vec3(0.0, 1.0, 0.0)))), 1.0, skyMultiplier);
 
   return lum * (1.0 - darknessLightFactor * 2.5);
 }
