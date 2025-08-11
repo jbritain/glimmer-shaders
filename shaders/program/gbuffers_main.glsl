@@ -53,13 +53,13 @@ void main() {
 
   viewPos = (gl_ModelViewMatrix * gl_Vertex).xyz;
 
-  if (
-    renderStage == MC_RENDER_STAGE_HAND_SOLID ||
-    renderStage == MC_RENDER_STAGE_HAND_TRANSLUCENT
-  ) {
-    gl_Position = ftransform();
-    return;
-  }
+  // if (
+  //   renderStage == MC_RENDER_STAGE_HAND_SOLID ||
+  //   renderStage == MC_RENDER_STAGE_HAND_TRANSLUCENT
+  // ) {
+  //   gl_Position = ftransform();
+  //   return;
+  // }
 
   vec3 feetPlayerPos = (gbufferModelViewInverse * vec4(viewPos, 1.0)).xyz;
 
@@ -153,21 +153,21 @@ void main() {
   vec2 dx = dFdx(texcoord);
   vec2 dy = dFdy(texcoord);
   vec2 texcoord = texcoord;
-  if (
-    !materialIsLava(materialID) &&
-    (renderStage == MC_RENDER_STAGE_TERRAIN_SOLID ||
-      renderStage == MC_RENDER_STAGE_ENTITIES ||
-      renderStage == MC_RENDER_STAGE_TERRAIN_TRANSLUCENT)
-  ) {
-    texcoord = getParallaxTexcoord(
-      texcoord,
-      viewPos,
-      tbnMatrix,
-      parallaxPos,
-      dx,
-      dy,
-      pomJitter
-    );
+  // if (
+  //   !materialIsLava(materialID) &&
+  //   (renderStage == MC_RENDER_STAGE_TERRAIN_SOLID ||
+  //     renderStage == MC_RENDER_STAGE_ENTITIES ||
+  //     renderStage == MC_RENDER_STAGE_TERRAIN_TRANSLUCENT)
+  // ) {
+  //   texcoord = getParallaxTexcoord(
+  //     texcoord,
+  //     viewPos,
+  //     tbnMatrix,
+  //     parallaxPos,
+  //     dx,
+  //     dy,
+  //     pomJitter
+  //   );
 
     #ifdef PARALLAX_SHADOW
 
@@ -217,9 +217,9 @@ void main() {
   #endif
 
   vec3 mappedNormal = getMappedNormal(texcoord);
-  if (renderStage == MC_RENDER_STAGE_ENTITIES) {
-    vec3 mappedNormal = texture(normals, texcoord).rgb;
-  }
+  // if (renderStage == MC_RENDER_STAGE_ENTITIES) {
+  //   vec3 mappedNormal = texture(normals, texcoord).rgb;
+  // }
 
   #if PBR_MODE == 0
   vec4 specularData = vec4(0.0);
@@ -230,14 +230,14 @@ void main() {
   material.ao = texture(normals, texcoord).z;
   #ifndef MC_TEXTURE_FORMAT_LAB_PBR
   material.f0 = vec3(0.04);
-  if (
-    material.emission == 0.0 &&
-    emission > 0.0 &&
-    (renderStage == MC_RENDER_STAGE_TERRAIN_SOLID ||
-      renderStage == MC_RENDER_STAGE_TERRAIN_TRANSLUCENT)
-  ) {
-    material.emission = luminance(albedo.rgb) * emission;
-  }
+  // if (
+  //   material.emission == 0.0 &&
+  //   emission > 0.0 &&
+  //   (renderStage == MC_RENDER_STAGE_TERRAIN_SOLID ||
+  //     renderStage == MC_RENDER_STAGE_TERRAIN_TRANSLUCENT)
+  // ) {
+  //   material.emission = luminance(albedo.rgb) * emission;
+  // }
 
   #endif
 
@@ -252,12 +252,12 @@ void main() {
     material.roughness = 0.0;
   }
 
-  if (
-    materialIsMaxEmission(materialID) ||
-    renderStage == MC_RENDER_STAGE_ENTITIES && entityId == 1
-  ) {
-    material.emission = 1.0;
-  }
+  // if (
+  //   materialIsMaxEmission(materialID) ||
+  //   renderStage == MC_RENDER_STAGE_ENTITIES && entityId == 1
+  // ) {
+  //   material.emission = 1.0;
+  // }
 
   #ifdef DIRECTIONAL_LIGHTMAPS
   applyDirectionalLightmap(
@@ -292,14 +292,14 @@ void main() {
   #endif
 
   #ifdef RAIN_PUDDLES
-  float rainFactor =
+  float rainFactor_ =
     clamp01(smoothstep(13.5 / 15.0, 14.5 / 15.0, lightmap.y)) *
     wetness *
     biomeCanRainSmooth *
     clamp01(dot(tbnMatrix[2], gbufferModelView[1].xyz)) *
     mix(1.5, 1.0, texture(normals, texcoord).a);
 
-  rainFactor *= smoothstep(
+  rainFactor_ *= smoothstep(
     0.6,
     0.7,
     texture(
@@ -308,13 +308,13 @@ void main() {
     ).r
   );
 
-  rainFactor *= 1.0 - material.porosity;
+  rainFactor_ *= 1.0 - material.porosity;
 
-  rainFactor += step(texture(normals, texcoord).a, 0.5);
+  rainFactor_ += step(texture(normals, texcoord).a, 0.5);
 
-  material.f0 = mix(material.f0, vec3(0.02), rainFactor);
-  material.roughness = mix(material.roughness, 0.0, rainFactor);
-  material.albedo *= 1.0 - 0.5 * rainFactor;
+  material.f0 = mix(material.f0, vec3(0.02), rainFactor_);
+  material.roughness = mix(material.roughness, 0.0, rainFactor_);
+  material.albedo *= 1.0 - 0.5 * rainFactor_;
   #endif
 
   parallaxShadow = mix(parallaxShadow, 1.0, material.sss * 0.5);
@@ -354,13 +354,13 @@ void main() {
         blocklightColor = texture(floodfillVoxelMapTex1, voxelPosInterp).rgb;
       }
 
-      if (
-        luminance(blocklightColor) < 0.2 &&
-        lightmap.x > 0.5 &&
-        renderStage == MC_RENDER_STAGE_PARTICLES
-      ) {
-        material.emission = lightmap.x;
-      }
+      // if (
+      //   luminance(blocklightColor) < 0.2 &&
+      //   lightmap.x > 0.5 &&
+      //   renderStage == MC_RENDER_STAGE_PARTICLES
+      // ) {
+      //   material.emission = lightmap.x;
+      // }
 
       #ifdef DYNAMIC_HANDLIGHT
       float dist = length(playerPos);

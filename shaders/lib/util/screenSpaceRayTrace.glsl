@@ -18,7 +18,7 @@
 #define BINARY_REFINEMENTS 6
 #define BINARY_REDUCTION 0.5
 
-const float handDepth = MC_HAND_DEPTH * 0.5 + 0.5;
+//const float handDepth = 0.52;//MC_HAND_DEPTH * 0.5 + 0.5;
 
 float getDepth(vec2 pos, sampler2D depthBuffer) {
   return texelFetch(depthBuffer, ivec2(pos * vec2(viewWidth, viewHeight)), 0).r;
@@ -92,7 +92,7 @@ bool rayIntersects(
     intersect =
       depth < rayPos.z &&
       abs(depthLenience - (rayPos.z - depth)) < depthLenience &&
-      rayPos.z > handDepth &&
+      rayPos.z > 0.56 &&
       depth < 1.0;
 
     if (intersect) {

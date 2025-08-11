@@ -52,44 +52,44 @@ void main() {
   ivec3 voxelPos = mapVoxelPos(
     feetPlayerPos + vec3(at_midBlock.xyz * rcp(64.0))
   );
-  if (
-    isWithinVoxelBounds(voxelPos) &&
-    gl_VertexID % 4 == 0 &&
-    (renderStage == MC_RENDER_STAGE_TERRAIN_SOLID ||
-      // renderStage == MC_RENDER_STAGE_BLOCK_ENTITIES ||
-      renderStage == MC_RENDER_STAGE_TERRAIN_TRANSLUCENT)
-  ) {
-    VoxelData data;
-    vec4 averageTextureData =
-      textureLod(gtexture, mc_midTexCoord, 4) * gl_Color;
+  // if (
+  //   isWithinVoxelBounds(voxelPos) &&
+  //   gl_VertexID % 4 == 0 &&
+  //   (renderStage == MC_RENDER_STAGE_TERRAIN_SOLID ||
+  //     // renderStage == MC_RENDER_STAGE_BLOCK_ENTITIES ||
+  //     renderStage == MC_RENDER_STAGE_TERRAIN_TRANSLUCENT)
+  // ) {
+  //   VoxelData data;
+  //   vec4 averageTextureData =
+  //     textureLod(gtexture, mc_midTexCoord, 4) * gl_Color;
 
-    data.color = getBlocklightColor(materialID);
-    if (data.color == vec3(0.0)) {
-      data.color = pow(averageTextureData.rgb, vec3(2.2));
-    }
-    data.opacity = pow(averageTextureData.a, rcp(3));
-    data.emission = pow2(at_midBlock.w / 15.0);
+  //   data.color = getBlocklightColor(materialID);
+  //   if (data.color == vec3(0.0)) {
+  //     data.color = pow(averageTextureData.rgb, vec3(2.2));
+  //   }
+  //   data.opacity = pow(averageTextureData.a, rcp(3));
+  //   data.emission = pow2(at_midBlock.w / 15.0);
 
-    // data.emission = textureLod(specular, mc_midTexCoord, 4).a;
-    // if(data.emission == 1.0){
-    //     data.emission = 0.0;
-    // }
+  //   // data.emission = textureLod(specular, mc_midTexCoord, 4).a;
+  //   // if(data.emission == 1.0){
+  //   //     data.emission = 0.0;
+  //   // }
 
-    if (materialIsTintedGlass(materialID)) {
-      data.opacity = 1.0;
-    }
+  //   if (materialIsTintedGlass(materialID)) {
+  //     data.opacity = 1.0;
+  //   }
 
-    if (materialIsLetsLightThrough(materialID)) {
-      data.opacity = 0.0;
-    }
+  //   if (materialIsLetsLightThrough(materialID)) {
+  //     data.opacity = 0.0;
+  //   }
 
-    if (materialIsWater(materialID)) {
-      data.color = 1.0 - WATER_SCATTERING;
-    }
+  //   if (materialIsWater(materialID)) {
+  //     data.color = 1.0 - WATER_SCATTERING;
+  //   }
 
-    uint encodedVoxelData = encodeVoxelData(data);
-    imageAtomicMax(voxelMap, voxelPos, encodedVoxelData);
-  }
+  //   uint encodedVoxelData = encodeVoxelData(data);
+  //   imageAtomicMax(voxelMap, voxelPos, encodedVoxelData);
+  // }
   #endif
 
   #ifdef WAVING_BLOCKS

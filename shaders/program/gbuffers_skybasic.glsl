@@ -38,7 +38,7 @@ in vec4 glcolor;
 layout(location = 0) out vec4 color;
 
 void main() {
-  if (renderStage == MC_RENDER_STAGE_STARS) {
+  if (false) {
     color = glcolor;
   } else {
     color = vec4(0.0);

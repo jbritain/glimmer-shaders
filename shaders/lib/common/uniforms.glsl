@@ -121,7 +121,7 @@ uniform sampler2D depthtex2;
 uniform sampler2D normals;
 uniform sampler2D noisetex;
 uniform sampler2D specular;
-uniform sampler2D gtexture;
+// uniform sampler2D gtexture;
 
 uniform ivec3 cameraPositionInt;
 uniform ivec3 previousCameraPositionInt;
