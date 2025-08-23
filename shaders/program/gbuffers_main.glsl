@@ -189,8 +189,15 @@ void main() {
   lightmap.y = 1.0;
   #endif
 
-  float ambientOcclusion = glcolor.a;
+  float ambientOcclusion = 1.0;
+
   vec4 albedo = texture(gtexture, texcoord) * vec4(glcolor.rgb, 1.0);
+
+  if (renderStage == MC_RENDER_STAGE_PARTICLES) {
+    albedo.a *= glcolor.a;
+  } else {
+    ambientOcclusion = glcolor.a;
+  }
 
   if (albedo.a < alphaTestRef) {
     discard;

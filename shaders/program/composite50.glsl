@@ -59,13 +59,13 @@
 
         const float dayAverageLuminance = pow(118.0/255.0, 2.2);
         const float nightAverageLuminance = pow(33.0/255.0, 2.2);
-        float targetAverageLuminance = mix(nightAverageLuminance, dayAverageLuminance, clamp01(smoothstep(-0.1, 0.1, worldSunDir.y)));
+        float targetAverageLuminance = mix(nightAverageLuminance, dayAverageLuminance, clamp01(smoothstep(-0.1, 0.1, worldSunDir.y) + (1.0 - EBS.y)));
 
         targetAverageLuminance = mix(targetAverageLuminance, targetAverageLuminance * 0.7, wetness);
         
         // really shitty purkinje
         color.rgb = hsv(color.rgb);
-        color.g *= smoothstep(-0.1, 0.1, worldSunDir.y) * 0.3 + 0.7;
+        color.g *= clamp01(smoothstep(-0.1, 0.1, worldSunDir.y) + (1.0 - EBS.y)) * 0.3 + 0.7;
         color.rgb = rgb(color.rgb);
         #else
         float targetAverageLuminance = 1.0;
