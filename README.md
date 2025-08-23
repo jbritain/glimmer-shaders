@@ -18,6 +18,7 @@ Glimmer is a Minecraft shaderpack designed to be simple and performant without l
 - Procedural 2D clouds.
 - Temporal filtering to reduce noise at low sample counts.
 - Bloom.
+- Support for the [ColorWheel](https://djefrey.github.io/colorwheel/) mod.
 
 ## Compatibility
 - OpenGL 4.3+ - macOS is *not* supported, nor is the Raspberry Pi. Most modern GPUs (integrated or dedicated) should work fine.

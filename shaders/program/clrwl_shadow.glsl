@@ -29,9 +29,7 @@ in vec4 at_tangent;
 in vec4 at_midBlock;
 in vec2 mc_midTexCoord;
 
-out vec2 lmcoord;
 out vec2 texcoord;
-out vec4 glcolor;
 out vec3 normal;
 flat out int materialID;
 out vec3 feetPlayerPos;
@@ -39,8 +37,6 @@ out vec3 shadowViewPos;
 
 void main() {
   texcoord = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy;
-  lmcoord = (gl_TextureMatrix[1] * gl_MultiTexCoord1).xy;
-  glcolor = gl_Color;
   normal = gl_NormalMatrix * gl_Normal; // shadow view space
 
   materialID = int(mc_Entity.x + 0.5);
@@ -61,7 +57,7 @@ void main() {
   ) {
     VoxelData data;
     vec4 averageTextureData =
-      textureLod(gtexture, mc_midTexCoord, 4) * gl_Color;
+      textureLod(gtexture, mc_midTexCoord.xy, 4) * gl_Color;
 
     data.color = getBlocklightColor(materialID);
     if (data.color == vec3(0.0)) {
@@ -110,7 +106,6 @@ void main() {
 #ifdef fsh
 in vec2 lmcoord;
 in vec2 texcoord;
-in vec4 glcolor;
 in mat3 tbnMatrix;
 in vec3 normal;
 flat in int materialID;
@@ -126,42 +121,12 @@ in vec3 feetPlayerPos;
 layout(location = 0) out vec4 color;
 
 void main() {
-  color = texture(gtexture, texcoord) * glcolor;
+  color = texture(gtexture, texcoord);
+  vec2 lmcoord;
+  float ao;
+  vec4 overlayColor;
 
-  if (color.a < alphaTestRef) {
-    discard;
-  }
-
-  const float avgWaterExtinction = sumVec3(waterExtinction) / 3.0;
-
-  if (materialIsWater(materialID)) {
-    float opaqueDepth = texture(
-      shadowtex1,
-      gl_FragCoord.xy / shadowMapResolution
-    ).r;
-    float opaqueDistance = getShadowDistanceZ(opaqueDepth); // how far away from the sun is the opaque fragment shadowed by the water?
-    float waterDepth = abs(shadowViewPos.z - opaqueDistance);
-
-    color.rgb = 1.0 - waterExtinction;
-    color.a = 1.0 - exp(-avgWaterExtinction * waterDepth);
-
-    #ifdef CAUSTICS
-    vec3 waveNormal = waveNormal(
-      feetPlayerPos.xz + cameraPosition.xz,
-      vec3(0.0, 1.0, 0.0),
-      1.0
-    );
-    vec3 refracted = refract(-worldLightDir, waveNormal, 1.0 / 1.33);
-
-    vec3 oldPos = feetPlayerPos;
-    vec3 newPos = feetPlayerPos + refracted * waterDepth;
-
-    float oldArea = length(dFdx(oldPos)) * length(dFdy(oldPos));
-    float newArea = length(dFdx(newPos)) * length(dFdy(newPos));
-    color.a *= 1.0 - pow2(oldArea / newArea);
-    #endif
-
-  }
+  clrwl_computeFragment(color, color, lmcoord, ao, overlayColor);
 }
 
 #endif
