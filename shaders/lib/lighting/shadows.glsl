@@ -80,7 +80,7 @@ vec3 getShadowing(
     // scatter *= mix(henyeyGreenstein(0.0, 0.0), henyeyGreenstein(0.7, VoL), 0.3);
   }
 
-  #ifndef SHADOWS
+  #if ( ! defined SHADOWS ) || ( defined GBUFFERS_DISTANT )
   scatter *= 0.2;
   return vec3(fakeShadow) * cloudShadow;
   #else
