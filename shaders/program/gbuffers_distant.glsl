@@ -163,6 +163,8 @@ void main() {
     color.a = albedo.a;
   }
 
+  dhBlend(viewPos);
+
   outData1.xy = encodeNormal(mat3(gbufferModelViewInverse) * normal);
   outData1.z = lightmap.y;
   outData1.a = clamp01(float(materialID - 1000) * rcp(255.0));

@@ -103,6 +103,7 @@ void main() {
 #include "/lib/voxel/voxelMap.glsl"
 #include "/lib/voxel/voxelData.glsl"
 #include "/lib/ipbr/blocklightColors.glsl"
+#include "/lib/dhBlend.glsl"
 
 in vec2 lmcoord;
 in vec2 texcoord;
@@ -415,6 +416,10 @@ void main() {
 
     color.a = albedo.a;
   }
+
+  #ifdef DISTANT_HORIZONS
+  dhBlend(viewPos);
+  #endif
 
   outData1.xy = encodeNormal(mat3(gbufferModelViewInverse) * mappedNormal);
   outData1.z = lightmap.y;
