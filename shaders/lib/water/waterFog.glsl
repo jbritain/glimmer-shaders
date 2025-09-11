@@ -20,7 +20,7 @@
   (vec3(0.01, 0.05, 0.03) * 0.05 * WATER_SCATTERING_MOD)
 #define WATER_DENSITY 1.0
 
-const vec3 waterExtinction = clamp01(WATER_ABSORPTION + WATER_SCATTERING);
+vec3 waterExtinction = clamp01(WATER_ABSORPTION + WATER_SCATTERING);
 
 vec3 waterFog(vec3 color, vec3 a, vec3 b, float dhFactor, vec3 scatterFactor) {
   if (dhFactor > 0.0) {
