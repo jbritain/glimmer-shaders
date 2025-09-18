@@ -51,7 +51,7 @@
 
         #ifdef WORLD_OVERWORLD
 
-        const float dayAverageLuminance = pow(118.0/255.0, 2.2);
+        const float dayAverageLuminance = pow(140.0/255.0, 2.2);
         const float nightAverageLuminance = pow(33.0/255.0, 2.2);
         float targetAverageLuminance = mix(nightAverageLuminance, dayAverageLuminance, clamp01(smoothstep(-0.1, 0.1, worldSunDir.y) + (1.0 - EBS.y)));
 

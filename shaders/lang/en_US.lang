@@ -253,6 +253,9 @@ option.PARALLAX_SHADOW_SAMPLES.comment=How many samples should be taken when com
 option.CAVE_SKY_DARKENING=Cave Sky Darkening
 option.CAVE_SKY_DARKENING.comment=Makes the sky dark and reduces fog when the game thinks you are underground. §9No performance impact!
 
+option.MOTION_BLUR=Motion Blur
+option.MOTION_BLUR.comment=Blurs things when the camera moves. This can make the game feel smoother at low framerates. §aMinimal performance impact.
+
 option.tonemap=Tonemap Operator
 option.tonemap.comment=How the final colour is graded. §2Imperceptible performance impact.
 value.tonemap.agxTonemap=AGX (Punchy)

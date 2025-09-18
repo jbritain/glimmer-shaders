@@ -104,6 +104,7 @@ void main() {
 #include "/lib/voxel/voxelData.glsl"
 #include "/lib/ipbr/blocklightColors.glsl"
 #include "/lib/dhBlend.glsl"
+#include "/lib/endPortal.glsl"
 
 in vec2 lmcoord;
 in vec2 texcoord;
@@ -415,6 +416,18 @@ void main() {
     }
 
     color.a = albedo.a;
+  }
+
+  if (materialIsEndPortal(blockEntityId)) {
+    color.rgb = endPortal(
+      normalize(playerPos - gbufferModelViewInverse[3].xyz),
+      mat3(gbufferModelViewInverse) * tbnMatrix[2],
+      playerPos - gbufferModelViewInverse[3].xyz
+    );
+  }
+
+  if (renderStage == MC_RENDER_STAGE_OUTLINE) {
+    color.rgb = vec3(0.0);
   }
 
   #ifdef DISTANT_HORIZONS

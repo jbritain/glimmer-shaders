@@ -43,7 +43,10 @@ void main() {
   glcolor = gl_Color;
   normal = gl_NormalMatrix * gl_Normal; // shadow view space
 
-  materialID = int(mc_Entity.x + 0.5);
+  materialID =
+    renderStage == MC_RENDER_STAGE_BLOCK_ENTITIES
+      ? blockEntityId
+      : int(mc_Entity.x + 0.5);
 
   shadowViewPos = (gl_ModelViewMatrix * gl_Vertex).xyz;
   feetPlayerPos = (shadowModelViewInverse * vec4(shadowViewPos, 1.0)).xyz;
@@ -57,18 +60,24 @@ void main() {
     gl_VertexID % 4 == 0 &&
     (renderStage == MC_RENDER_STAGE_TERRAIN_SOLID ||
       // renderStage == MC_RENDER_STAGE_BLOCK_ENTITIES ||
-      renderStage == MC_RENDER_STAGE_TERRAIN_TRANSLUCENT)
+      renderStage == MC_RENDER_STAGE_TERRAIN_TRANSLUCENT ||
+      renderStage == MC_RENDER_STAGE_BLOCK_ENTITIES)
   ) {
     VoxelData data;
     vec4 averageTextureData =
       textureLod(gtexture, mc_midTexCoord, 4) * gl_Color;
 
     data.color = getBlocklightColor(materialID);
+
     if (data.color == vec3(0.0)) {
       data.color = pow(averageTextureData.rgb, vec3(2.2));
     }
     data.opacity = pow(averageTextureData.a, rcp(3));
     data.emission = pow2(at_midBlock.w / 15.0);
+
+    if (materialIsEndPortal(blockEntityId)) {
+      data.emission = 1.0;
+    }
 
     // data.emission = textureLod(specular, mc_midTexCoord, 4).a;
     // if(data.emission == 1.0){

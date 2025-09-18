@@ -78,16 +78,30 @@ vec3 fullSway(vec3 pos) {
 }
 
 vec3 getSway(int materialID, vec3 pos, vec3 midblock) {
+  // push plants away from feet
+  if (materialSwayType(materialID).value == Sway_SHORT.value) {
+    pos -= eyePosition;
+    vec2 blockCentre = pos.xz + midblock.xz / 64;
+    pos.xz +=
+      normalize(blockCentre) *
+      ((1.0 - clamp01(length(pos.xz))) *
+        (1.0 - smoothstep(-32.0, 32.0, midblock.y)) +
+        float(materialSwayType(materialID).value == Sway_UPPER.value)) *
+      smoothstep(-2.0, 0.0, pos.y);
+    pos += eyePosition;
+  }
+
   switch (materialSwayType(materialID).value) {
     case 1:
       return upperSway(pos, midblock);
     case 2:
-      return lowerSway(pos, midblock);
     case 3:
-      return hangingSway(pos, midblock);
+      return lowerSway(pos, midblock);
     case 4:
-      return floatingSway(pos);
+      return hangingSway(pos, midblock);
     case 5:
+      return floatingSway(pos);
+    case 6:
       return fullSway(pos);
     default:
       return pos;

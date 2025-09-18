@@ -135,16 +135,18 @@ vec3 getShadowing(
 
     // thanks to sixthsurge and fozy style for suggesting I use the albedo as a factor for the transmittance
     // and quirkyplague for inspiring me to fix it because it was ass for a good while
-    scatter *= mix(
-      vec3(
-        exp(
-          -blockerDistance *
-            rcp(material.albedo / max(0.1, sqrt(luminance(material.albedo))))
-        )
-      ),
-      vec3(1.0),
-      distFade
-    );
+    scatter *=
+      mix(
+        vec3(
+          exp(
+            -blockerDistance *
+              rcp(material.albedo / max(0.1, sqrt(luminance(material.albedo))))
+          )
+        ),
+        vec3(1.0),
+        distFade
+      ) *
+      EBS.y;
 
     if (faceNoL > 1e-6) {
       for (int i = 0; i < SHADOW_SAMPLES; i++) {

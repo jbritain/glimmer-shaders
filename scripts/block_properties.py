@@ -23,7 +23,8 @@ def main():
 		'leaves': Bool(tags['minecraft:leaves']),
 		'sway': Enum({
 			'upper': tags['sway/upper'],
-			'lower': tags['sway/lower'] + tags['sway/short'],
+			'lower': tags['sway/lower'],
+			'short': tags['sway/short'],
 			'hanging': tags['sway/hanging'],
 			'floating': tags['sway/floating'],
 			'full': tags['sway/full']
@@ -41,7 +42,9 @@ def main():
 
 		'max_emission': Bool(blocks('minecraft:nether_portal', 'minecraft:lava')),
 
-		'lets_light_through': Bool(blocks('minecraft:barrier', 'minecraft:beacon', 'minecraft:azalea', 'minecraft:flowering_azalea', 'minecraft:bamboo', 'minecraft:bell', 'minecraft:sculk_sensor', 'minecraft:calibrated_sculk_sensor', 'minecraft:campfire', 'minecraft:soul_campfire', 'minecraft:cauldron', 'minecraft:chest', 'minecraft:chorus_flower', 'minecraft:chorus_plant', 'minecraft:conduit', 'minecraft:daylight_detector', 'minecraft:decorated_pot', 'minecraft:dirt_path', 'minecraft:dragon_egg', 'minecraft:enchanting_table', 'minecraft:end_portal_frame', 'minecraft:end_rod', 'minecraft:ender_chest', 'minecraft:farmland', 'minecraft:flower_pot', 'minecraft:grindstone', 'minecraft:hopper', 'minecraft:iron_bars', 'minecraft:ladder', 'minecraft:lectern', 'minecraft:lightning_rod', 'minecraft:lily_pad', 'minecraft:moss_carpet', 'minecraft:piston:extended=true', 'minecraft:piston_head', 'minecraft:sticky_piston:extended=true', 'minecraft:snow', 'minecraft:stonecutter', 'minecraft:trapped_chest') + tags['minecraft:anvil'] + tags['minecraft:wool_carpets'] + tags['minecraft:doors'] + tags['minecraft:fence_gates'] + tags['minecraft:fences'] + tags['minecraft:trapdoors'] + tags['minecraft:stairs'] + tags['minecraft:slabs'])
+		'lets_light_through': Bool(blocks('minecraft:barrier', 'minecraft:beacon', 'minecraft:azalea', 'minecraft:flowering_azalea', 'minecraft:bamboo', 'minecraft:bell', 'minecraft:sculk_sensor', 'minecraft:calibrated_sculk_sensor', 'minecraft:campfire', 'minecraft:soul_campfire', 'minecraft:cauldron', 'minecraft:chest', 'minecraft:chorus_flower', 'minecraft:chorus_plant', 'minecraft:conduit', 'minecraft:daylight_detector', 'minecraft:decorated_pot', 'minecraft:dirt_path', 'minecraft:dragon_egg', 'minecraft:enchanting_table', 'minecraft:end_portal_frame', 'minecraft:end_rod', 'minecraft:ender_chest', 'minecraft:farmland', 'minecraft:flower_pot', 'minecraft:grindstone', 'minecraft:hopper', 'minecraft:iron_bars', 'minecraft:ladder', 'minecraft:lectern', 'minecraft:lightning_rod', 'minecraft:lily_pad', 'minecraft:moss_carpet', 'minecraft:piston:extended=true', 'minecraft:piston_head', 'minecraft:sticky_piston:extended=true', 'minecraft:snow', 'minecraft:stonecutter', 'minecraft:trapped_chest') + tags['minecraft:anvil'] + tags['minecraft:wool_carpets'] + tags['minecraft:doors'] + tags['minecraft:fence_gates'] + tags['minecraft:fences'] + tags['minecraft:trapdoors'] + tags['minecraft:stairs'] + tags['minecraft:slabs']),
+
+		'end_portal': Bool(blocks('minecraft:end_portal', 'minecraft:end_gateway')),
 	},
 	MappingConfig(
 		start_index=1001,

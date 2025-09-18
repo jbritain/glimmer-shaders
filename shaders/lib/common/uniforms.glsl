@@ -79,6 +79,7 @@ uniform float fogEnd;
 uniform vec3 previousCameraPosition;
 uniform vec3 skyColor;
 uniform vec3 relativeEyePosition;
+uniform vec3 eyePosition;
 
 uniform vec3 sunPosition;
 uniform vec3 shadowLightPosition;

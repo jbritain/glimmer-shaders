@@ -53,7 +53,7 @@ void main(){
     sunVisibility *= (1.0 - wetness);
 
 
-    sunVisibilitySmooth = mix(sunVisibility, sunVisibilitySmooth, clamp01(exp2(frameTime * -10.0)));
+    sunVisibilitySmooth = mix(sunVisibility, sunVisibilitySmooth, clamp01(exp2(frameTime * -1.0)));
 }
 
 #endif

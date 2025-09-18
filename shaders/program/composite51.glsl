@@ -35,9 +35,10 @@ layout(location = 0) out vec4 color;
 
 void main() {
   float depth = texture(depthtex0, texcoord).r;
+  color = texture(colortex0, texcoord);
   if (depth < MC_HAND_DEPTH * 0.5 + 0.5) {
     // hand
-    color = texture(colortex0, texcoord);
+
     return;
   }
 
@@ -50,34 +51,35 @@ void main() {
   previousPos = (gbufferPreviousModelView * vec4(previousPos, 1.0)).xyz; // previous view space
   vec4 previousClipPos = gbufferProjection * vec4(previousPos, 1.0);
 
-  color = vec4(0.0);
-
   float jitter = interleavedGradientNoise(floor(gl_FragCoord.xy), frameCounter);
 
-  // sample along line between previous position and current position
-  // cursed af syntax for tracking sample count
+  vec4 velocity = previousClipPos - clipPos;
+
+  // sample along line along the velocity
   int i;
-  for (i = 0; i < 8; ) {
+  float weight = 1.0;
+
+  for (i = 0; i < 8; i++) {
     vec4 samplePos = mix(
-      clipPos,
-      previousClipPos,
+      clipPos - velocity / 2,
+      clipPos + velocity / 2,
       clamp01((float(i) + (jitter * 2.0 - 1.0)) / 8.0)
     );
-
     vec3 sampleCoord = samplePos.xyz / samplePos.w * 0.5 + 0.5;
 
-    if (clamp01(sampleCoord.xy) != sampleCoord.xy) {
-      break;
-    }
+    float sampleDepth = texture(depthtex0, sampleCoord.xy).r;
+    if (sampleDepth < MC_HAND_DEPTH * 0.5 + 0.5) continue;
 
-    color += texture(colortex0, sampleCoord.xy);
-    i++;
-  }
-  color /= float(i);
+    float sampleWeight =
+      1.0 -
+      smoothstep(0.9, 1.0, maxVec2(abs(sampleCoord - 0.5)) * 2) *
+        float(sampleDepth > MC_HAND_DEPTH * 0.5 + 0.5);
 
-  if (i == 0) {
-    color = texture(colortex0, texcoord);
+    color += texture(colortex0, sampleCoord.xy) * sampleWeight;
+    weight += sampleWeight;
   }
+  color /= weight;
+
 }
 
 #endif
