@@ -3,4 +3,4 @@
 #define vsh
 #define WORLD_THE_NETHER
 
-#include "/program/composite49.glsl"
+#include "/program/c49_computeAutoExposure.glsl"

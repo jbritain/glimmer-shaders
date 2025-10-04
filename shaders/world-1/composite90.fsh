@@ -3,4 +3,4 @@
 #define fsh
 #define WORLD_THE_NETHER
 
-#include "/program/composite90.glsl"
+#include "/program/c90_FXAA.glsl"

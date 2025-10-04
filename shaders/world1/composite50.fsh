@@ -3,4 +3,4 @@
 #define fsh
 #define WORLD_THE_END
 
-#include "/program/composite50.glsl"
+#include "/program/c50_applyAutoExposure.glsl"

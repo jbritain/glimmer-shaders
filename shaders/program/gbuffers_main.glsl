@@ -105,6 +105,7 @@ void main() {
 #include "/lib/ipbr/blocklightColors.glsl"
 #include "/lib/dhBlend.glsl"
 #include "/lib/endPortal.glsl"
+#include "/lib/water/puddles.glsl"
 
 in vec2 lmcoord;
 in vec2 texcoord;
@@ -115,6 +116,10 @@ in vec3 viewPos;
 in float emission;
 in vec3 midblock;
 in vec2 midtexcoord;
+
+#ifdef CAUSTICS
+const bool shadowtex1Mipmap = true;
+#endif
 
 #ifdef PARALLAX
 flat in vec2 singleTexSize;
@@ -209,6 +214,11 @@ void main() {
 
   albedo.rgb = pow(albedo.rgb, vec3(2.2));
 
+  #ifdef GBUFFERS_HAND
+  atomicMax(encodedHeldLightColor, encodeHeldLightColor(albedo.rgb));
+  // encodedHeldLightColor = 1;
+  #endif
+
   #ifdef PATCHY_LAVA
   if (materialIsLava(materialID)) {
     vec3 worldPos = playerPos + cameraPosition;
@@ -268,6 +278,15 @@ void main() {
     material.emission = 1.0;
   }
 
+  applyPuddles(
+    material,
+    texture(normals, texcoord).a,
+    playerPos + cameraPosition,
+    mappedNormal,
+    tbnMatrix[2],
+    lightmap.y
+  );
+
   #ifdef DIRECTIONAL_LIGHTMAPS
   applyDirectionalLightmap(
     lightmap,
@@ -295,35 +314,6 @@ void main() {
 
   lightmap.x = max(lightmap.x, falloff);
 
-  // #ifdef GBUFFERS_HAND
-  // atomicMax(encodedHeldLightColor, floatBitsToUint(pack4x8F(vec4(hsv(albedo.rgb).gbr, 0.0))));
-  // #endif
-  #endif
-
-  #ifdef RAIN_PUDDLES
-  float rainFactor =
-    clamp01(smoothstep(13.5 / 15.0, 14.5 / 15.0, lightmap.y)) *
-    wetness *
-    biomeCanRainSmooth *
-    clamp01(dot(tbnMatrix[2], gbufferModelView[1].xyz)) *
-    mix(1.5, 1.0, texture(normals, texcoord).a);
-
-  rainFactor *= smoothstep(
-    0.6,
-    0.7,
-    texture(
-      noisetex,
-      mod((playerPos.xz + cameraPosition.xz) / 2.0, 64.0) / 64.0
-    ).r
-  );
-
-  rainFactor *= 1.0 - material.porosity;
-
-  rainFactor += step(texture(normals, texcoord).a, 0.5);
-
-  material.f0 = mix(material.f0, vec3(0.02), rainFactor);
-  material.roughness = mix(material.roughness, 0.0, rainFactor);
-  material.albedo *= 1.0 - 0.5 * rainFactor;
   #endif
 
   parallaxShadow = mix(parallaxShadow, 1.0, material.sss * 0.5);

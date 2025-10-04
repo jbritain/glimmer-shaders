@@ -430,6 +430,8 @@ void main() {
       );
     }
   }
+
+  show(texture(shadowcolor1, texcoord).r == MATERIAL_WATER);
 }
 
 #endif

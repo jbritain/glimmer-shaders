@@ -3,4 +3,4 @@
 #define fsh
 #define WORLD_OVERWORLD
 
-#include "/program/deferred.glsl"
+#include "/program/d0_sky.glsl"

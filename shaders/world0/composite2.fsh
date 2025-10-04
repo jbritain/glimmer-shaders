@@ -3,4 +3,4 @@
 #define fsh
 #define WORLD_OVERWORLD
 
-#include "/program/composite2.glsl"
+#include "/program/c2_godrays.glsl"

@@ -3,4 +3,4 @@
 #define fsh
 #define WORLD_OVERWORLD
 
-#include "/program/composite49.glsl"
+#include "/program/c49_computeAutoExposure.glsl"

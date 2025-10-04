@@ -79,6 +79,9 @@ void main() {
     printString((_P,_r,_e,_s,_s,_space,_F,_1,_space,_a,_n,_d,_space,_c,_a,_l,_l,_space,_s,_h,_o,_w,_opprn,_clprn));
   }
 
+  printLine();
+  printInt(int(encodedHeldLightColor));
+
 
 
 

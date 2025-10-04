@@ -136,7 +136,6 @@ uniform sampler2DShadow shadowtex0HW;
 
 uniform sampler2D shadowcolor0;
 uniform sampler2D shadowcolor1;
-uniform sampler2D shadowcolor2;
 
 uniform sampler2D sunTransmittanceLUTTex;
 uniform sampler2D multipleScatteringLUTTex;
@@ -145,7 +144,7 @@ uniform sampler3D aerialPerspectiveLUTTex;
 
 uniform sampler2D perlinNoiseTex;
 uniform sampler2D blueNoiseTex;
-uniform sampler2D turbulentNoiseTex;
+uniform sampler2D causticsTex;
 
 #ifdef DISTANT_HORIZONS
 uniform int dhRenderDistance;

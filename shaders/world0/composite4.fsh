@@ -3,4 +3,4 @@
 #define fsh
 #define WORLD_OVERWORLD
 
-#include "/program/composite4.glsl"
+#include "/program/c4_fog.glsl"

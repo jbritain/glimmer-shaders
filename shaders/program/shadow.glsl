@@ -131,10 +131,12 @@ in vec3 feetPlayerPos;
 #include "/lib/water/waterFog.glsl"
 #include "/lib/water/waveNormals.glsl"
 
-/* RENDERTARGETS: 0*/
+/* RENDERTARGETS: 0,1 */
 layout(location = 0) out vec4 color;
+layout(location = 1) out float waterMask;
 
 void main() {
+  waterMask = 0.0;
   color = texture(gtexture, texcoord) * glcolor;
 
   if (color.a < alphaTestRef) {
@@ -144,6 +146,7 @@ void main() {
   const float avgWaterExtinction = sumVec3(waterExtinction) / 3.0;
 
   if (materialIsWater(materialID)) {
+    waterMask = 1.0;
     float opaqueDepth = texture(
       shadowtex1,
       gl_FragCoord.xy / shadowMapResolution
@@ -153,23 +156,6 @@ void main() {
 
     color.rgb = 1.0 - waterExtinction;
     color.a = 1.0 - exp(-avgWaterExtinction * waterDepth);
-
-    #ifdef CAUSTICS
-    vec3 waveNormal = waveNormal(
-      feetPlayerPos.xz + cameraPosition.xz,
-      vec3(0.0, 1.0, 0.0),
-      1.0
-    );
-    vec3 refracted = refract(-worldLightDir, waveNormal, 1.0 / 1.33);
-
-    vec3 oldPos = feetPlayerPos;
-    vec3 newPos = feetPlayerPos + refracted * waterDepth;
-
-    float oldArea = length(dFdx(oldPos)) * length(dFdy(oldPos));
-    float newArea = length(dFdx(newPos)) * length(dFdy(newPos));
-    color.a *= 1.0 - pow2(oldArea / newArea);
-    #endif
-
   }
 }
 

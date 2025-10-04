@@ -3,4 +3,4 @@
 #define vsh
 #define WORLD_OVERWORLD
 
-#include "/program/composite3.glsl"
+#include "/program/c3_translucents.glsl"

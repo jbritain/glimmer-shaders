@@ -3,4 +3,4 @@
 #define vsh
 #define WORLD_THE_END
 
-#include "/program/deferred.glsl"
+#include "/program/d0_sky.glsl"

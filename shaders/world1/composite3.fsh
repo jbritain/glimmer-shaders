@@ -3,4 +3,4 @@
 #define fsh
 #define WORLD_THE_END
 
-#include "/program/composite3.glsl"
+#include "/program/c3_translucents.glsl"

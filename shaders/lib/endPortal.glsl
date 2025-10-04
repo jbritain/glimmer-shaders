@@ -47,8 +47,6 @@ vec3 endPortal(vec3 dir, vec3 normal, vec3 playerPos) {
       exp(-length(pos.xz - cameraPosition.xz + playerPos.xz) * 0.2);
   }
 
-  // col
-
   col *= vec3(0.2, 0.1, 1.0) * 10.0;
 
   return col;

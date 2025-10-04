@@ -3,4 +3,4 @@
 #define csh
 #define WORLD_THE_NETHER
 
-#include "/program/composite4.glsl"
+#include "/program/c4_fog.glsl"

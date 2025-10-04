@@ -44,5 +44,6 @@ void main() {
   vec3 scatter = getClouds(vec3(0.0), dir, transmittance);
   color = color * transmittance + scatter;
   color = cloudyFog(color, dir * far, 1.0, vec3(1.0));
+
 }
 #endif

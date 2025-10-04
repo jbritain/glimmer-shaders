@@ -53,7 +53,7 @@ void main() {
 
   float jitter = interleavedGradientNoise(floor(gl_FragCoord.xy), frameCounter);
 
-  vec4 velocity = previousClipPos - clipPos;
+  vec4 velocity = clipPos - previousClipPos;
 
   // sample along line along the velocity
   int i;

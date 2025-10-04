@@ -155,6 +155,21 @@ vec3 lottesTonemap(vec3 x) {
   return pow(pow(x, a) / (pow(x, a * d) * b + c), vec3(rcp(2.2)));
 }
 
-#define tonemap lottesTonemap // [lottesTonemap agxTonemap jodieReinhardTonemap uncharted2FilmicTonemap hejlBurgessTonemap ACESTonemap]
+uniform sampler3D tonyMcMapfaceTex;
+// https://github.com/h3r2tic/tony-mc-mapface/
+vec3 tonyMcMapface(vec3 stimulus) {
+  stimulus *= 3.0;
+
+  // Apply a non-linear transform that the LUT is encoded with.
+  vec3 encoded = stimulus / (stimulus + 1.0);
+
+  // Align the encoded range to texel centers.
+  const float LUT_DIMS = 48.0;
+  vec3 coord = encoded * ((LUT_DIMS - 1.0) / LUT_DIMS) + 0.5 / LUT_DIMS;
+
+  return texture(tonyMcMapfaceTex, coord).rgb;
+}
+
+#define tonemap tonyMcMapface // [lottesTonemap agxTonemap jodieReinhardTonemap uncharted2FilmicTonemap hejlBurgessTonemap ACESTonemap tonyMcMapface]
 
 #endif // TONEMAP_GLSL

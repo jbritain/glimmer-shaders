@@ -166,9 +166,6 @@ void main() {
 
   lightmap.x = max(lightmap.x, falloff);
 
-  // #ifdef GBUFFERS_HAND
-  // atomicMax(encodedHeldLightColor, floatBitsToUint(pack4x8F(vec4(hsv(albedo.rgb).gbr, 0.0))));
-  // #endif
   #endif
 
   #ifdef RAIN_PUDDLES

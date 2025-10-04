@@ -37,6 +37,19 @@ vec3 sampleShadow(vec3 shadowScreenPos) {
   return mix(shadowColor * opaqueShadow, vec3(1.0), transparentShadow);
 }
 
+float getCaustics(vec3 pos) {
+  vec2 causticCoord = fract(
+    pos.xz / 4.0 + vec2(frameTimeCounter * 0.1, frameTimeCounter * 0.1)
+  );
+  float caust1 = texture(causticsTex, causticCoord).r;
+
+  causticCoord = fract(pos.xz / 4.0 - vec2(frameTimeCounter * 0.1, 0.0));
+
+  float caust2 = texture(causticsTex, causticCoord).g;
+
+  return pow2(clamp01(min(caust1, caust2) * 4.0));
+}
+
 vec3 getShadowing(
   vec3 feetPlayerPos,
   vec3 faceNormal,
@@ -87,7 +100,7 @@ vec3 getShadowing(
 
   vec3 worldNormal = mat3(gbufferModelViewInverse) * faceNormal;
 
-  feetPlayerPos = mix(
+  vec3 lightleakFeetPlayerPos = mix(
     floor(feetPlayerPos + worldNormal * 0.1 + cameraPositionFract) -
       cameraPositionFract +
       vec3(0.5),
@@ -95,7 +108,7 @@ vec3 getShadowing(
     smoothstep(0.0, 1.0, lightmap.y) * 0.5 + 0.5
   );
 
-  vec4 shadowClipPos = getShadowClipPos(feetPlayerPos);
+  vec4 shadowClipPos = getShadowClipPos(lightleakFeetPlayerPos);
 
   vec3 bias = getShadowBias(shadowClipPos.xyz, worldNormal, faceNoL);
   shadowClipPos.xyz += bias;
@@ -157,6 +170,24 @@ vec3 getShadowing(
 
       shadow /= float(SHADOW_SAMPLES);
     }
+
+    #ifdef CAUSTICS
+    if (
+      // water mask
+      textureLod(shadowcolor1, shadowScreenPos.xy, 2).r > 0.0 &&
+      maxVec3(shadow) < 1.0
+    ) {
+      vec3 causticsSamplePos =
+        feetPlayerPos + cameraPosition + worldLightDir * blockerDistance;
+      float caustics = getCaustics(causticsSamplePos);
+      caustics = mix(
+        caustics,
+        pow3(caustics),
+        clamp01(blockerDepthDifference * 4)
+      );
+      shadow *= caustics;
+    }
+    #endif
 
   }
 

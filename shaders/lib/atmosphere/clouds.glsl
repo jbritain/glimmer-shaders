@@ -78,7 +78,9 @@ float getCloudDensity(vec2 pos, bool highSamples) {
 
   pos = pos / 100000;
 
+  #ifndef BLOCKY_CLOUDS
   pos += curl(pos * 0.9 - vec2(worldTimeCounter * 0.0001, 0.0)) / 5000.0;
+  #endif
 
   for (int i = 0; i < 16; i++) {
     float sampleWeight = exp2(-float(i));

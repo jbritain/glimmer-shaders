@@ -74,4 +74,12 @@ vec3 decodeNormal(vec2 f) {
 }
 // <----------------------------------------------------------
 
+uint encodeHeldLightColor(vec3 col) {
+  return floatBitsToUint(pack4x8F(vec4(hsv(col).brg, 0.0)));
+}
+
+vec3 decodeHeldLightColor(uint enc) {
+  return rgb(unpack4x8F(uintBitsToFloat(enc)).grb);
+}
+
 #endif

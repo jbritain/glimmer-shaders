@@ -3,4 +3,4 @@
 #define fsh
 #define WORLD_THE_NETHER
 
-#include "/program/composite51.glsl"
+#include "/program/c51_motionBlur.glsl"

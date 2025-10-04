@@ -3,4 +3,4 @@
 #define fsh
 #define WORLD_THE_NETHER
 
-#include "/program/deferred.glsl"
+#include "/program/d0_sky.glsl"

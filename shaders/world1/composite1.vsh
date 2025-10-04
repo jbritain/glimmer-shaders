@@ -3,4 +3,4 @@
 #define vsh
 #define WORLD_THE_END
 
-#include "/program/composite1.glsl"
+#include "/program/c1_godraysVisibility.glsl"
