@@ -47,7 +47,7 @@ float getCaustics(vec3 pos) {
 
   float caust2 = texture(causticsTex, causticCoord).g;
 
-  return pow2(clamp01(min(caust1, caust2) * 4.0));
+  return clamp01(min(caust1, caust2) * 2.0) * 4.0;
 }
 
 vec3 getShadowing(
