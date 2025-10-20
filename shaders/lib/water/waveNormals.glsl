@@ -5,9 +5,9 @@
 // https://www.shadertoy.com/view/MdXyzX
 // https://opensource.org/license/mit
 
-#define DRAG_MULT 0.38 // changes how much waves pull on the water
+#define DRAG_MULT 0.2 // changes how much waves pull on the water
 #define WAVE_E 0.1
-#define WAVE_DEPTH 0.5 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
+#define WAVE_DEPTH 0.3 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
 
 // Calculates wave value and its derivative,
 // for the wave direction, position in space, wave frequency and time

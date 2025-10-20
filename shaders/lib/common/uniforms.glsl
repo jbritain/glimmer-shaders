@@ -59,7 +59,6 @@ uniform float thunderStrength;
 uniform float screenBrightness;
 uniform float viewHeight;
 uniform float viewWidth;
-vec2 resolution = vec2(viewWidth, viewHeight);
 uniform float wetness;
 uniform float sunAngle;
 uniform float playerMood;
@@ -68,9 +67,6 @@ uniform float constantMood;
 uniform ivec2 atlasSize;
 uniform ivec2 eyeBrightness;
 uniform ivec2 eyeBrightnessSmooth;
-
-vec2 EB = vec2(eyeBrightness) / 240.0;
-vec2 EBS = vec2(eyeBrightnessSmooth) / 240.0;
 
 uniform vec3 cameraPosition;
 uniform vec3 fogColor;
@@ -146,9 +142,8 @@ uniform sampler2D perlinNoiseTex;
 uniform sampler2D blueNoiseTex;
 uniform sampler2D causticsTex;
 
-#ifdef DISTANT_HORIZONS
+#if defined DISTANT_HORIZONS || defined VOXY
 uniform int dhRenderDistance;
-uniform float dhFarPlane;
 
 uniform mat4 dhProjection;
 uniform mat4 dhProjectionInverse;

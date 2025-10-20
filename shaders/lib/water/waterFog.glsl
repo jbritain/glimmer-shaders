@@ -22,6 +22,10 @@
 vec3 waterExtinction = clamp01(WATER_ABSORPTION + WATER_SCATTERING);
 
 vec3 waterFog(vec3 color, vec3 a, vec3 b, float dhFactor, vec3 scatterFactor) {
+  if (distance(a, b) < 0.01) {
+    return color;
+  }
+
   if (dhFactor > 0.0) {
     vec3 sunTransmittance = exp(-waterExtinction * WATER_DENSITY * dhFactor);
     color.rgb *= sunTransmittance;

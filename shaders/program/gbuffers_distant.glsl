@@ -61,7 +61,6 @@ layout(location = 0) out vec4 color;
 layout(location = 1) out vec4 outData1;
 
 void main() {
-  vec3 playerPos = (gbufferModelViewInverse * vec4(viewPos, 1.0)).xyz;
   if (length(viewPos) < far - 16) {
     discard;
     return;
@@ -88,8 +87,8 @@ void main() {
     materialID = 0;
   }
 
-  vec3 feetPlayerPos = (gbufferModelViewInverse * vec4(viewPos, 1.0)).xyz;
-  vec3 worldPos = feetPlayerPos + cameraPosition;
+  vec3 playerPos = (gbufferModelViewInverse * vec4(viewPos, 1.0)).xyz;
+  vec3 worldPos = playerPos + cameraPosition;
   vec3 noisePos = mod(worldPos * 4.0, 64.0);
   vec3 worldNormal = mat3(gbufferModelViewInverse) * normal;
   ivec2 noiseCoord;

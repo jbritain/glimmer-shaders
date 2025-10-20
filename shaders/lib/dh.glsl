@@ -17,7 +17,7 @@
 
 bool dhMask = false;
 
-#ifdef DISTANT_HORIZONS
+#if defined DISTANT_HORIZONS || defined VOXY
 
 int convertDHMaterialIDs(int id) {
   switch (id) {

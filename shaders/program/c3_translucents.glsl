@@ -93,6 +93,7 @@ void main() {
       translucentViewPos = (gbufferModelView *
         vec4(translucentFeetPlayerPos, 1.0)).xyz;
       opaqueFeetPlayerPos = translucentFeetPlayerPos * 2.0;
+
       opaqueViewPos = translucentViewPos * 2.0;
       normal = mat3(gbufferModelView) * vec3(0.0, 1.0, 0.0);
       worldNormal = vec3(0.0, 1.0, 0.0);
@@ -116,21 +117,21 @@ void main() {
     float heightmapFactor = sqrt(
       sin(PI * 0.5 * clamp01(abs(dot(normal, viewDir))))
     );
-    // if (worldNormal.y > 0.99) {
-    //   // only do parallax for flat water surface
-    //   worldWaveNormal = getWaterParallaxNormal(
-    //     translucentFeetPlayerPos,
-    //     worldNormal,
-    //     interleavedGradientNoise(floor(gl_FragCoord.xy), frameCounter),
-    //     heightmapFactor
-    //   );
-    // } else {
-    worldWaveNormal = waveNormal(
-      translucentFeetPlayerPos.xz + cameraPosition.xz,
-      worldNormal,
-      heightmapFactor
-    );
-    // }
+    if (worldNormal.y > 0.99) {
+      // only do parallax for flat water surface
+      worldWaveNormal = getWaterParallaxNormal(
+        translucentFeetPlayerPos,
+        worldNormal,
+        blueNoise(texcoord, frameCounter).r,
+        heightmapFactor
+      );
+    } else {
+      worldWaveNormal = waveNormal(
+        translucentFeetPlayerPos.xz + cameraPosition.xz,
+        worldNormal,
+        heightmapFactor
+      );
+    }
     vec3 waveNormal = mat3(gbufferModelView) * worldWaveNormal;
     #else
     vec3 worldWaveNormal = worldNormal;
@@ -161,8 +162,10 @@ void main() {
       vec3(refractedPos.xy, refractedDepth)
     );
 
-    if (texture(depthtex0, refractedPos.xy).r == 1.0) {
+    if (refractedDepth == 1.0) {
+      bool oldDhMask = dhMask;
       dhOverride(refractedDepth, refractedViewPos, true);
+      dhMask = oldDhMask;
     } else {
       dhMask = false;
     }
@@ -269,7 +272,7 @@ void main() {
 
     bool reflectionHit = doReflections;
 
-    #ifdef DISTANT_HORIZONS
+    #if defined DISTANT_HORIZONS || defined VOXY
     if (dhMask) {
       reflectionHit =
         reflectionHit &&
@@ -296,6 +299,7 @@ void main() {
           colortex6,
           combinedProjection
         );
+
     }
 
     #else
@@ -315,7 +319,7 @@ void main() {
 
     if (reflectionHit) {
       reflectedColor = texture(colortex0, reflectedPos.xy).rgb;
-      #ifdef DISTANT_HORIZONS
+      #if defined DISTANT_HORIZONS || defined VOXY
       vec3 viewReflectedPos = screenSpaceToViewSpace(
         reflectedPos,
         dhMask
@@ -430,8 +434,6 @@ void main() {
       );
     }
   }
-
-  show(texture(shadowcolor1, texcoord).r == MATERIAL_WATER);
 }
 
 #endif

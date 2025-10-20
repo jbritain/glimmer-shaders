@@ -36,7 +36,7 @@ in vec2 texcoord;
 layout(location = 0) out float depth;
 
 void main() {
-  #ifdef DISTANT_HORIZONS
+  #if defined DISTANT_HORIZONS || defined VOXY
   depth = texture(depthtex0, texcoord).r;
   if (depth < 1.0) {
     depth = screenSpaceToViewSpace(depth);

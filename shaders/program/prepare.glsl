@@ -5,8 +5,6 @@
 layout(local_size_x = 8, local_size_y = 8) in;
 const ivec3 workGroups = ivec3(25, 25, 1);
 
-#include "/lib/common.glsl"
-
 layout(rgba16f) uniform image2D skyViewLUT;
 
 #include "/lib/atmosphere/sky/hillaireCommon.glsl"

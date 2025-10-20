@@ -19,13 +19,13 @@
 #include "/lib/atmosphere/clouds.glsl"
 
 vec3 sampleShadow(vec3 shadowScreenPos) {
-  float transparentShadow = shadow2D(shadowtex0HW, shadowScreenPos).r;
+  float transparentShadow = texture(shadowtex0HW, shadowScreenPos).r;
 
   if (transparentShadow >= 1.0 - 1e-6) {
     return vec3(transparentShadow);
   }
 
-  float opaqueShadow = shadow2D(shadowtex1HW, shadowScreenPos).r;
+  float opaqueShadow = texture(shadowtex1HW, shadowScreenPos).r;
 
   if (opaqueShadow <= 1e-6) {
     return vec3(opaqueShadow);
@@ -105,7 +105,9 @@ vec3 getShadowing(
       cameraPositionFract +
       vec3(0.5),
     feetPlayerPos,
-    smoothstep(0.0, 1.0, lightmap.y) * 0.5 + 0.5
+    isEyeInWater == 1
+      ? 1.0
+      : smoothstep(0.0, 1.0, lightmap.y) * 0.5 + 0.5
   );
 
   vec4 shadowClipPos = getShadowClipPos(lightleakFeetPlayerPos);

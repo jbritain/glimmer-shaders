@@ -278,6 +278,7 @@ void main() {
     material.emission = 1.0;
   }
 
+  #ifdef RAIN_PUDDLES
   applyPuddles(
     material,
     texture(normals, texcoord).a,
@@ -286,6 +287,7 @@ void main() {
     tbnMatrix[2],
     lightmap.y
   );
+  #endif
 
   #ifdef DIRECTIONAL_LIGHTMAPS
   applyDirectionalLightmap(
@@ -420,7 +422,7 @@ void main() {
     color.rgb = vec3(0.0);
   }
 
-  #ifdef DISTANT_HORIZONS
+  #if defined DISTANT_HORIZONS
   dhBlend(viewPos);
   #endif
 

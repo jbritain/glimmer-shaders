@@ -136,7 +136,7 @@ vec3 getValFromMultiScattLUT(
 vec3 mapAerialPerspectivePos(vec3 viewPos) {
   vec3 pos;
   pos.xy = viewSpaceToScreenSpace(viewPos).xy;
-  #ifdef DISTANT_HORIZONS
+  #if defined DISTANT_HORIZONS || defined VOXY
   pos.z = clamp01(abs(viewPos.z) / dhRenderDistance);
   #else
   pos.z = clamp01(abs(viewPos.z) / far);
@@ -147,7 +147,7 @@ vec3 mapAerialPerspectivePos(vec3 viewPos) {
 vec3 unmapAerialPerspectivePos(vec3 pos) {
   vec3 viewPos;
   viewPos.xy = screenSpaceToViewSpace(pos).xy;
-  #ifdef DISTANT_HORIZONS
+  #if defined DISTANT_HORIZONS || defined VOXY
   viewPos.z = -abs(pos.z) * dhRenderDistance;
   #else
   viewPos.z = -abs(pos.z) * far;

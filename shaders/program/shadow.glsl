@@ -50,10 +50,14 @@ void main() {
 
   shadowViewPos = (gl_ModelViewMatrix * gl_Vertex).xyz;
   feetPlayerPos = (shadowModelViewInverse * vec4(shadowViewPos, 1.0)).xyz;
+  vec3 worldNormal = mat3(shadowModelViewInverse) * normal;
 
   #ifdef FLOODFILL
   ivec3 voxelPos = mapVoxelPos(
-    feetPlayerPos + vec3(at_midBlock.xyz * rcp(64.0))
+    feetPlayerPos +
+      (renderStage == MC_RENDER_STAGE_BLOCK_ENTITIES
+        ? -worldNormal * 0.2
+        : vec3(at_midBlock.xyz * rcp(64.0)))
   );
   if (
     isWithinVoxelBounds(voxelPos) &&

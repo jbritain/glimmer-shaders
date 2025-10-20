@@ -1,0 +1,63 @@
+{
+  "version": 1,
+  "opaqueDrawBuffers": [0, 1],
+  "translucentDrawBuffers": [0, 1],
+  "blending": {
+    "1": "off"
+  },
+  "uniforms": [
+    "vxProj",
+    "vxProjInv",
+    "vxProjPrev",
+    "vxModelView",
+    "vxModelViewInv",
+    "vxModelViewPrev",
+    "vxRenderDistance",
+    "worldTime",
+    "worldDay",
+    "viewWidth",
+    "viewHeight",
+    "sunPosition",
+    "shadowLightPosition",
+    "constantMood",
+    "eyeBrightnessSmooth",
+    "eyeBrightness",
+    "cameraPosition",
+    "cameraPositionFract",
+    "upPosition",
+    "far",
+    "shadowProjection",
+    "shadowProjectionInverse",
+    "shadowModelView",
+    "shadowModelViewInverse",
+    "wetness",
+    "biomeCanPrecipitateSmooth",
+    "thunderStrength",
+    "isEyeInWater",
+    "fogColor",
+    "lightningBoltPosition",
+    "frameTimeCounter",
+    "darknessLightFactor",
+    "frameCounter",
+    "nightVision"
+  ],
+  "samplers": {
+    "depthtex0": "sampler2D",
+    "blueNoiseTex": "sampler2D",
+    "aerialPerspectiveLUTTex": "sampler3D",
+    "perlinNoiseTex": "sampler2D",
+    "shadowtex0HW": "sampler2DShadow",
+    "shadowtex1HW": "sampler2DShadow",
+    "shadowtex0": "sampler2D",
+    "shadowtex1": "sampler2D",
+    "shadowcolor0": "sampler2D",
+    "shadowcolor1": "sampler2D",
+    "causticsTex": "sampler2D",
+    "colortex7": "sampler2D"
+  },
+  "ssbos": {
+    "0": "{vec3 sunlightColor;vec3 skylightColor;float weatherFrameTimeCounter;uint encodedHeldLightColor;}",
+    "1": "{float sunVisibilitySmooth;}"
+  },
+  "excludeLodsFromVanillaDepth": true
+}

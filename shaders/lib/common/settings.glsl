@@ -91,6 +91,7 @@ const float sunPathRotation = -40.0; // [-90.0 -85.0 -80.0 -75.0 -70.0 -65.0 -60
 #define ROUGH_SKY_REFLECTIONS
 #define RAIN_PUDDLES
 
+#define WATER_PARALLAX
 #define REFRACTION
 // #define CAUSTICS
 // #define VANILLA_WATER

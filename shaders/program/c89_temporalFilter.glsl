@@ -63,7 +63,7 @@ void main() {
   #ifndef SSR_JITTER
   rejectSample = rejectSample || opaqueDepth != depth;
 
-  #ifdef DISTANT_HORIZONS
+  #if defined DISTANT_HORIZONS || defined VOXY
   rejectSample =
     rejectSample || depth == 1.0 && texture(dhDepthTex0, texcoord).r != 1.0;
   #endif

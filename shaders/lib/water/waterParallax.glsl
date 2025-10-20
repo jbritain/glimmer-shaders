@@ -35,12 +35,17 @@ vec3 getWaterParallaxNormal(
   for (int i = 0; i < WATER_PARALLAX_SAMPLES; i++) {
     float waveHeight = waveHeight(rayPos.xz + cameraPosition.xz) + playerPos.y;
 
-    if (playerPos.y < 0 == rayPos.y < waveHeight) {
-      return waveNormal(rayPos.xz + cameraPosition.xz, worldNormal);
+    // turns out you can just build binary refinement into the loop this is goated
+    bool intersect = playerPos.y < 0 == rayPos.y < waveHeight;
+    if (intersect) {
+      increment /= 2;
     }
 
-    rayPos += increment;
+    rayPos += increment * (intersect ? -1 : 1);
+
   }
+
+  return waveNormal(rayPos.xz + cameraPosition.xz, worldNormal, 1.0);
 
   #endif
 
