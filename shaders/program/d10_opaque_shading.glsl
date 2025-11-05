@@ -34,10 +34,14 @@ in vec2 texcoord;
 #include "/lib/dh.glsl"
 #include "/lib/util/packing.glsl"
 #include "/lib/lighting/shading.glsl"
+#include "/lib/post/bilateralFilter.glsl"
 
-/* RENDERTARGETS: 0 */
+/* RENDERTARGETS: 0,6 */
 
 layout(location = 0) out vec4 color;
+layout(location = 1) out vec3 colorWithNoSSGI;
+
+const bool colortex5MipmapEnabled = true;
 
 void main() {
   color = texture(colortex0, texcoord);
@@ -64,7 +68,8 @@ void main() {
   vec3 faceNormal = mat3(gbufferModelView) * worldFaceNormal;
   vec3 mappedNormal = mat3(gbufferModelView) * worldMappedNormal;
 
-  vec4 ssgi = texture(colortex5, texcoord);
+  vec4 ssgi = bilateralFilter(colortex5, texcoord, 4, 1);
+  show(ssgi * 100);
 
   // if (texcoord.x < 0.5) {
   //   ssgi = vec4(vec3(0.0), 1.0);
@@ -77,9 +82,10 @@ void main() {
     lightmap,
     viewPos,
     parallaxShadow,
-    ssgi.a,
-    ssgi.rgb
+    ssgi.a
   );
+  colorWithNoSSGI = color.rgb;
+  color.rgb += material.albedo * ssgi.rgb;
 
 }
 

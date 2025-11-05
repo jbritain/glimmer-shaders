@@ -145,10 +145,10 @@ vec3 blueNoise(vec2 coord, int frame) {
 // https://extremelearning.com.au/unreasonable-effectiveness-of-quasirandom-sequences/
 vec3 blueNoise(vec2 coord, int frame, int i) {
   const float g = 1.32471795724474602596;
-  float a1 = rcp(g);
-  float a2 = rcp(pow2(g));
+  const float a1 = 1.0 / g;
+  const float a2 = 1.0 / (g * g);
 
-  vec2 offset = vec2(fract(0.5 + a1 * i), fract(0.5 + a2 * i));
+  vec2 offset = vec2(fract(0.5 + a1 * i), fract(0.5 + a2 * i)) * 128;
   return blueNoise(coord + offset, frame);
 }
 

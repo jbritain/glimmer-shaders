@@ -27,8 +27,7 @@ vec3 getShadedColor(
   vec2 lightmap,
   vec3 viewPos,
   float shadowFactor,
-  float ambientOcclusion,
-  vec3 GI
+  float ambientOcclusion
 ) {
   #ifdef GBUFFERS_ARMOR_GLINT
   return material.albedo * EMISSION_STRENGTH * 0.0002;
@@ -71,7 +70,7 @@ vec3 getShadedColor(
       clamp01(1.0 - darknessLightFactor * 2.5) +
     vec3(ambient);
   diffuse *= ambientOcclusion * material.ao;
-  diffuse += GI;
+
   diffuse *= material.albedo;
 
   // vec3 fresnel = fresnelRoughness(
@@ -119,8 +118,7 @@ vec3 getShadedColor(
   vec2 lightmap,
   vec3 viewPos,
   float shadowFactor,
-  float ambientOcclusion,
-  vec3 GI
+  float ambientOcclusion
 ) {
   vec3 blocklight =
     vec3(1.0, 0.3, 0.03) * 5e-3 * max0(exp(-(1.0 - lightmap.x * 10.0)));
@@ -132,8 +130,7 @@ vec3 getShadedColor(
     lightmap,
     viewPos,
     shadowFactor,
-    ambientOcclusion,
-    GI
+    ambientOcclusion
   );
 }
 

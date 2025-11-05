@@ -2,7 +2,7 @@
 #define SSDO_GLSL
 
 #define SSDO_SAMPLES 8
-#define SSDO_RADIUS 1.0
+#define SSDO_RADIUS 2.0
 
 vec4 SSDO(vec3 viewPos, vec3 worldNormal) {
   vec3 normal = mat3(gbufferModelView) * worldNormal;
@@ -40,7 +40,7 @@ vec4 SSDO(vec3 viewPos, vec3 worldNormal) {
 
     vec3 sampleNormal = decodeNormal(texture(colortex2, sampleScreenPos.xy).rg);
     vec3 sampleRadiance =
-      texture(colortex3, sampleScreenPos.xy).rgb * sampleOcclusion;
+      texture(colortex6, sampleScreenPos.xy).rgb * sampleOcclusion;
 
     sampleRadiance *= clamp01(
       dot(sampleNormal, -worldSampleDir) * dot(worldNormal, worldSampleDir)
@@ -49,7 +49,7 @@ vec4 SSDO(vec3 viewPos, vec3 worldNormal) {
     radiance += sampleRadiance;
   }
 
-  radiance /= PI;
+  radiance *= 2.0 * PI * pow2(SSDO_RADIUS);
 
   return vec4(radiance, occlusion) / SSDO_SAMPLES;
 

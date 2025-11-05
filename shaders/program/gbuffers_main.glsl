@@ -217,21 +217,21 @@ void main() {
   // encodedHeldLightColor = 1;
   #endif
 
-  #ifdef PATCHY_LAVA
-  if (isLava(materialID)) {
-    vec3 worldPos = playerPos + cameraPosition;
-    float noise = texture(
-      perlinNoiseTex,
-      mod(worldPos.xz / 100 + vec2(0.0, frameTimeCounter * 0.005), 1.0)
-    ).r;
-    noise *= texture(
-      perlinNoiseTex,
-      mod(worldPos.xz / 200 + vec2(frameTimeCounter * 0.005, 0.0), 1.0)
-    ).r;
-    albedo.rgb *= noise;
-    albedo.rgb *= 4.0;
-  }
-  #endif
+  // #ifdef PATCHY_LAVA
+  // if (isLava(materialID)) {
+  //   vec3 worldPos = playerPos + cameraPosition;
+  //   float noise = texture(
+  //     perlinNoiseTex,
+  //     mod(worldPos.xz / 100 + vec2(0.0, frameTimeCounter * 0.005), 1.0)
+  //   ).r;
+  //   noise *= texture(
+  //     perlinNoiseTex,
+  //     mod(worldPos.xz / 200 + vec2(frameTimeCounter * 0.005, 0.0), 1.0)
+  //   ).r;
+  //   albedo.rgb *= noise;
+  //   albedo.rgb *= 4.0;
+  // }
+  // #endif
 
   vec3 mappedNormal = getMappedNormal(texcoord);
   if (renderStage == MC_RENDER_STAGE_ENTITIES) {
