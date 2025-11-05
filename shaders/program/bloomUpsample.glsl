@@ -30,7 +30,7 @@ in vec2 texcoord;
 
 #include "/lib/post/bloom.glsl"
 
-/* RENDERTARGETS: 2 */
+/* RENDERTARGETS: 4 */
 layout(location = 0) out vec4 bloomColor;
 
 void main() {
@@ -40,7 +40,7 @@ void main() {
   BloomTile nextTile = tiles[max(0, TILE_INDEX - 1)];
   vec2 tileCoord = scaleToBloomTile(texcoord, nextTile);
 
-  bloomColor = texture(colortex2, texcoord);
+  bloomColor = texture(colortex4, texcoord);
 
   if (clamp01(tileCoord) != tileCoord) {
     return;
@@ -51,6 +51,6 @@ void main() {
   #else
   vec2 tileCoord = texcoord / 2;
   #endif
-  bloomColor.rgb += upSample(colortex2, tileCoord);
+  bloomColor.rgb += upSample(colortex4, tileCoord);
 }
 #endif

@@ -94,14 +94,14 @@ const bool colortex3Clear = false;
 /*
 
     const int colortex0Format = RGBA16F;
-    const int colortex5Format = R8;
+    const int colortex1Format = RG32UI;
     const int shadowcolor1Format = R8;
 */
 const bool colortex0Clear = false; // only so we can keep mipmaps from the previous frame
 
 #ifdef BLOOM
 /*
-    const int colortex2Format = RGB16F;
+    const int colortex4Format = RGB16F;
 */
 #endif
 
@@ -111,17 +111,6 @@ const bool colortex0Clear = false; // only so we can keep mipmaps from the previ
 */
 #endif
 
-const vec4 colortex4ClearColor = vec4(1.0, 1.0, 1.0, 1.0);
-
-/*
-    const int colortex4Format = R11F_G11F_B10F;
-*/
-
-#if defined DISTANT_HORIZONS || defined VOXY
-/*
-    const int colortex6Format = R16;
-*/
-#endif
 
 #ifdef ROUGH_SKY_REFLECTIONS
 /*

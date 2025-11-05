@@ -1,12 +1,12 @@
 ```
 ---Buffers---
     0: Main Scene Colour
-    1: Encoded Normal, Sky Lightmap, Block ID
-    2: Bloom Colour
+    1: Material Data
+    2: Normals
     3: History buffer
-    4: Godrays
-    5: Rain mask
-    6: Combined depth buffer for SSR
+    4: Bloom Colour
+    5: 
+    6: 
     7: Sky LUT for rough reflections
 
 ---Passes---

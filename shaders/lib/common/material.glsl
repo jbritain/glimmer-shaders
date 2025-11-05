@@ -124,4 +124,72 @@ Material materialFromSpecularMap(vec3 albedo, vec4 specularData) {
   return material;
 }
 
+uvec2 packMaterialData(Material material, vec2 lightmap, float parallaxShadow) {
+  uvec2 data = uvec2(0);
+
+  // pack 24 bits of albedo
+  data.r = bitfieldInsert(data.r, uint(material.albedo.r * 255), 0, 8);
+  data.r = bitfieldInsert(data.r, uint(material.albedo.g * 255), 8, 8);
+  data.r = bitfieldInsert(data.r, uint(material.albedo.b * 255), 16, 8);
+
+  #ifdef fsh
+  float dither =
+    interleavedGradientNoise(floor(gl_FragCoord.xy), frameCounter) / 15.0;
+  lightmap += dither;
+
+  #endif
+
+  // compress lightmap to 4 bit values
+  uvec2 compressedLightmap = uvec2(lightmap * 15);
+  data.r = bitfieldInsert(data.r, compressedLightmap.x, 24, 4);
+  data.r = bitfieldInsert(data.r, compressedLightmap.y, 28, 4);
+
+  // 8 bits of roughness
+  data.g = bitfieldInsert(data.g, uint(material.roughness * 255), 0, 8);
+  // re-pack specular G component
+  float packedF0 =
+    material.metalID == NO_METAL
+      ? material.f0.r
+      : (material.metalID + 230) / 255.0;
+  data.g = bitfieldInsert(data.g, uint(packedF0 * 255), 8, 8);
+  data.g = bitfieldInsert(data.g, uint(material.sss * 15), 16, 4);
+  data.g = bitfieldInsert(data.g, uint(parallaxShadow * 15), 20, 4);
+  data.g = bitfieldInsert(data.g, uint(material.emission * 15), 24, 4);
+  data.g = bitfieldInsert(data.g, uint(material.ao * 15), 28, 4);
+
+  return data;
+}
+
+Material unpackMaterialData(
+  uvec2 data,
+  out vec2 lightmap,
+  out float parallaxShadow
+) {
+  Material material;
+  material.albedo.r = bitfieldExtract(data.r, 0, 8) / 255.0;
+  material.albedo.g = bitfieldExtract(data.r, 8, 8) / 255.0;
+  material.albedo.b = bitfieldExtract(data.r, 16, 8) / 255.0;
+
+  material.albedo = pow(material.albedo, vec3(2.2));
+
+  lightmap.x = bitfieldExtract(data.r, 24, 4) / 15.0;
+  lightmap.y = bitfieldExtract(data.r, 28, 4) / 15.0;
+
+  material.roughness = bitfieldExtract(data.g, 0, 8) / 255.0;
+  float specularG = bitfieldExtract(data.g, 8, 8) / 255.0;
+  if (specularG <= 229.0 / 255.0) {
+    material.f0 = vec3(specularG);
+    material.metalID = NO_METAL;
+  } else {
+    material.f0 = material.albedo;
+    material.metalID = int(specularG * 255 + 0.5) - 229;
+  }
+  material.sss = bitfieldExtract(data.g, 16, 4) / 15.0;
+  parallaxShadow = bitfieldExtract(data.g, 20, 4) / 15.0;
+  material.emission = bitfieldExtract(data.g, 24, 4) / 15.0;
+  material.ao = bitfieldExtract(data.g, 28, 4) / 15.0;
+
+  return material;
+}
+
 #endif // MATERIAL_GLSL

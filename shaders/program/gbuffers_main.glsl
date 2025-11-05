@@ -140,10 +140,10 @@ vec3 getMappedNormal(vec2 texcoord) {
   return tbnMatrix * mappedNormal;
 }
 
-/* RENDERTARGETS: 0,1 */
+/* RENDERTARGETS: 1,2 */
 
-layout(location = 0) out vec4 color;
-layout(location = 1) out vec4 outData1;
+layout(location = 0) out uvec2 materialData;
+layout(location = 1) out vec4 normalData;
 
 void main() {
   vec3 playerPos = (gbufferModelViewInverse * vec4(viewPos, 1.0)).xyz;
@@ -211,8 +211,6 @@ void main() {
   }
 
   albedo.rgb = mix(albedo.rgb, entityColor.rgb, entityColor.a);
-
-  albedo.rgb = pow(albedo.rgb, vec3(2.2));
 
   #ifdef GBUFFERS_HAND
   atomicMax(encodedHeldLightColor, encodeHeldLightColor(albedo.rgb));
@@ -320,115 +318,12 @@ void main() {
 
   parallaxShadow = mix(parallaxShadow, 1.0, material.sss * 0.5);
 
-  if (isWater(materialID)) {
-    color.rgb = material.albedo;
-    color.a = 0.0;
-  } else {
-    bool sampleColoredLight = false;
-    #ifdef FLOODFILL
-    #ifdef PIXEL_LOCKED_LIGHTING
-    playerPos += cameraPosition;
-    playerPos = floor(playerPos * PIXEL_SIZE) / PIXEL_SIZE;
-    playerPos -= cameraPosition;
-    #endif
+  materialData = packMaterialData(material, lightmap, parallaxShadow);
+  normalData = vec4(
+    encodeNormal(normalize(mat3(gbufferModelViewInverse) * tbnMatrix[2])),
+    encodeNormal(normalize(mat3(gbufferModelViewInverse) * mappedNormal))
+  );
 
-    #ifdef DIRECTIONAL_LIGHTMAPS
-    vec3 offset =
-      -mat3(gbufferModelViewInverse) * tbnMatrix[2] * 0.5 +
-      mat3(gbufferModelViewInverse) * mappedNormal;
-    offset = mix(offset, vec3(0.0), material.sss * 0.25);
-    vec3 voxelPosInterp = mapVoxelPosInterp(playerPos + offset);
-    #else
-    vec3 voxelPosInterp = mapVoxelPosInterp(
-      playerPos + mat3(gbufferModelViewInverse) * tbnMatrix[2] * 0.5
-    );
-    #endif
-    sampleColoredLight = clamp01(voxelPosInterp) == voxelPosInterp;
-    #endif
-
-    if (sampleColoredLight) {
-      #ifdef FLOODFILL
-      vec3 blocklightColor;
-      if (frameCounter % 2 == 0) {
-        blocklightColor = texture(floodfillVoxelMapTex2, voxelPosInterp).rgb;
-      } else {
-        blocklightColor = texture(floodfillVoxelMapTex1, voxelPosInterp).rgb;
-      }
-
-      if (
-        luminance(blocklightColor) < 0.2 &&
-        lightmap.x > 0.5 &&
-        renderStage == MC_RENDER_STAGE_PARTICLES
-      ) {
-        material.emission = lightmap.x;
-      }
-
-      #ifdef DYNAMIC_HANDLIGHT
-      float dist = length(playerPos);
-      float falloff =
-        (1.0 - clamp01(smoothstep(0.0, 15.0, dist))) *
-        max(heldBlockLightValue, heldBlockLightValue2) /
-        15.0;
-
-      #ifdef DIRECTIONAL_LIGHTMAPS
-      falloff *= mix(
-        dot(normalize(-viewPos), mappedNormal),
-        1.0,
-        material.sss * 0.25 + 0.75
-      );
-      #endif
-
-      blocklightColor +=
-        pow(vec3(255, 152, 54), vec3(2.2)) *
-        1e-8 *
-        max0(exp(-(1.0 - falloff * 10.0)));
-      #endif
-
-      color.rgb = getShadedColor(
-        material,
-        mappedNormal,
-        tbnMatrix[2],
-        blocklightColor,
-        lightmap,
-        viewPos,
-        parallaxShadow,
-        ambientOcclusion
-      );
-      #endif
-    } else {
-      color.rgb = getShadedColor(
-        material,
-        mappedNormal,
-        tbnMatrix[2],
-        lightmap,
-        viewPos,
-        parallaxShadow,
-        ambientOcclusion
-      );
-    }
-
-    color.a = albedo.a;
-  }
-
-  if (isEndPortal(blockEntityId)) {
-    color.rgb = endPortal(
-      normalize(playerPos - gbufferModelViewInverse[3].xyz),
-      mat3(gbufferModelViewInverse) * tbnMatrix[2],
-      playerPos - gbufferModelViewInverse[3].xyz
-    );
-  }
-
-  if (renderStage == MC_RENDER_STAGE_OUTLINE) {
-    color.rgb = vec3(0.0);
-  }
-
-  #if defined DISTANT_HORIZONS
-  dhBlend(viewPos);
-  #endif
-
-  outData1.xy = encodeNormal(mat3(gbufferModelViewInverse) * mappedNormal);
-  outData1.z = lightmap.y;
-  outData1.a = clamp01(float(materialID - 1000) * rcp(255.0));
 }
 
 #endif

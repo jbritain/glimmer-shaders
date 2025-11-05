@@ -43,7 +43,7 @@ void main() {
 
   #ifdef BLOOM
 
-  vec3 bloom = texture(colortex2, texcoord).rgb;
+  vec3 bloom = texture(colortex4, texcoord).rgb;
 
   float rain = texture(colortex5, texcoord).r;
   color.rgb = mix(

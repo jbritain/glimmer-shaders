@@ -28,41 +28,51 @@ void main() {
 // ===========================================================================================
 
 #ifdef fsh
-#include "/lib/atmosphere/sky/sky.glsl"
-#include "/lib/atmosphere/clouds.glsl"
 
 in vec2 texcoord;
 
 #include "/lib/dh.glsl"
+#include "/lib/util/packing.glsl"
+#include "/lib/lighting/shading.glsl"
 
 /* RENDERTARGETS: 0 */
 
 layout(location = 0) out vec4 color;
-
 
 void main() {
   color = texture(colortex0, texcoord);
 
   float depth = texture(depthtex0, texcoord).r;
   if (depth == 1.0) {
-    vec3 viewPos = screenSpaceToViewSpace(vec3(texcoord, depth));
-    dhOverride(depth, viewPos, false);
-    if (dhMask) {
-      return;
-    }
-
-    vec3 worldDir = mat3(gbufferModelViewInverse) * normalize(viewPos);
-
-    color.rgb = getSky(color.rgb, worldDir, true);
-    #ifdef WORLD_OVERWORLD
-    vec3 transmittance;
-
-    vec3 scattering = getClouds(vec3(0.0), worldDir, transmittance);
-
-    color.rgb = color.rgb * transmittance + scattering;
-    #endif
-
+    return;
   }
+
+  vec3 viewPos = screenSpaceToViewSpace(vec3(texcoord, depth));
+  dhOverride(depth, viewPos, false);
+
+  float parallaxShadow;
+  vec2 lightmap;
+  Material material = unpackMaterialData(
+    texture(colortex1, texcoord).rg,
+    lightmap,
+    parallaxShadow
+  );
+
+  vec4 normalData = texture(colortex2, texcoord);
+  vec3 worldFaceNormal = normalize(decodeNormal(normalData.rg));
+  vec3 worldMappedNormal = normalize(decodeNormal(normalData.ba));
+  vec3 faceNormal = mat3(gbufferModelView) * worldFaceNormal;
+  vec3 mappedNormal = mat3(gbufferModelView) * worldMappedNormal;
+
+  color.rgb = getShadedColor(
+    material,
+    mappedNormal,
+    faceNormal,
+    lightmap,
+    viewPos,
+    parallaxShadow,
+    material.ao
+  );
 
 }
 

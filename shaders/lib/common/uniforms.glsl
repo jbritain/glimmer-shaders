@@ -96,7 +96,7 @@ uniform mat4 shadowProjection;
 uniform mat4 shadowProjectionInverse;
 
 uniform sampler2D colortex0;
-uniform sampler2D colortex1;
+uniform usampler2D colortex1;
 uniform sampler2D colortex2;
 uniform sampler2D colortex3;
 uniform sampler2D colortex4;
