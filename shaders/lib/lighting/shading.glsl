@@ -58,7 +58,7 @@ vec3 getShadedColor(
   ambient *= 4.0;
   #endif
 
-  ambient += nightVision * 0.1;
+  ambient += nightVision * 0.01;
 
   ambient *= 1.0 - darknessLightFactor * 2.5;
 

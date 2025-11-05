@@ -58,7 +58,7 @@ void main() {
   float skyLightmap = data1.z;
   int materialID = int(data1.a * 255 + 0.5) + 1000;
 
-  bool isWater = materialIsWater(materialID);
+  bool isWater = isWater(materialID);
   bool inWater = isEyeInWater == 1;
 
   float translucentDepth = texture(depthtex0, texcoord).r;

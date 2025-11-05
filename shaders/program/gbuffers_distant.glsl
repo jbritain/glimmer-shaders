@@ -27,7 +27,7 @@ out vec3 viewPos;
 #include "/lib/dh.glsl"
 
 void main() {
-  materialID = convertDHMaterialIDs(dhMaterialId);
+
   texcoord = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy;
   lmcoord = (gl_TextureMatrix[1] * gl_MultiTexCoord1).xy;
   glcolor = gl_Color;
@@ -83,7 +83,7 @@ void main() {
   }
 
   int materialID = materialID;
-  if (materialIsWater(materialID) && albedo.a >= 0.99) {
+  if (isWater(materialID) && albedo.a >= 0.99) {
     materialID = 0;
   }
 
@@ -101,7 +101,7 @@ void main() {
   }
 
   albedo.rgb *= 1.1;
-  if (materialIsLeaves(materialID)) {
+  if (isLeaves(materialID)) {
     albedo.rgb *= mix(0.7, 1.2, texelFetch(noisetex, noiseCoord, 0).r);
   } else {
     albedo.rgb *= mix(0.95, 1.05, texelFetch(noisetex, noiseCoord, 0).r);
@@ -119,18 +119,18 @@ void main() {
   material.emission = 0.0;
   material.ao = 1.0;
 
-  if (materialIsPlant(materialID)) {
+  if (isPlant(materialID)) {
     material.sss = 1.0;
     material.f0 = vec3(0.04);
     material.roughness = 0.5;
   }
 
-  if (materialIsLava(materialID)) {
+  if (isLava(materialID)) {
     material.emission = 1.0;
   }
 
   #ifdef PATCHY_LAVA
-  if (materialIsLava(materialID)) {
+  if (isLava(materialID)) {
     vec3 worldPos = playerPos + cameraPosition;
     float noise = texture(
       perlinNoiseTex,
@@ -145,7 +145,7 @@ void main() {
   }
   #endif
 
-  if (materialIsWater(materialID)) {
+  if (isWater(materialID)) {
     material.f0 = vec3(0.02);
     material.roughness = 0.0;
     color = vec4(0.0);

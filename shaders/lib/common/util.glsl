@@ -91,26 +91,20 @@ vec3 rgb(vec3 c) {
   return c.z * mix(K.xxx, clamp01(p - K.xxx), c.y);
 }
 
-// O is the ray origin, D is the direction
-// height is the height of the plane
-bool rayPlaneIntersection(vec3 O, vec3 D, float height, inout vec3 point) {
-  vec3 N = vec3(0.0, sign(O.y - height), 0.0); // plane normal vector
-  vec3 P = vec3(0.0, height, 0.0); // point on the plane
+bool rayPlaneIntersection(vec3 origin, vec3 dir, float height, inout vec3 point) {
+  vec3 normal = vec3(0.0, sign(origin.y - height), 0.0);
+  vec3 p = vec3(0.0, height, 0.0);
 
-  float NoD = dot(N, D);
+  float NoD = dot(normal, dir);
   if (NoD == 0.0) {
     return false;
   }
 
-  float t = dot(N, P - O) / NoD;
+  float t = dot(normal, p - origin) / NoD;
 
-  point = O + t * D;
+  point = origin + t * dir;
 
-  if (t < 0) {
-    return false;
-  }
-
-  return true;
+  return t >= 0.0;
 }
 
 const float goldenAngle = 2.4;

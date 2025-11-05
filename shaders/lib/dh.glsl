@@ -19,20 +19,6 @@ bool dhMask = false;
 
 #if defined DISTANT_HORIZONS || defined VOXY
 
-int convertDHMaterialIDs(int id) {
-  switch (id) {
-    case DH_BLOCK_WATER:
-      return MATERIAL_WATER;
-
-    case DH_BLOCK_LEAVES:
-      return MATERIAL_LEAVES;
-
-    case DH_BLOCK_LAVA:
-      return MATERIAL_LAVA;
-  }
-
-  return 0;
-}
 
 void dhOverride(inout float depth, inout vec3 viewPos, bool opaque) {
   dhMask = false;

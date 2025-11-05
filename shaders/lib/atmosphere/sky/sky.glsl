@@ -3,7 +3,7 @@
 
 #include "/lib/atmosphere/sky/hillaireCommon.glsl"
 
-/* 
+/*
     'Production Sky Rendering' by Andrew Helmer
     https://www.shadertoy.com/view/slSXRW
 */
@@ -13,10 +13,10 @@ vec3 getValFromSkyLUT(vec3 rayDir) {
   vec3 up = vec3(0.0, 1.0, 0.0);
 
   float horizonAngle = safeacos(
-    sqrt(height * height - groundRadiusMM * groundRadiusMM) / height
-  );
-  float altitudeAngle = horizonAngle - acos(dot(rayDir, up)); // Between -PI/2 and PI/2
-  float azimuthAngle; // Between 0 and 2*PI
+      sqrt(height * height - groundRadiusMM * groundRadiusMM) / height);
+  float altitudeAngle =
+      horizonAngle - acos(dot(rayDir, up)); // Between -PI/2 and PI/2
+  float azimuthAngle;                       // Between 0 and 2*PI
   if (abs(altitudeAngle) > 0.5 * PI - 0.0001) {
     // Looking nearly straight up or down.
     azimuthAngle = 0.0;
@@ -32,7 +32,7 @@ vec3 getValFromSkyLUT(vec3 rayDir) {
 
   // Non-linear mapping of altitude angle. See Section 5.3 of the paper.
   float v =
-    0.5 + 0.5 * sign(altitudeAngle) * sqrt(abs(altitudeAngle) * 2.0 / PI);
+      0.5 + 0.5 * sign(altitudeAngle) * sqrt(abs(altitudeAngle) * 2.0 / PI);
   vec2 uv = vec2(azimuthAngle / (2.0 * PI), v);
 
   return texture(skyViewLUTTex, uv).rgb;
@@ -42,45 +42,38 @@ vec3 sun(vec3 rayDir) {
   const float minSunCosTheta = cos(sunAngularRadius);
 
   float cosTheta = dot(rayDir, worldSunDir);
-  if (cosTheta >= minSunCosTheta) return sunRadiance;
+  if (cosTheta >= minSunCosTheta)
+    return sunRadiance;
 
   return vec3(0.0);
 }
 
-float fogify(float x, float w) {
-  return w / (x * x + w);
-}
+float fogify(float x, float w) { return w / (x * x + w); }
 
 vec3 endSky(vec3 dir, bool includeSun) {
-  return vec3(0.5, 0.4, 1.0) *
-    clamp01(dot(dir, worldLightDir) * 0.5 + 0.5) *
-    0.001 +
-  step(0.9989, dot(dir, worldLightDir)) *
-    step(dot(dir, worldLightDir), 0.999) *
-    float(includeSun);
+  return vec3(0.5, 0.4, 1.0) * clamp01(dot(dir, worldLightDir) * 0.5 + 0.5) *
+             0.001 +
+         step(0.9989, dot(dir, worldLightDir)) *
+             step(dot(dir, worldLightDir), 0.999) * float(includeSun);
 }
 
 vec3 getSky(vec3 color, vec3 rayDir, bool includeSun) {
-  #if ! defined WORLD_OVERWORLD && ! defined WORLD_THE_END
-  return pow(
-    mix(
-      skyColor,
-      fogColor,
-      fogify(max0(dot(rayDir, vec3(0.0, 1.0, 0.0))), 0.25)
-    ),
-    vec3(2.2)
-  );
-  #endif
+#if !defined WORLD_OVERWORLD && !defined WORLD_THE_END
+  return pow(mix(skyColor, fogColor,
+                 fogify(max0(dot(rayDir, vec3(0.0, 1.0, 0.0))), 0.25)),
+             vec3(2.2));
+#endif
 
-  #ifdef WORLD_THE_END
+#ifdef WORLD_THE_END
   return endSky(rayDir, includeSun);
-  #endif
+#endif
 
   vec3 lum = getValFromSkyLUT(rayDir);
 
   lum = mix(lum, weatherSkylightColor, wetness);
 
-  if (!includeSun) return lum;
+  if (!includeSun)
+    return lum;
 
   vec3 sunLum = sun(rayDir);
 
@@ -88,19 +81,15 @@ vec3 getSky(vec3 color, vec3 rayDir, bool includeSun) {
     if (rayIntersectSphere(atmospherePos, rayDir, groundRadiusMM) >= 0.0) {
       sunLum *= 0.0;
     } else {
-      // If the sun value is applied to this pixel, we need to calculate the transmittance to obscure it.
-      sunLum *= getValFromTLUT(
-        sunTransmittanceLUTTex,
-        tLUTRes,
-        atmospherePos,
-        worldSunDir
-      );
+      // If the sun value is applied to this pixel, we need to calculate the
+      // transmittance to obscure it.
+      sunLum *= getValFromTLUT(sunTransmittanceLUTTex, tLUTRes, atmospherePos,
+                               worldSunDir);
     }
   } else {
     if (color != vec3(0.0)) {
-      lum +=
-        color *
-        getValFromTLUT(sunTransmittanceLUTTex, tLUTRes, atmospherePos, rayDir);
+      lum += color * getValFromTLUT(sunTransmittanceLUTTex, tLUTRes,
+                                    atmospherePos, rayDir);
     }
   }
 
@@ -108,9 +97,10 @@ vec3 getSky(vec3 color, vec3 rayDir, bool includeSun) {
 
   lum += sunLum;
 
-  #ifdef fsh
-  lum *= mix(0.9, 1.1, interleavedGradientNoise(floor(gl_FragCoord.xy))); // anti banding
-  #endif
+#ifdef fsh
+  lum *= mix(0.9, 1.1,
+             interleavedGradientNoise(floor(gl_FragCoord.xy))); // anti banding
+#endif
 
   lum *= mix(pow3(max0(dot(rayDir, vec3(0.0, 1.0, 0.0)))), 1.0, skyMultiplier);
 

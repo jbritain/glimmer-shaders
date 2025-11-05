@@ -75,18 +75,18 @@ void voxy_emitFragment(VoxyFragmentParameters params) {
   material.emission = 0.0;
   material.ao = 1.0;
 
-  if (materialIsPlant(materialID)) {
+  if (isPlant(materialID)) {
     material.sss = 1.0;
     material.f0 = vec3(0.04);
     material.roughness = 0.5;
   }
 
-  if (materialIsLava(materialID)) {
+  if (isLava(materialID)) {
     material.emission = 1.0;
   }
 
   #ifdef PATCHY_LAVA
-  if (materialIsLava(materialID)) {
+  if (isLava(materialID)) {
     vec3 worldPos = playerPos + cameraPosition;
     float noise = texture(
       perlinNoiseTex,
@@ -110,7 +110,7 @@ void voxy_emitFragment(VoxyFragmentParameters params) {
     (float(int(params.face) & 1) * 2 - 1);
   vec3 normal = mat3(gbufferModelView) * worldNormal;
 
-  if (materialIsWater(materialID)) {
+  if (isWater(materialID)) {
     material.f0 = vec3(0.02);
     material.roughness = 0.0;
     color = vec4(0.0);

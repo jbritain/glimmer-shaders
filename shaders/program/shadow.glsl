@@ -79,7 +79,7 @@ void main() {
     data.opacity = pow(averageTextureData.a, rcp(3));
     data.emission = pow2(at_midBlock.w / 15.0);
 
-    if (materialIsEndPortal(blockEntityId)) {
+    if (isEndPortal(blockEntityId)) {
       data.emission = 1.0;
     }
 
@@ -88,15 +88,15 @@ void main() {
     //     data.emission = 0.0;
     // }
 
-    if (materialIsTintedGlass(materialID)) {
+    if (isTintedGlass(materialID)) {
       data.opacity = 1.0;
     }
 
-    if (materialIsLetsLightThrough(materialID)) {
+    if (isLetsLightThrough(materialID)) {
       data.opacity = 0.0;
     }
 
-    if (materialIsWater(materialID)) {
+    if (isWater(materialID)) {
       data.color = 1.0 - WATER_SCATTERING;
     }
 
@@ -149,7 +149,7 @@ void main() {
 
   const float avgWaterExtinction = sumVec3(waterExtinction) / 3.0;
 
-  if (materialIsWater(materialID)) {
+  if (isWater(materialID)) {
     waterMask = 1.0;
     float opaqueDepth = texture(
       shadowtex1,

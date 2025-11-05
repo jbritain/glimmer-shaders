@@ -69,7 +69,7 @@ void main() {
     cameraPosition;
   #endif
 
-  // if(materialIsWater(materialID)){
+  // if(isWater(materialID)){
   //     feetPlayerPos.y += (waveHeight(feetPlayerPos.xz + cameraPosition.xz) - 0.5) * fract(feetPlayerPos.y + cameraPosition.y);
   // }
 
@@ -161,7 +161,7 @@ void main() {
   vec2 dy = dFdy(texcoord);
   vec2 texcoord = texcoord;
   if (
-    !materialIsLava(materialID) &&
+    !isLava(materialID) &&
     (renderStage == MC_RENDER_STAGE_TERRAIN_SOLID ||
       renderStage == MC_RENDER_STAGE_ENTITIES ||
       renderStage == MC_RENDER_STAGE_TERRAIN_TRANSLUCENT)
@@ -220,7 +220,7 @@ void main() {
   #endif
 
   #ifdef PATCHY_LAVA
-  if (materialIsLava(materialID)) {
+  if (isLava(materialID)) {
     vec3 worldPos = playerPos + cameraPosition;
     float noise = texture(
       perlinNoiseTex,
@@ -260,19 +260,19 @@ void main() {
 
   #endif
 
-  if (materialIsPlant(materialID)) {
+  if (isPlant(materialID)) {
     material.sss = 1.0;
     material.f0 = vec3(0.04);
     material.roughness = 0.5;
   }
 
-  if (materialIsWater(materialID)) {
+  if (isWater(materialID)) {
     mappedNormal = tbnMatrix[2];
     material.roughness = 0.0;
   }
 
   if (
-    materialIsMaxEmission(materialID) ||
+    isMaxEmission(materialID) ||
     renderStage == MC_RENDER_STAGE_ENTITIES && entityId == 1
   ) {
     material.emission = 1.0;
@@ -320,7 +320,7 @@ void main() {
 
   parallaxShadow = mix(parallaxShadow, 1.0, material.sss * 0.5);
 
-  if (materialIsWater(materialID)) {
+  if (isWater(materialID)) {
     color.rgb = material.albedo;
     color.a = 0.0;
   } else {
@@ -410,7 +410,7 @@ void main() {
     color.a = albedo.a;
   }
 
-  if (materialIsEndPortal(blockEntityId)) {
+  if (isEndPortal(blockEntityId)) {
     color.rgb = endPortal(
       normalize(playerPos - gbufferModelViewInverse[3].xyz),
       mat3(gbufferModelViewInverse) * tbnMatrix[2],

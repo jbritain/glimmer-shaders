@@ -81,20 +81,20 @@ vec3 getSway(int materialID, vec3 pos, vec3 midblock) {
   // push plants away from feet
   float speed = distance(cameraPosition, previousCameraPosition) / frameTime;
 
-  if (materialSwayType(materialID).value == Sway_SHORT.value) {
+  if (sway(materialID) == Sway.SHORT) {
     pos -= eyePosition;
     vec2 blockCentre = pos.xz + midblock.xz / 64;
     pos.xz +=
       normalize(blockCentre) *
       ((1.0 - clamp01(length(pos.xz))) *
         (1.0 - smoothstep(-32.0, 32.0, midblock.y)) +
-        float(materialSwayType(materialID).value == Sway_UPPER.value)) *
+        float(sway(materialID) == Sway.UPPER)) *
       smoothstep(-2.0, 0.0, pos.y) *
       sqrt(clamp01(speed));
     pos += eyePosition;
   }
 
-  switch (materialSwayType(materialID).value) {
+  switch (sway(materialID)) {
     case 1:
       return upperSway(pos, midblock);
     case 2:
@@ -109,6 +109,7 @@ vec3 getSway(int materialID, vec3 pos, vec3 midblock) {
     default:
       return pos;
   }
+
 }
 
 #endif // SWAY_GLSL

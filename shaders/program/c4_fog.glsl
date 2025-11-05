@@ -90,7 +90,7 @@ void main(){
         vec4 data1 = texture(colortex1, texcoord);
         vec3 worldNormal = decodeNormal(data1.xy);
         int materialID = int(data1.a * 255 + 0.5) + 1000;
-        bool isWater = materialIsWater(materialID);
+        bool isWater = isWater(materialID);
         if(isEyeInWater == 1){
             return;
         }
