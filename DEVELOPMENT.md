@@ -5,7 +5,7 @@
     2: Normals
     3: History buffer
     4: Bloom Colour
-    5: 
+    5: SSGI
     6: 
     7: Sky LUT for rough reflections
 

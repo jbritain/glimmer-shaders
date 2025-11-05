@@ -139,7 +139,7 @@ uniform sampler2D skyViewLUTTex;
 uniform sampler3D aerialPerspectiveLUTTex;
 
 uniform sampler2D perlinNoiseTex;
-uniform sampler2D blueNoiseTex;
+uniform sampler3D blueNoiseTex;
 uniform sampler2D causticsTex;
 
 #if defined DISTANT_HORIZONS || defined VOXY

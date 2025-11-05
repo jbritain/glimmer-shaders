@@ -27,7 +27,8 @@ vec3 getShadedColor(
   vec2 lightmap,
   vec3 viewPos,
   float shadowFactor,
-  float ambientOcclusion
+  float ambientOcclusion,
+  vec3 GI
 ) {
   #ifdef GBUFFERS_ARMOR_GLINT
   return material.albedo * EMISSION_STRENGTH * 0.0002;
@@ -63,45 +64,43 @@ vec3 getShadedColor(
   ambient *= 1.0 - darknessLightFactor * 2.5;
 
   vec3 diffuse =
-    material.albedo *
-    (weatherSkylightColor *
-      pow2(lightmap.y) *
-      (material.ao * 0.5 + 0.5) *
-      ambientOcclusion +
-      blocklight *
-        (material.ao * 0.5 + 0.5) *
-        BLOCKLIGHT_STRENGTH *
-        0.002 *
-        clamp01(1.0 - darknessLightFactor * 2.5) +
-      vec3(ambient) * material.ao * ambientOcclusion);
+    weatherSkylightColor * pow2(lightmap.y) +
+    blocklight *
+      BLOCKLIGHT_STRENGTH *
+      0.002 *
+      clamp01(1.0 - darknessLightFactor * 2.5) +
+    vec3(ambient);
+  diffuse *= ambientOcclusion * material.ao;
+  diffuse += GI;
+  diffuse *= material.albedo;
 
-  vec3 fresnel = fresnelRoughness(
-    material,
-    dot(mappedNormal, normalize(-viewPos))
-  );
+  // vec3 fresnel = fresnelRoughness(
+  //   material,
+  //   dot(mappedNormal, normalize(-viewPos))
+  // );
 
-  // max mip samples the whole sphere
-  // therefore max mip minus 1 samples a hemisphere
-  // so we blend with that based on roughness
-  float mipLevel = log2(
-    1.0 + material.roughness * (maxVec2(textureSize(colortex7, 0)) - 1.0)
-  );
+  // // max mip samples the whole sphere
+  // // therefore max mip minus 1 samples a hemisphere
+  // // so we blend with that based on roughness
+  // float mipLevel = log2(
+  //   1.0 + material.roughness * (maxVec2(textureSize(colortex7, 0)) - 1.0)
+  // );
 
-  vec3 reflected = reflect(normalize(viewPos), mappedNormal);
+  // vec3 reflected = reflect(normalize(viewPos), mappedNormal);
 
-  #ifdef ROUGH_SKY_REFLECTIONS
-  vec3 specular = textureLod(colortex7, mapSphere(reflected), mipLevel).rgb;
-  fresnel *= clamp01(smoothstep(13.5 / 15.0, 1.0, lightmap.y));
-  fresnel *= 1.0 - max0(dot(mappedNormal, -normalize(upPosition)));
+  // #ifdef ROUGH_SKY_REFLECTIONS
+  // vec3 specular = textureLod(colortex7, mapSphere(reflected), mipLevel).rgb;
+  // fresnel *= clamp01(smoothstep(13.5 / 15.0, 1.0, lightmap.y));
+  // fresnel *= 1.0 - max0(dot(mappedNormal, -normalize(upPosition)));
 
-  if (material.metalID != NO_METAL) {
-    diffuse *= 1.0 - clamp01(smoothstep(13.5 / 15.0, 1.0, lightmap.y));
-  }
+  // if (material.metalID != NO_METAL) {
+  //   diffuse *= 1.0 - clamp01(smoothstep(13.5 / 15.0, 1.0, lightmap.y));
+  // }
 
-  color += mix(diffuse, specular, fresnel);
-  #else
+  // color += mix(diffuse, specular, fresnel);
+  // #else
   color += diffuse;
-  #endif
+  // #endif
 
   color +=
     material.emission *
@@ -120,7 +119,8 @@ vec3 getShadedColor(
   vec2 lightmap,
   vec3 viewPos,
   float shadowFactor,
-  float ambientOcclusion
+  float ambientOcclusion,
+  vec3 GI
 ) {
   vec3 blocklight =
     vec3(1.0, 0.3, 0.03) * 5e-3 * max0(exp(-(1.0 - lightmap.x * 10.0)));
@@ -132,7 +132,8 @@ vec3 getShadedColor(
     lightmap,
     viewPos,
     shadowFactor,
-    ambientOcclusion
+    ambientOcclusion,
+    GI
   );
 }
 

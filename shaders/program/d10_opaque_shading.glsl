@@ -64,6 +64,12 @@ void main() {
   vec3 faceNormal = mat3(gbufferModelView) * worldFaceNormal;
   vec3 mappedNormal = mat3(gbufferModelView) * worldMappedNormal;
 
+  vec4 ssgi = texture(colortex5, texcoord);
+
+  // if (texcoord.x < 0.5) {
+  //   ssgi = vec4(vec3(0.0), 1.0);
+  // }
+
   color.rgb = getShadedColor(
     material,
     mappedNormal,
@@ -71,7 +77,8 @@ void main() {
     lightmap,
     viewPos,
     parallaxShadow,
-    material.ao
+    ssgi.a,
+    ssgi.rgb
   );
 
 }

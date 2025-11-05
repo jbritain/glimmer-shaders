@@ -91,7 +91,12 @@ vec3 rgb(vec3 c) {
   return c.z * mix(K.xxx, clamp01(p - K.xxx), c.y);
 }
 
-bool rayPlaneIntersection(vec3 origin, vec3 dir, float height, inout vec3 point) {
+bool rayPlaneIntersection(
+  vec3 origin,
+  vec3 dir,
+  float height,
+  inout vec3 point
+) {
   vec3 normal = vec3(0.0, sign(origin.y - height), 0.0);
   vec3 p = vec3(0.0, height, 0.0);
 
@@ -132,22 +137,19 @@ float facos(float x) {
 
 #define BLUE_NOISE_RESOLUTION 1024
 
-vec4 blueNoise(vec2 texcoord) {
-  ivec2 sampleCoord = ivec2(texcoord * vec2(viewWidth, viewHeight));
-  sampleCoord = sampleCoord % ivec2(BLUE_NOISE_RESOLUTION);
-
-  return texelFetch(blueNoiseTex, sampleCoord, 0);
+vec3 blueNoise(vec2 coord, int frame) {
+  return texelFetch(blueNoiseTex, ivec3(ivec2(coord) % 128, frame % 64), 0).rgb;
 }
 
-vec4 blueNoise(vec2 texcoord, int frame) {
-  const float g = 1.6180339887498948482;
+// R2 sequence from
+// https://extremelearning.com.au/unreasonable-effectiveness-of-quasirandom-sequences/
+vec3 blueNoise(vec2 coord, int frame, int i) {
+  const float g = 1.32471795724474602596;
   float a1 = rcp(g);
   float a2 = rcp(pow2(g));
 
-  vec2 offset = vec2(mod(0.5 + a1 * frame, 1.0), mod(0.5 + a2 * frame, 1.0));
-  texcoord += offset;
-
-  return blueNoise(texcoord);
+  vec2 offset = vec2(fract(0.5 + a1 * i), fract(0.5 + a2 * i));
+  return blueNoise(coord + offset, frame);
 }
 
 float getMiePhase(float cosTheta) {
