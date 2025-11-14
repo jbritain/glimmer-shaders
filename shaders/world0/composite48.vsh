@@ -3,4 +3,4 @@
 #define vsh
 #define WORLD_OVERWORLD
 
-#include "/program/d1_reproject.glsl"
+#include "/program/c48_writeLuminance.glsl"

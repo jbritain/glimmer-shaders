@@ -4,7 +4,7 @@
 #include "/lib/util/packing.glsl"
 
 vec4 bilateralFilter(sampler2D sampleTex, vec2 coord, int radius, int lod) {
-  vec3 targetNormal = decodeNormal(texture(colortex2, coord).xy);
+  vec3 targetNormal = decodeNormal(texture(colortex2, coord).ba);
   float targetDepth = screenSpaceToViewSpace(texture(depthtex0, texcoord).r);
 
   vec2 samplerScale = rcp(textureSize(sampleTex, lod).xy);
@@ -20,11 +20,12 @@ vec4 bilateralFilter(sampler2D sampleTex, vec2 coord, int radius, int lod) {
       sampleDepth = screenSpaceToViewSpace(sampleDepth);
 
       vec4 sampleColor = textureLod(sampleTex, offsetCoord, lod);
-      vec3 sampleNormal = decodeNormal(texture(colortex2, offsetCoord).xy);
+      vec3 sampleNormal = decodeNormal(texture(colortex2, offsetCoord).ba);
 
-      float weight = max(0, abs(dot(sampleNormal, targetNormal)) - 0.7);
-      weight *= 1.0 - smoothstep(0.0, 0.1, abs(targetDepth - sampleDepth));
-      weight *= exp(-pow2(abs(length(vec2(x, y)) / radius)));
+      float weight =
+        max(0, abs(dot(sampleNormal, targetNormal)) - 0.9) * rcp(0.9); // normal weight
+      weight *= 1.0 - smoothstep(0.0, 0.5, abs(targetDepth - sampleDepth)); // depth weight
+      weight *= exp(-pow2(abs(length(vec2(x, y)) / radius))); // spatial weight
       samples += sampleColor * weight;
       totalWeight += weight;
     }

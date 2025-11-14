@@ -97,7 +97,9 @@ const bool colortex3Clear = false;
     const int colortex1Format = RG32UI;
     const int colortex5Format = RGBA16F;
     const int colortex6Format = RGB16F;
+
     const int shadowcolor1Format = R8;
+    const int shadowcolor2Format = RGB16;
 */
 const bool colortex0Clear = false; // only so we can keep mipmaps from the previous frame
 const bool colortex5Clear = false;

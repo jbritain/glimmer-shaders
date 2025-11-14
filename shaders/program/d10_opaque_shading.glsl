@@ -2,14 +2,14 @@
     Copyright (c) 2024 Josh Britain (jbritain)
     Licensed under the MIT license
 
-      _____   __   _                          
+      _____   __   _
      / ___/  / /  (_)  __ _   __ _  ___   ____
     / (_ /  / /  / /  /  ' \ /  ' \/ -_) / __/
-    \___/  /_/  /_/  /_/_/_//_/_/_/\__/ /_/   
-    
+    \___/  /_/  /_/  /_/_/_//_/_/_/\__/ /_/
+
     By jbritain
     https://jbritain.net
-                                            
+
 */
 
 #include "/lib/common.glsl"
@@ -57,10 +57,10 @@ void main() {
   float parallaxShadow;
   vec2 lightmap;
   Material material = unpackMaterialData(
-    texture(colortex1, texcoord).rg,
-    lightmap,
-    parallaxShadow
-  );
+      texture(colortex1, texcoord).rg,
+      lightmap,
+      parallaxShadow
+    );
 
   vec4 normalData = texture(colortex2, texcoord);
   vec3 worldFaceNormal = normalize(decodeNormal(normalData.rg));
@@ -69,24 +69,26 @@ void main() {
   vec3 mappedNormal = mat3(gbufferModelView) * worldMappedNormal;
 
   vec4 ssgi = bilateralFilter(colortex5, texcoord, 4, 1);
-  show(ssgi * 100);
+  // show(ssgi * 100);
+  // show(texture(shadowtex0, texcoord).r);
+  // show(ssgi.a);
 
   // if (texcoord.x < 0.5) {
   //   ssgi = vec4(vec3(0.0), 1.0);
   // }
 
   color.rgb = getShadedColor(
-    material,
-    mappedNormal,
-    faceNormal,
-    lightmap,
-    viewPos,
-    parallaxShadow,
-    ssgi.a
-  );
-  colorWithNoSSGI = color.rgb;
+      material,
+      mappedNormal,
+      faceNormal,
+      lightmap,
+      viewPos,
+      parallaxShadow,
+      ssgi.a
+    );
   color.rgb += material.albedo * ssgi.rgb;
 
+  colorWithNoSSGI = color.rgb;
 }
 
 #endif

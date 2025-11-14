@@ -2,14 +2,14 @@
     Copyright (c) 2024 Josh Britain (jbritain)
     Licensed under the MIT license
 
-      _____   __   _                          
+      _____   __   _
      / ___/  / /  (_)  __ _   __ _  ___   ____
     / (_ /  / /  / /  /  ' \ /  ' \/ -_) / __/
-    \___/  /_/  /_/  /_/_/_//_/_/_/\__/ /_/   
-    
+    \___/  /_/  /_/  /_/_/_//_/_/_/\__/ /_/
+
     By jbritain
     https://jbritain.net
-                                            
+
 */
 
 #include "/lib/common.glsl"
@@ -45,8 +45,7 @@ void main() {
 
   materialID =
     renderStage == MC_RENDER_STAGE_BLOCK_ENTITIES
-      ? blockEntityId
-      : int(mc_Entity.x + 0.5);
+    ? blockEntityId : int(mc_Entity.x + 0.5);
 
   shadowViewPos = (gl_ModelViewMatrix * gl_Vertex).xyz;
   feetPlayerPos = (shadowModelViewInverse * vec4(shadowViewPos, 1.0)).xyz;
@@ -54,18 +53,17 @@ void main() {
 
   #ifdef FLOODFILL
   ivec3 voxelPos = mapVoxelPos(
-    feetPlayerPos +
-      (renderStage == MC_RENDER_STAGE_BLOCK_ENTITIES
-        ? -worldNormal * 0.2
-        : vec3(at_midBlock.xyz * rcp(64.0)))
-  );
+      feetPlayerPos +
+        (renderStage == MC_RENDER_STAGE_BLOCK_ENTITIES
+        ? -worldNormal * 0.2 : vec3(at_midBlock.xyz * rcp(64.0)))
+    );
   if (
     isWithinVoxelBounds(voxelPos) &&
-    gl_VertexID % 4 == 0 &&
-    (renderStage == MC_RENDER_STAGE_TERRAIN_SOLID ||
-      // renderStage == MC_RENDER_STAGE_BLOCK_ENTITIES ||
-      renderStage == MC_RENDER_STAGE_TERRAIN_TRANSLUCENT ||
-      renderStage == MC_RENDER_STAGE_BLOCK_ENTITIES)
+      gl_VertexID % 4 == 0 &&
+      (renderStage == MC_RENDER_STAGE_TERRAIN_SOLID ||
+        // renderStage == MC_RENDER_STAGE_BLOCK_ENTITIES ||
+        renderStage == MC_RENDER_STAGE_TERRAIN_TRANSLUCENT ||
+        renderStage == MC_RENDER_STAGE_BLOCK_ENTITIES)
   ) {
     VoxelData data;
     vec4 averageTextureData =
@@ -108,7 +106,7 @@ void main() {
   #ifdef WAVING_BLOCKS
   feetPlayerPos =
     getSway(materialID, feetPlayerPos + cameraPosition, at_midBlock.xyz) -
-    cameraPosition;
+      cameraPosition;
   shadowViewPos = (shadowModelView * vec4(feetPlayerPos, 1.0)).xyz;
   #endif
   gl_Position = gl_ProjectionMatrix * vec4(shadowViewPos, 1.0);
@@ -135,9 +133,10 @@ in vec3 feetPlayerPos;
 #include "/lib/water/waterFog.glsl"
 #include "/lib/water/waveNormals.glsl"
 
-/* RENDERTARGETS: 0,1 */
+/* RENDERTARGETS: 0,1,2 */
 layout(location = 0) out vec4 color;
 layout(location = 1) out float waterMask;
+layout(location = 2) out vec3 encodedNormal;
 
 void main() {
   waterMask = 0.0;
@@ -152,15 +151,17 @@ void main() {
   if (isWater(materialID)) {
     waterMask = 1.0;
     float opaqueDepth = texture(
-      shadowtex1,
-      gl_FragCoord.xy / shadowMapResolution
-    ).r;
+        shadowtex1,
+        gl_FragCoord.xy / shadowMapResolution
+      ).r;
     float opaqueDistance = getShadowDistanceZ(opaqueDepth); // how far away from the sun is the opaque fragment shadowed by the water?
     float waterDepth = abs(shadowViewPos.z - opaqueDistance);
 
     color.rgb = 1.0 - waterExtinction;
     color.a = 1.0 - exp(-avgWaterExtinction * waterDepth);
   }
+
+  encodedNormal = normal * 0.5 + 0.5;
 }
 
 #endif

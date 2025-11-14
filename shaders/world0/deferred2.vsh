@@ -3,4 +3,4 @@
 #define vsh
 #define WORLD_OVERWORLD
 
-#include "/program/d1_reproject.glsl"
+#include "/program/d2_ssgi.glsl"

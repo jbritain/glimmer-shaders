@@ -62,13 +62,12 @@ vec3 getShadedColor(
 
   ambient *= 1.0 - darknessLightFactor * 2.5;
 
-  vec3 diffuse =
-    weatherSkylightColor * pow2(lightmap.y) +
-    blocklight *
-      BLOCKLIGHT_STRENGTH *
-      0.002 *
-      clamp01(1.0 - darknessLightFactor * 2.5) +
-    vec3(ambient);
+  vec3 diffuse = weatherSkylightColor * pow2(lightmap.y); // +
+  // blocklight *
+  //   BLOCKLIGHT_STRENGTH *
+  //   0.002 *
+  //   clamp01(1.0 - darknessLightFactor * 2.5) +
+  // vec3(ambient);
   diffuse *= ambientOcclusion * material.ao;
 
   diffuse *= material.albedo;

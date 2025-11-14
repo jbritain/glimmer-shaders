@@ -99,27 +99,6 @@ bool rayIntersects(
       break;
     }
 
-    // intersect = intersect || (depth2 < rayPos2.z && abs(depthLenience - (rayPos2.z - depth2)) < depthLenience && rayPos2.z > handDepth && depth2 < 1.0);
-    // hitIndex = intersect && hitIndex == 0 ? 2 : 0;
-
-    // if(intersect){
-    // 	break;
-    // }
-
-    // intersect = intersect || (depth3 < rayPos3.z && abs(depthLenience - (rayPos3.z - depth3)) < depthLenience && rayPos3.z > handDepth && depth3 < 1.0);
-    // hitIndex = intersect && hitIndex == 0 ? 3 : 0;
-
-    // if(intersect){
-    // 	break;
-    // }
-
-    // intersect = intersect || (depth4 < rayPos4.z && abs(depthLenience - (rayPos4.z - depth4)) < depthLenience && rayPos4.z > handDepth && depth4 < 1.0);
-    // hitIndex = intersect && hitIndex == 0 ? 4 : 0;
-
-    // if(intersect){
-    // 	break;
-    // }
-
   }
 
   if (clamp01(rayPos) != rayPos) return false; // we went offscreen

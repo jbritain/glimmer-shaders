@@ -1,6 +1,6 @@
 #include "/lib/version.glsl"
 
-#define vsh
+#define fsh
 #define WORLD_OVERWORLD
 
-#include "/program/d1_reproject.glsl"
+#include "/program/d2_ssgi.glsl"

@@ -2,14 +2,14 @@
     Copyright (c) 2024 Josh Britain (jbritain)
     Licensed under the MIT license
 
-      _____   __   _                          
+      _____   __   _
      / ___/  / /  (_)  __ _   __ _  ___   ____
     / (_ /  / /  / /  /  ' \ /  ' \/ -_) / __/
-    \___/  /_/  /_/  /_/_/_//_/_/_/\__/ /_/   
-    
+    \___/  /_/  /_/  /_/_/_//_/_/_/\__/ /_/
+
     By jbritain
     https://jbritain.net
-                                            
+
 */
 
 #include "/lib/common.glsl"
@@ -79,8 +79,7 @@ void main() {
     printString((_P,_r,_e,_s,_s,_space,_F,_1,_space,_a,_n,_d,_space,_c,_a,_l,_l,_space,_s,_h,_o,_w,_opprn,_clprn));
   }
 
-  printLine();
-  printInt(int(encodedHeldLightColor));
+
 
 
 

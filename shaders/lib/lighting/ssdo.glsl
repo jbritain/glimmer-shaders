@@ -25,34 +25,34 @@ vec4 SSDO(vec3 viewPos, vec3 worldNormal) {
     vec3 sampleDir =
       tbn * vec3(cos(phi) * sinTheta, sin(phi) * sinTheta, cosTheta);
     vec3 worldSampleDir = mat3(gbufferModelViewInverse) * sampleDir;
-    vec3 offset = sampleDir * noise.z * SSDO_RADIUS;
+    float radius = noise.z;
+
+    vec3 offset = sampleDir * radius * SSDO_RADIUS;
 
     vec3 sampleViewPos = viewPos + offset;
     vec3 sampleScreenPos = viewSpaceToScreenSpace(sampleViewPos);
     float sampleDepth = screenSpaceToViewSpace(
-      texture(depthtex0, sampleScreenPos.xy).r
-    );
+        texture(depthtex0, sampleScreenPos.xy).r
+      );
 
     float sampleOcclusion =
       float(sampleDepth >= sampleViewPos.z + 0.025) *
-      smoothstep(0.0, 1.0, SSDO_RADIUS / abs(sampleDepth - sampleViewPos.z));
+        smoothstep(0.0, 1.0, SSDO_RADIUS / abs(sampleDepth - sampleViewPos.z));
     occlusion += 1.0 - sampleOcclusion;
 
     vec3 sampleNormal = decodeNormal(texture(colortex2, sampleScreenPos.xy).rg);
     vec3 sampleRadiance =
       texture(colortex6, sampleScreenPos.xy).rgb * sampleOcclusion;
 
-    sampleRadiance *= clamp01(
-      dot(sampleNormal, -worldSampleDir) * dot(worldNormal, worldSampleDir)
-    );
-    sampleRadiance /= SSDO_RADIUS * noise.z + 1.0;
+    sampleRadiance *=
+      max0(dot(sampleNormal, -worldSampleDir)) * max0(dot(worldNormal, worldSampleDir));
+    sampleRadiance /= SSDO_RADIUS * radius + 1.0;
     radiance += sampleRadiance;
   }
 
-  radiance *= 2.0 * PI * pow2(SSDO_RADIUS);
+  radiance *= PI * pow2(SSDO_RADIUS);
 
   return vec4(radiance, occlusion) / SSDO_SAMPLES;
-
 }
 
 #endif // SSDO_GLSL
