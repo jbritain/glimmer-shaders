@@ -3,8 +3,7 @@
 
 float overlayBlend(float a, float b) {
   return a < 0.5
-    ? 2.0 * a * b
-    : 1.0 - 2.0 * (1.0 - a) * (1.0 - b);
+  ? 2.0 * a * b : 1.0 - 2.0 * (1.0 - a) * (1.0 - b);
 }
 
 void applyPuddles(
@@ -26,7 +25,7 @@ void applyPuddles(
 
   noise = clamp01(noise + (1.0 - heightMap) * 2.0 - 0.2);
 
-  // if porosity is less than 0.5, we make the puddles larger as it approaches zero, but only below 0.5 on the heightMap
+  // if porosity is less than 0.5, we make the puddles larger as it approaches zero, but only below 0.5 on the heightmap
   if (material.porosity < 0.5 && material.porosity != 0.0) {
     noise += float(heightMap < 0.5) * (1.0 - material.porosity);
   } else if (material.porosity != 0.0) {
@@ -43,7 +42,6 @@ void applyPuddles(
 
   // flatten normal as it gets wetter
   mappedNormal = normalize(mix(mappedNormal, geometryNormal, noise));
-
 }
 
 #endif // PUDDLES_GLSL

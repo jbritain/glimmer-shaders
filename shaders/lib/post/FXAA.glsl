@@ -5,19 +5,19 @@
 // as implemented by capt. tatsu in BSL
 // https://bitslablab.com/bslshaders/
 float quality[12] = float[12](
-  1.0,
-  1.0,
-  1.0,
-  1.0,
-  1.0,
-  1.5,
-  2.0,
-  2.0,
-  2.0,
-  2.0,
-  4.0,
-  8.0
-);
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.5,
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    4.0,
+    8.0
+  );
 
 #if FXAA_EDGE_SENSITIVITY == 0
 float edgeThreshold = 0.25;
@@ -34,7 +34,7 @@ float GetLuminance(vec3 color) {
   return dot(color, vec3(0.299, 0.587, 0.114));
 }
 
-vec3 FXAA311(vec3 color) {
+vec3 FXAA311(vec3 color, vec2 texcoord) {
   #ifndef FXAA
   return color;
   #endif
@@ -44,42 +44,42 @@ vec3 FXAA311(vec3 color) {
 
   float lumaCenter = GetLuminance(color);
   float lumaDown = GetLuminance(
-    texture2DLod(colortex0, texcoord + vec2(0.0, -1.0) * view, 0.0).rgb
-  );
+      texture2DLod(colortex0, texcoord + vec2(0.0, -1.0) * view, 0.0).rgb
+    );
   float lumaUp = GetLuminance(
-    texture2DLod(colortex0, texcoord + vec2(0.0, 1.0) * view, 0.0).rgb
-  );
+      texture2DLod(colortex0, texcoord + vec2(0.0, 1.0) * view, 0.0).rgb
+    );
   float lumaLeft = GetLuminance(
-    texture2DLod(colortex0, texcoord + vec2(-1.0, 0.0) * view, 0.0).rgb
-  );
+      texture2DLod(colortex0, texcoord + vec2(-1.0, 0.0) * view, 0.0).rgb
+    );
   float lumaRight = GetLuminance(
-    texture2DLod(colortex0, texcoord + vec2(1.0, 0.0) * view, 0.0).rgb
-  );
+      texture2DLod(colortex0, texcoord + vec2(1.0, 0.0) * view, 0.0).rgb
+    );
 
   float lumaMin = min(
-    lumaCenter,
-    min(min(lumaDown, lumaUp), min(lumaLeft, lumaRight))
-  );
+      lumaCenter,
+      min(min(lumaDown, lumaUp), min(lumaLeft, lumaRight))
+    );
   float lumaMax = max(
-    lumaCenter,
-    max(max(lumaDown, lumaUp), max(lumaLeft, lumaRight))
-  );
+      lumaCenter,
+      max(max(lumaDown, lumaUp), max(lumaLeft, lumaRight))
+    );
 
   float lumaRange = lumaMax - lumaMin;
 
   if (lumaRange > max(edgeThresholdMin, lumaMax * edgeThreshold)) {
     float lumaDownLeft = GetLuminance(
-      texture2DLod(colortex0, texcoord + vec2(-1.0, -1.0) * view, 0.0).rgb
-    );
+        texture2DLod(colortex0, texcoord + vec2(-1.0, -1.0) * view, 0.0).rgb
+      );
     float lumaUpRight = GetLuminance(
-      texture2DLod(colortex0, texcoord + vec2(1.0, 1.0) * view, 0.0).rgb
-    );
+        texture2DLod(colortex0, texcoord + vec2(1.0, 1.0) * view, 0.0).rgb
+      );
     float lumaUpLeft = GetLuminance(
-      texture2DLod(colortex0, texcoord + vec2(-1.0, 1.0) * view, 0.0).rgb
-    );
+        texture2DLod(colortex0, texcoord + vec2(-1.0, 1.0) * view, 0.0).rgb
+      );
     float lumaDownRight = GetLuminance(
-      texture2DLod(colortex0, texcoord + vec2(1.0, -1.0) * view, 0.0).rgb
-    );
+        texture2DLod(colortex0, texcoord + vec2(1.0, -1.0) * view, 0.0).rgb
+      );
 
     float lumaDownUp = lumaDown + lumaUp;
     float lumaLeftRight = lumaLeft + lumaRight;
@@ -91,12 +91,12 @@ vec3 FXAA311(vec3 color) {
 
     float edgeHorizontal =
       abs(-2.0 * lumaLeft + lumaLeftCorners) +
-      abs(-2.0 * lumaCenter + lumaDownUp) * 2.0 +
-      abs(-2.0 * lumaRight + lumaRightCorners);
+        abs(-2.0 * lumaCenter + lumaDownUp) * 2.0 +
+        abs(-2.0 * lumaRight + lumaRightCorners);
     float edgeVertical =
       abs(-2.0 * lumaUp + lumaUpCorners) +
-      abs(-2.0 * lumaCenter + lumaLeftRight) * 2.0 +
-      abs(-2.0 * lumaDown + lumaDownCorners);
+        abs(-2.0 * lumaCenter + lumaLeftRight) * 2.0 +
+        abs(-2.0 * lumaDown + lumaDownCorners);
 
     bool isHorizontal = edgeHorizontal >= edgeVertical;
 
@@ -192,13 +192,13 @@ vec3 FXAA311(vec3 color) {
 
     float lumaAverage =
       1.0 /
-      12.0 *
-      (2.0 * (lumaDownUp + lumaLeftRight) + lumaLeftCorners + lumaRightCorners);
+        12.0 *
+        (2.0 * (lumaDownUp + lumaLeftRight) + lumaLeftCorners + lumaRightCorners);
     float subPixelOffset1 = clamp(
-      abs(lumaAverage - lumaCenter) / lumaRange,
-      0.0,
-      1.0
-    );
+        abs(lumaAverage - lumaCenter) / lumaRange,
+        0.0,
+        1.0
+      );
     float subPixelOffset2 =
       (-2.0 * subPixelOffset1 + 3.0) * subPixelOffset1 * subPixelOffset1;
     float subPixelOffsetFinal =

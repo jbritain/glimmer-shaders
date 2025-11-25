@@ -2,14 +2,14 @@
     Copyright (c) 2024 Josh Britain (jbritain)
     Licensed under the MIT license
 
-      _____   __   _                          
+      _____   __   _
      / ___/  / /  (_)  __ _   __ _  ___   ____
     / (_ /  / /  / /  /  ' \ /  ' \/ -_) / __/
-    \___/  /_/  /_/  /_/_/_//_/_/_/\__/ /_/   
-    
+    \___/  /_/  /_/  /_/_/_//_/_/_/\__/ /_/
+
     By jbritain
     https://jbritain.net
-                                            
+
 */
 
 #ifndef COMMON_GLSL
@@ -20,7 +20,6 @@
 #include "/lib/common/debug.glsl"
 
 #include "/lib/common/syntax.glsl"
-
 
 #ifdef VOXY
 #define dhRenderDistance vxRenderDistance
@@ -34,7 +33,6 @@
 #ifndef GBUFFERS_VOXY
 #include "/lib/common/uniforms.glsl"
 #endif
-
 
 vec2 EB = vec2(eyeBrightness) / 240.0;
 vec2 EBS = vec2(eyeBrightnessSmooth) / 240.0;
@@ -66,18 +64,16 @@ bool isDay = sunDir == lightDir;
 
 #ifndef GBUFFERS_VOXY
 layout(std430, binding = 0) buffer environmentData {
-    vec3 sunlightColor;
-    vec3 skylightColor;
-    float weatherFrameTimeCounter; // only increments when it is raining
-    uint encodedHeldLightColor;
+  vec3 sunlightColor;
+  vec3 skylightColor;
+  float weatherFrameTimeCounter; // only increments when it is raining
+  uint encodedHeldLightColor;
 };
 
 layout(std430, binding = 1) buffer smoothedData {
-    float sunVisibilitySmooth;
+  float sunVisibilitySmooth;
 };
 #endif
-
-
 
 #define weatherSunlightColor mix(sunlightColor, sunlightColor * 0.005, pow(wetness, rcp(5.0)))
 #define weatherSkylightColor mix(skylightColor, sunlightColor * 0.04, pow(wetness, rcp(5.0)))
@@ -94,7 +90,7 @@ const bool colortex3Clear = false;
 /*
 
     const int colortex0Format = RGBA16F;
-    const int colortex5Format = R8;
+    const int colortex5Format = RG8;
     const int shadowcolor1Format = R8;
 */
 const bool colortex0Clear = false; // only so we can keep mipmaps from the previous frame

@@ -2,14 +2,14 @@
     Copyright (c) 2024 Josh Britain (jbritain)
     Licensed under the MIT license
 
-      _____   __   _                          
+      _____   __   _
      / ___/  / /  (_)  __ _   __ _  ___   ____
     / (_ /  / /  / /  /  ' \ /  ' \/ -_) / __/
-    \___/  /_/  /_/  /_/_/_//_/_/_/\__/ /_/   
-    
+    \___/  /_/  /_/  /_/_/_//_/_/_/\__/ /_/
+
     By jbritain
     https://jbritain.net
-                                            
+
 */
 
 #include "/lib/common.glsl"
@@ -59,19 +59,18 @@ in vec3 normal;
 
 /* RENDERTARGETS: 0,5 */
 layout(location = 0) out vec4 color;
-layout(location = 1) out vec4 rainMask;
+layout(location = 1) out vec4 mask;
 
 void main() {
   color = texture(gtexture, texcoord) * glcolor;
+
+  mask = vec4(0.0);
 
   if (color.a < alphaTestRef) {
     discard;
   }
 
   if (color.r == color.g) {
-    // snow
-    rainMask = vec4(0.0);
-
     Material material = materialFromSpecularMap(color.rgb, vec4(0.0));
     material.sss = 1.0;
 
@@ -89,35 +88,33 @@ void main() {
       blocklightColor = texture(floodfillVoxelMapTex1, voxelPosInterp).rgb;
     }
     color.rgb = getShadedColor(
-      material,
-      normal,
-      normal,
-      blocklightColor,
-      lightmap,
-      viewPos,
-      1.0,
-      1.0
-    );
+        material,
+        normal,
+        normal,
+        blocklightColor,
+        lightmap,
+        viewPos,
+        1.0,
+        1.0
+      );
     #else
     color.rgb = getShadedColor(
-      material,
-      normal,
-      normal,
-      lightmap,
-      viewPos,
-      1.0,
-      1.0
-    );
+        material,
+        normal,
+        normal,
+        lightmap,
+        viewPos,
+        1.0,
+        1.0
+      );
 
     #endif
 
     return;
   } else {
     color = vec4(0.0);
-    rainMask = vec4(1.0);
+    mask.r = 1.0;
   }
-
-  rainMask = vec4(1.0);
 }
 
 #endif

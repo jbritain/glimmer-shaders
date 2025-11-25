@@ -2,14 +2,14 @@
     Copyright (c) 2024 Josh Britain (jbritain)
     Licensed under the MIT license
 
-      _____   __   _                          
+      _____   __   _
      / ___/  / /  (_)  __ _   __ _  ___   ____
     / (_ /  / /  / /  /  ' \ /  ' \/ -_) / __/
-    \___/  /_/  /_/  /_/_/_//_/_/_/\__/ /_/   
-    
+    \___/  /_/  /_/  /_/_/_//_/_/_/\__/ /_/
+
     By jbritain
     https://jbritain.net
-                                            
+
 */
 
 #include "/lib/common.glsl"
@@ -39,7 +39,7 @@ layout(location = 0) out vec4 color;
 void main() {
   color = texture(colortex0, texcoord);
 
-  #if defined DISTANT_HORIZONS && defined DH_AO
+  #if (defined DISTANT_HORIZONS || defined VOXY) && defined DH_AO
   float depth = texture(depthtex0, texcoord).r;
   vec3 viewPos = vec3(0.0);
   if (depth != 1.0) {
@@ -69,8 +69,8 @@ void main() {
 
     vec3 hemisphereDir =
       normalize(vec3(noise.x * 2.0 - 1.0, noise.y * 2.0 - 1.0, noise.z)) *
-      noise.w *
-      scale;
+        noise.w *
+        scale;
 
     vec3 sampleOffset = tbn * hemisphereDir;
     vec3 sampleViewPos = viewPos + sampleOffset * DH_AO_RADIUS;
@@ -84,18 +84,18 @@ void main() {
     sampleViewPos = sampleClipPos.xyz / sampleClipPos.w;
 
     float rangeCheck = smoothstep(
-      0.0,
-      1.0,
-      DH_AO_RADIUS / abs(viewPos.z - sampleViewPos.z)
-    );
+        0.0,
+        1.0,
+        DH_AO_RADIUS / abs(viewPos.z - sampleViewPos.z)
+      );
     occlusion += float(sampleViewPos.z >= viewPos.z + DH_AO_BIAS) * rangeCheck;
   }
 
   occlusion /= DH_AO_SAMPLES;
+  show(1.0 - occlusion);
 
   color.rgb *= 1.0 - occlusion * ambientOcclusionLevel;
   #endif
-
 }
 
 #endif

@@ -2,14 +2,14 @@
     Copyright (c) 2024 Josh Britain (jbritain)
     Licensed under the MIT license
 
-      _____   __   _                          
+      _____   __   _
      / ___/  / /  (_)  __ _   __ _  ___   ____
     / (_ /  / /  / /  /  ' \ /  ' \/ -_) / __/
-    \___/  /_/  /_/  /_/_/_//_/_/_/\__/ /_/   
-    
+    \___/  /_/  /_/  /_/_/_//_/_/_/\__/ /_/
+
     By jbritain
     https://jbritain.net
-                                            
+
 */
 
 #include "/lib/common.glsl"
@@ -40,7 +40,7 @@ const bool colortex0MipmapEnabled = true;
 void main() {
   // color = texture(colortex0, texcoord);
   // return;
-  color.rgb = FXAA311(texture(colortex0, texcoord).rgb);
+  color.rgb = FXAA311(texture(colortex0, texcoord).rgb, texcoord);
   color.a = 1.0;
 }
 

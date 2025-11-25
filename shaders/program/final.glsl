@@ -2,14 +2,14 @@
     Copyright (c) 2024 Josh Britain (jbritain)
     Licensed under the MIT license
 
-      _____   __   _                          
+      _____   __   _
      / ___/  / /  (_)  __ _   __ _  ___   ____
     / (_ /  / /  / /  /  ' \ /  ' \/ -_) / __/
-    \___/  /_/  /_/  /_/_/_//_/_/_/\__/ /_/   
-    
+    \___/  /_/  /_/  /_/_/_//_/_/_/\__/ /_/
+
     By jbritain
     https://jbritain.net
-                                            
+
 */
 
 #include "/lib/common.glsl"
@@ -31,6 +31,7 @@ void main() {
 #include "/lib/post/tonemap.glsl"
 #include "/lib/post/processing.glsl"
 #include "/lib/util/textRenderer.glsl"
+#include "/lib/post/FXAA.glsl"
 
 in vec2 texcoord;
 
@@ -47,12 +48,12 @@ void main() {
 
   float rain = texture(colortex5, texcoord).r;
   color.rgb = mix(
-    color.rgb,
-    bloom,
-    clamp01(
-      0.01 * BLOOM_STRENGTH + rain * 0.1 + wetness * 0.1 * EBS.y * biomeCanRainSmooth + blindness + 0.1 * float(isEyeInWater == 1)
-    )
-  );
+      color.rgb,
+      bloom,
+      clamp01(
+        0.01 * BLOOM_STRENGTH + rain * 0.1 + wetness * 0.1 * EBS.y * biomeCanRainSmooth + blindness + 0.1 * float(isEyeInWater == 1)
+      )
+    );
   color.rgb *= 1.0 - 0.8 * blindness;
   #endif
 
@@ -63,27 +64,33 @@ void main() {
 
   color = postProcess(color);
 
+  float outline = clamp01(sumVec4(textureGather(colortex5, texcoord, 1)) / 4.0); // shitty anti aliasing that doesn't work
+  #if BLOCK_OUTLINE_MODE == 1
+  color.rgb = mix(color.rgb, vec3(BLOCK_OUTLINE_R, BLOCK_OUTLINE_G, BLOCK_OUTLINE_B), outline);
+  #elif BLOCK_OUTLINE_MODE == 2
+  color.rgb = mix(color.rgb, rgb(vec3(fract(frameTimeCounter / 10.0), 1.0, 1.0)), outline);
+  #endif
+
+  // color.rgb = mask.rgb;
+
   #ifdef DEBUG_ENABLE
   if (hideGUI) {
     color = texture(debugtex, texcoord);
   }
 
   beginText(ivec2(gl_FragCoord.xy / 2.0), ivec2(0, viewHeight / 2.0) + ivec2(8, -8));
-  printString((_D,_e,_b,_u,_g,_space,_m,_o,_d,_e,_space,_i,_s,_space,_a,_c,_t,_i,_v,_e));
+  printString((_D, _e, _b, _u, _g, _space, _m, _o, _d, _e, _space, _i, _s, _space, _a, _c, _t, _i, _v, _e));
   printLine();
-  printString((_F,_r,_a,_m,_e,_colon,_space));
+  printString((_F, _r, _a, _m, _e, _colon, _space));
   printInt(frameCounter);
   printLine();
 
-  if(!hideGUI){
-    printString((_P,_r,_e,_s,_s,_space,_F,_1,_space,_a,_n,_d,_space,_c,_a,_l,_l,_space,_s,_h,_o,_w,_opprn,_clprn));
+  if (!hideGUI) {
+    printString((_P, _r, _e, _s, _s, _space, _F, _1, _space, _a, _n, _d, _space, _c, _a, _l, _l, _space, _s, _h, _o, _w, _opprn, _clprn));
   }
 
   printLine();
   printInt(int(encodedHeldLightColor));
-
-
-
 
   endText(color.rgb);
 

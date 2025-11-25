@@ -2,14 +2,14 @@
     Copyright (c) 2024 Josh Britain (jbritain)
     Licensed under the MIT license
 
-      _____   __   _                          
+      _____   __   _
      / ___/  / /  (_)  __ _   __ _  ___   ____
     / (_ /  / /  / /  /  ' \ /  ' \/ -_) / __/
-    \___/  /_/  /_/  /_/_/_//_/_/_/\__/ /_/   
-    
+    \___/  /_/  /_/  /_/_/_//_/_/_/\__/ /_/
+
     By jbritain
     https://jbritain.net
-                                            
+
 */
 
 #define GBUFFERS_VOXY
@@ -50,8 +50,8 @@ void voxy_emitFragment(VoxyFragmentParameters params) {
   }
 
   vec3 viewPos = screenSpaceToViewSpace(
-    gl_FragCoord.xyz / vec3(viewWidth, viewHeight, 1.0)
-  );
+      gl_FragCoord.xyz / vec3(viewWidth, viewHeight, 1.0)
+    );
   vec3 playerPos = (gbufferModelViewInverse * vec4(viewPos, 1.0)).xyz;
 
   vec2 lightmap = params.lightMap;
@@ -89,13 +89,13 @@ void voxy_emitFragment(VoxyFragmentParameters params) {
   if (isLava(materialID)) {
     vec3 worldPos = playerPos + cameraPosition;
     float noise = texture(
-      perlinNoiseTex,
-      mod(worldPos.xz / 100 + vec2(0.0, frameTimeCounter * 0.005), 1.0)
-    ).r;
+        perlinNoiseTex,
+        mod(worldPos.xz / 100 + vec2(0.0, frameTimeCounter * 0.005), 1.0)
+      ).r;
     noise *= texture(
-      perlinNoiseTex,
-      mod(worldPos.xz / 200 + vec2(frameTimeCounter * 0.005, 0.0), 1.0)
-    ).r;
+        perlinNoiseTex,
+        mod(worldPos.xz / 200 + vec2(frameTimeCounter * 0.005, 0.0), 1.0)
+      ).r;
     material.albedo.rgb *= noise;
     material.albedo.rgb *= 4.0;
   }
@@ -107,7 +107,7 @@ void voxy_emitFragment(VoxyFragmentParameters params) {
       uint(params.face >> 1 == 0),
       uint(params.face >> 1 == 1)
     ) *
-    (float(int(params.face) & 1) * 2 - 1);
+      (float(int(params.face) & 1) * 2 - 1);
   vec3 normal = mat3(gbufferModelView) * worldNormal;
 
   if (isWater(materialID)) {
@@ -116,19 +116,18 @@ void voxy_emitFragment(VoxyFragmentParameters params) {
     color = vec4(0.0);
   } else {
     color.rgb = getShadedColor(
-      material,
-      normal,
-      normal,
-      lightmap,
-      viewPos,
-      1.0,
-      1.0
-    );
+        material,
+        normal,
+        normal,
+        lightmap,
+        viewPos,
+        1.0,
+        1.0
+      );
     color.a = albedo.a;
   }
 
   outData1.xy = encodeNormal(worldNormal);
   outData1.z = lightmap.y;
   outData1.a = clamp01(float(materialID - 1000) * rcp(255.0));
-
 }

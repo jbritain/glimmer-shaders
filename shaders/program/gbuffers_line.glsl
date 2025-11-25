@@ -7,23 +7,23 @@
 const float LINE_WIDTH = 2.0;
 const float VIEW_SHRINK = 1.0 - 1.0 / 256.0;
 const mat4 VIEW_SCALE = mat4(
-  VIEW_SHRINK,
-  0.0,
-  0.0,
-  0.0,
-  0.0,
-  VIEW_SHRINK,
-  0.0,
-  0.0,
-  0.0,
-  0.0,
-  VIEW_SHRINK,
-  0.0,
-  0.0,
-  0.0,
-  0.0,
-  1.0
-);
+    VIEW_SHRINK,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    VIEW_SHRINK,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    VIEW_SHRINK,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0
+  );
 
 uniform float viewHeight;
 uniform float viewWidth;
@@ -42,7 +42,7 @@ void main() {
     projectionMatrix * (VIEW_SCALE * (modelViewMatrix * vec4(vaPosition, 1.0)));
   vec4 linePosEnd =
     projectionMatrix *
-    (VIEW_SCALE * (modelViewMatrix * vec4(vaPosition + vaNormal, 1.0)));
+      (VIEW_SCALE * (modelViewMatrix * vec4(vaPosition + vaNormal, 1.0)));
 
   vec3 ndc1 = linePosStart.xyz / linePosStart.w;
   vec3 ndc2 = linePosEnd.xyz / linePosEnd.w;
@@ -50,15 +50,15 @@ void main() {
   vec2 lineScreenDirection = normalize((ndc2.xy - ndc1.xy) * resolution);
   vec2 lineOffset =
     vec2(-lineScreenDirection.y, lineScreenDirection.x) *
-    LINE_WIDTH /
-    resolution;
+      LINE_WIDTH /
+      resolution;
 
   if (lineOffset.x < 0.0) lineOffset = -lineOffset;
   if (gl_VertexID % 2 != 0) lineOffset = -lineOffset;
   gl_Position = vec4(
-    (ndc1 + vec3(lineOffset, 0.0)) * linePosStart.w,
-    linePosStart.w
-  );
+      (ndc1 + vec3(lineOffset, 0.0)) * linePosStart.w,
+      linePosStart.w
+    );
 
   tint = vaColor;
 }
@@ -66,23 +66,27 @@ void main() {
 #endif
 
 #ifdef fsh
-  #extension GL_ARB_explicit_attrib_location : enable
+#extension GL_ARB_explicit_attrib_location : enable
 
-  uniform float alphaTestRef;
-  uniform int renderStage;
+uniform float alphaTestRef;
+uniform int renderStage;
 
-  in vec4 tint;
+in vec4 tint;
 
-  /* DRAWBUFFERS:0 */
-  layout(location = 0) out vec4 color;
+/* RENDERTARGETS: 0,5 */
+layout(location = 0) out vec4 color;
+layout(location = 1) out vec4 mask;
 
-  void main() {
-    color = tint;
-    if (color.a < alphaTestRef) discard;
+void main() {
+  color = tint;
+  mask = vec4(0.0);
+  if (color.a < alphaTestRef) discard;
 
-
-    if(renderStage == MC_RENDER_STAGE_OUTLINE){
-      color.rgb = vec3(0.05);
-    }
+  if (renderStage == MC_RENDER_STAGE_OUTLINE) {
+    mask.g = 1.0;
+    color.a = 0.0;
   }
+
+  mask.g = 1.0;
+}
 #endif

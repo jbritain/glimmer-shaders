@@ -14,7 +14,9 @@ screen.POST=Post-Processing
 screen.WORLD=World
 screen.MATERIALS=Materials
 screen.PARALLAX=Parallax (POM)
-screen.DH=Distant Horizons
+screen.DH=Distant Horizons/Voxy
+screen.MISC=Miscellaneous
+screen.BLOCK_OUTLINE=Block Selection Outline
 screen.DEBUG=Development
 
 profile.potato=§cPotato
@@ -45,8 +47,8 @@ option.AMBIENT_STRENGTH.comment=The minimum amount of light there can be in any 
 option.OLD_LIGHTING=Old Lighting
 option.OLD_LIGHTING.comment=Enables the vanilla lighting based on the facing direction. §9No performance impact!
 
-option.FLOODFILL=Colored Blocklight
-option.FLOODFILL.comment=Makes the light emitted by blocks match their color. Requires §eshadows §fto be enabled. §6Moderate performance impact.
+option.FLOODFILL=coloured Blocklight
+option.FLOODFILL.comment=Makes the light emitted by blocks match their colour. Requires §eshadows §fto be enabled. §6Moderate performance impact.
 
 option.EMISSION_STRENGTH=Emissive Strength
 option.EMISSION_STRENGTH.comment=How bright emissives are. §9No performance impact!
@@ -62,36 +64,36 @@ option.SHADOWS=Shadows
 option.shadowDistance=Shadow Distance
 option.shadowDistance.comment=The radius around the player in which things can cast shadows. §cHigh performance impact!
 value.shadowDistance.16.0=1 Chunk
-value.shadowDistance.32.0=2 Chunks    
-value.shadowDistance.48.0=3 Chunks    
-value.shadowDistance.64.0=4 Chunks    
-value.shadowDistance.80.0=5 Chunks    
-value.shadowDistance.96.0=6 Chunks    
-value.shadowDistance.112.0=7 Chunks   
-value.shadowDistance.128.0=8 Chunks   
-value.shadowDistance.144.0=9 Chunks   
-value.shadowDistance.160.0=10 Chunks  
-value.shadowDistance.176.0=11 Chunks  
-value.shadowDistance.192.0=12 Chunks  
-value.shadowDistance.208.0=13 Chunks  
-value.shadowDistance.224.0=14 Chunks  
-value.shadowDistance.240.0=15 Chunks  
-value.shadowDistance.256.0=16 Chunks  
-value.shadowDistance.272.0=17 Chunks  
-value.shadowDistance.288.0=18 Chunks  
-value.shadowDistance.304.0=19 Chunks  
-value.shadowDistance.320.0=20 Chunks  
-value.shadowDistance.336.0=21 Chunks  
-value.shadowDistance.352.0=22 Chunks  
-value.shadowDistance.368.0=23 Chunks  
-value.shadowDistance.384.0=24 Chunks  
-value.shadowDistance.400.0=25 Chunks  
-value.shadowDistance.416.0=26 Chunks  
-value.shadowDistance.432.0=27 Chunks  
-value.shadowDistance.448.0=28 Chunks  
-value.shadowDistance.464.0=29 Chunks  
-value.shadowDistance.480.0=30 Chunks  
-value.shadowDistance.496.0=31 Chunks  
+value.shadowDistance.32.0=2 Chunks
+value.shadowDistance.48.0=3 Chunks
+value.shadowDistance.64.0=4 Chunks
+value.shadowDistance.80.0=5 Chunks
+value.shadowDistance.96.0=6 Chunks
+value.shadowDistance.112.0=7 Chunks
+value.shadowDistance.128.0=8 Chunks
+value.shadowDistance.144.0=9 Chunks
+value.shadowDistance.160.0=10 Chunks
+value.shadowDistance.176.0=11 Chunks
+value.shadowDistance.192.0=12 Chunks
+value.shadowDistance.208.0=13 Chunks
+value.shadowDistance.224.0=14 Chunks
+value.shadowDistance.240.0=15 Chunks
+value.shadowDistance.256.0=16 Chunks
+value.shadowDistance.272.0=17 Chunks
+value.shadowDistance.288.0=18 Chunks
+value.shadowDistance.304.0=19 Chunks
+value.shadowDistance.320.0=20 Chunks
+value.shadowDistance.336.0=21 Chunks
+value.shadowDistance.352.0=22 Chunks
+value.shadowDistance.368.0=23 Chunks
+value.shadowDistance.384.0=24 Chunks
+value.shadowDistance.400.0=25 Chunks
+value.shadowDistance.416.0=26 Chunks
+value.shadowDistance.432.0=27 Chunks
+value.shadowDistance.448.0=28 Chunks
+value.shadowDistance.464.0=29 Chunks
+value.shadowDistance.480.0=30 Chunks
+value.shadowDistance.496.0=31 Chunks
 value.shadowDistance.512.0=32 Chunks
 
 option.entityShadowDistanceMul=Entity Shadow Distance
@@ -226,10 +228,10 @@ option.INFINITE_OCEAN=Infinite Ocean
 option.INFINITE_OCEAN.comment=Adds an ocean that stretches out to infinity. §6Moderate performance impact.
 
 option.SEA_LEVEL=Sea Level
-option.SEA_LEVEL.comment=What altitude the infinite ocean should render at. §9No performance impact! §7If you need a sea level that isn't an option here, let me know! 
+option.SEA_LEVEL.comment=What altitude the infinite ocean should render at. §9No performance impact! §7If you need a sea level that isn't an option here, let me know!
 
 option.DH_AO=Ambient Occlusion
-option.DH_AO.comment=Makes edges of blocks more defined on Distant Horizons terrain. §6Moderate performance impact.
+option.DH_AO.comment=Makes edges of blocks more defined on distant terrain. §6Moderate performance impact.
 
 option.DH_AO_SAMPLES=AO Samples
 option.DH_AO_SAMPLES.comment=Higher values will run worse but reduce noise. §6Moderate performance impact.
@@ -250,13 +252,23 @@ option.PARALLAX_SHADOW=Parallax Self-Shadow
 option.PARALLAX_SHADOW.comment=Allows parallax to cast a shadow. §6Moderate performance impact.
 
 option.PARALLAX_SHADOW_SAMPLES=Self-Shadow Samples
-option.PARALLAX_SHADOW_SAMPLES.comment=How many samples should be taken when computing parallax shadows. §6Moderate performance impact. 
+option.PARALLAX_SHADOW_SAMPLES.comment=How many samples should be taken when computing parallax shadows. §6Moderate performance impact.
 
 option.CAVE_SKY_DARKENING=Cave Sky Darkening
 option.CAVE_SKY_DARKENING.comment=Makes the sky dark and reduces fog when the game thinks you are underground. §9No performance impact!
 
 option.MOTION_BLUR=Motion Blur
 option.MOTION_BLUR.comment=Blurs things when the camera moves. This can make the game feel smoother at low framerates. §aMinimal performance impact.
+
+option.BLOCK_OUTLINE_MODE=Block Selection Outline
+option.BLOCK_OUTLINE.comment=Controls the outline around the currently selected block.When set to §eoff§f, it is invisible. When set to §eon§f, the colour is configured by the sliders below. When set to §erainbow§f, it changes colour over time.
+value.BLOCK_OUTLINE_MODE.0=Off
+value.BLOCK_OUTLINE_MODE.1=On
+value.BLOCK_OUTLINE_MODE.2=§cR§6a§ei§an§bb§9o§dw
+
+option.BLOCK_OUTLINE_R=Outline Red
+option.BLOCK_OUTLINE_G=Outline Green
+option.BLOCK_OUTLINE_B=Outline Blue
 
 option.tonemap=Tonemap Operator
 option.tonemap.comment=How the final colour is graded. §2Imperceptible performance impact.
