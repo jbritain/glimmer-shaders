@@ -254,6 +254,9 @@ option.PARALLAX_SHADOW.comment=Allows parallax to cast a shadow. §6Moderate per
 option.PARALLAX_SHADOW_SAMPLES=Self-Shadow Samples
 option.PARALLAX_SHADOW_SAMPLES.comment=How many samples should be taken when computing parallax shadows. §6Moderate performance impact.
 
+option.WATER_PARALLAX=Water Parallax
+option.WATER_PARALLAX.comment=Adds depth to water waves.  §6Moderate performance impact.
+
 option.CAVE_SKY_DARKENING=Cave Sky Darkening
 option.CAVE_SKY_DARKENING.comment=Makes the sky dark and reduces fog when the game thinks you are underground. §9No performance impact!
 

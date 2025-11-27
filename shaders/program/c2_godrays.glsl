@@ -2,14 +2,14 @@
     Copyright (c) 2024 Josh Britain (jbritain)
     Licensed under the MIT license
 
-      _____   __   _                          
+      _____   __   _
      / ___/  / /  (_)  __ _   __ _  ___   ____
     / (_ /  / /  / /  /  ' \ /  ' \/ -_) / __/
-    \___/  /_/  /_/  /_/_/_//_/_/_/\__/ /_/   
-    
+    \___/  /_/  /_/  /_/_/_//_/_/_/\__/ /_/
+
     By jbritain
     https://jbritain.net
-                                            
+
 */
 
 #include "/lib/common.glsl"
@@ -62,7 +62,7 @@ void main() {
 
   sampleCoord -=
     deltaTexcoord *
-    interleavedGradientNoise(floor(gl_FragCoord.xy), frameCounter);
+      interleavedGradientNoise(floor(gl_FragCoord.xy), frameCounter);
 
   for (int i = 0; i < GODRAYS_SAMPLES; i++) {
     vec3 scatterSample = texture(colortex4, sampleCoord).rgb;
@@ -83,6 +83,7 @@ void main() {
 
   float depth = texture(depthtex0, texcoord).r;
   vec3 viewPos = screenSpaceToViewSpace(vec3(texcoord, depth));
+  dhOverride(depth, viewPos, false);
   // #ifdef PIXEL_LOCKED_LIGHTING
   // viewPos = (gbufferModelViewInverse * vec4(viewPos, 1.0)).xyz + cameraPosition;
   // viewPos = floor(viewPos * PIXEL_SIZE) / PIXEL_SIZE;
@@ -136,7 +137,6 @@ void main() {
   // scattering /= (shadowDistance / 2.0);
   // scattering = pow2(scattering);
   #endif
-
 }
 
 #endif

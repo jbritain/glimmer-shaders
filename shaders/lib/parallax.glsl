@@ -2,14 +2,14 @@
     Copyright (c) 2024 Josh Britain (jbritain)
     Licensed under the MIT license
 
-      _____   __   _                          
+      _____   __   _
      / ___/  / /  (_)  __ _   __ _  ___   ____
     / (_ /  / /  / /  /  ' \ /  ' \/ -_) / __/
-    \___/  /_/  /_/  /_/_/_//_/_/_/\__/ /_/   
-    
+    \___/  /_/  /_/  /_/_/_//_/_/_/\__/ /_/
+
     By jbritain
     https://jbritain.net
-                                            
+
 */
 
 #ifndef PARALLAX_GLSL
@@ -29,22 +29,22 @@ vec2 atlasToLocal(vec2 texcoord) {
 vec4 bilinearSample(sampler2D tex, vec2 texcoord, vec2 dx, vec2 dy) {
   vec2 localCoord = atlasToLocal(texcoord);
 
-  vec2 f = fract(localCoord * singleTexSize - 0.5);
+  vec2 f = fract(localCoord * singleTexSize - 0.5); // coordinate within texel
 
-  vec2 invRes = rcp(atlasSize);
+  vec2 invRes = rcp(singleTexSize);
   vec4 tl = textureGrad(tex, texcoord, dx, dy);
   vec4 tr = textureGrad(
-    tex,
-    localToAtlas(localCoord + vec2(invRes.x, 0.0)),
-    dx,
-    dy
-  );
+      tex,
+      localToAtlas(localCoord + vec2(invRes.x, 0.0)),
+      dx,
+      dy
+    );
   vec4 bl = textureGrad(
-    tex,
-    localToAtlas(localCoord + vec2(0.0, invRes.y)),
-    dx,
-    dy
-  );
+      tex,
+      localToAtlas(localCoord + vec2(0.0, invRes.y)),
+      dx,
+      dy
+    );
   vec4 br = textureGrad(tex, localToAtlas(localCoord + invRes), dx, dy);
 
   vec4 top = mix(tl, tr, f.x);
@@ -71,10 +71,10 @@ vec2 getParallaxTexcoord(
   float jitter
 ) {
   float distFade = smoothstep(
-    PARALLAX_DISTANCE * PARALLAX_DISTANCE_CURVE,
-    PARALLAX_DISTANCE,
-    length(viewPos)
-  );
+      PARALLAX_DISTANCE * PARALLAX_DISTANCE_CURVE,
+      PARALLAX_DISTANCE,
+      length(viewPos)
+    );
 
   if (distFade >= 1.0) {
     previousPos = vec3(-1.0);
@@ -92,7 +92,7 @@ vec2 getParallaxTexcoord(
       viewDir.xy * rcp(-viewDir.z) * PARALLAX_HEIGHT * (1.0 - distFade),
       1.0
     ) *
-    layerDepth;
+      layerDepth;
   vec3 pos = vec3(atlasToLocal(texcoord), 0.0);
 
   float depth = getDepth(texcoord, dx, dy);
@@ -135,10 +135,10 @@ float getParallaxShadow(
   vec3 viewPos
 ) {
   float distFade = smoothstep(
-    PARALLAX_DISTANCE * PARALLAX_DISTANCE_CURVE,
-    PARALLAX_DISTANCE,
-    length(viewPos)
-  );
+      PARALLAX_DISTANCE * PARALLAX_DISTANCE_CURVE,
+      PARALLAX_DISTANCE,
+      length(viewPos)
+    );
 
   if (distFade >= 1.0) {
     return 1.0;
@@ -152,8 +152,8 @@ float getParallaxShadow(
   vec3 lightDir = normalize(shadowLightPosition) * tbnMatrix;
   vec3 rayStep =
     vec3(lightDir.xy * rcp(lightDir.z) * PARALLAX_HEIGHT, -1.0) *
-    pos.z *
-    rcp(PARALLAX_SHADOW_SAMPLES * (1.0 - distFade));
+      pos.z *
+      rcp(PARALLAX_SHADOW_SAMPLES * (1.0 - distFade));
 
   if (getDepth(localToAtlas(pos.xy), dx, dy) < pos.z) return distFade;
 

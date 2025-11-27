@@ -59,7 +59,6 @@ void main() {
 
   color.rgb *= 1.0 - 0.95 * blindness;
 
-  color.rgb *= 2.0;
   color.rgb = tonemap(color.rgb);
 
   color = postProcess(color);
