@@ -20,6 +20,7 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: "Glimmer-${{ github.event.release.tag_name }}.zip"
           asset_name: "Glimmer-${{ github.event.release.tag_name }}.zip"
+          tag: ${{ github.ref }}
       - uses: Kir-Antipov/mc-publish@v3.3
         with:
           # Only include this section if you wish to publish
