@@ -46,12 +46,12 @@ void main() {
 
   vec3 bloom = texture(colortex2, texcoord).rgb;
 
-  float rain = texture(colortex5, texcoord).r;
+  vec4 mask = texture(colortex5, texcoord);
   color.rgb = mix(
       color.rgb,
       bloom,
       clamp01(
-        0.01 * BLOOM_STRENGTH + rain * 0.1 + wetness * 0.1 * EBS.y * biomeCanRainSmooth + blindness + 0.1 * float(isEyeInWater == 1)
+        0.01 * BLOOM_STRENGTH + mask.r * 0.1 + wetness * 0.1 * EBS.y * biomeCanRainSmooth + blindness + 0.1 * float(isEyeInWater == 1)
       )
     );
   color.rgb *= 1.0 - 0.8 * blindness;
@@ -63,11 +63,10 @@ void main() {
 
   color = postProcess(color);
 
-  float outline = clamp01(sumVec4(textureGather(colortex5, texcoord, 1)) / 4.0); // shitty anti aliasing that doesn't work
   #if BLOCK_OUTLINE_MODE == 1
-  color.rgb = mix(color.rgb, vec3(BLOCK_OUTLINE_R, BLOCK_OUTLINE_G, BLOCK_OUTLINE_B), outline);
+  color.rgb = mix(color.rgb, vec3(BLOCK_OUTLINE_R, BLOCK_OUTLINE_G, BLOCK_OUTLINE_B), mask.g);
   #elif BLOCK_OUTLINE_MODE == 2
-  color.rgb = mix(color.rgb, rgb(vec3(fract(frameTimeCounter / 10.0), 1.0, 1.0)), outline);
+  color.rgb = mix(color.rgb, rgb(vec3(fract(frameTimeCounter / 10.0), 1.0, 1.0)), mask.g);
   #endif
 
   // color.rgb = mask.rgb;

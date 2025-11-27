@@ -38,8 +38,8 @@ const bool colortex0MipmapEnabled = true;
 #include "/lib/post/FXAA.glsl"
 
 void main() {
-  // color = texture(colortex0, texcoord);
-  // return;
+  color = texture(colortex0, texcoord);
+  return;
   color.rgb = FXAA311(texture(colortex0, texcoord).rgb, texcoord);
   color.a = 1.0;
 }

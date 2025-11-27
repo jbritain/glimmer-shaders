@@ -17,6 +17,7 @@
 #ifdef vsh
 #include "/lib/sway.glsl"
 #include "/lib/water/waveNormals.glsl"
+#include "/lib/TAA.glsl"
 
 in vec2 mc_Entity;
 in vec4 at_tangent;
@@ -87,6 +88,10 @@ void main() {
   #endif
 
   gl_Position = gbufferProjection * vec4(viewPos, 1.0);
+  // vec2 jitter = getTAAJitter();
+  // jitter = jitter * 2.0 - 1.0; // in clip space
+  // jitter /= resolution / 2.0;
+  // gl_Position.xy += jitter;
 
   midblock = at_midBlock.xyz;
   midtexcoord = mc_midTexCoord.xy;

@@ -2,14 +2,14 @@
     Copyright (c) 2024 Josh Britain (jbritain)
     Licensed under the MIT license
 
-      _____   __   _                          
+      _____   __   _
      / ___/  / /  (_)  __ _   __ _  ___   ____
     / (_ /  / /  / /  /  ' \ /  ' \/ -_) / __/
-    \___/  /_/  /_/  /_/_/_//_/_/_/\__/ /_/   
-    
+    \___/  /_/  /_/  /_/_/_//_/_/_/\__/ /_/
+
     By jbritain
     https://jbritain.net
-                                            
+
 */
 
 #include "/lib/common.glsl"
@@ -35,15 +35,15 @@ layout(location = 0) out vec4 color;
 layout(location = 1) out vec4 newHistory;
 
 const ivec2 neighbourhoodOffsets[8] = ivec2[8](
-  ivec2(1, 1),
-  ivec2(1, -1),
-  ivec2(-1, 1),
-  ivec2(-1, -1),
-  ivec2(1, 0),
-  ivec2(0, 1),
-  ivec2(-1, 0),
-  ivec2(0, -1)
-);
+    ivec2(1, 1),
+    ivec2(1, -1),
+    ivec2(-1, 1),
+    ivec2(-1, -1),
+    ivec2(1, 0),
+    ivec2(0, 1),
+    ivec2(-1, 0),
+    ivec2(0, -1)
+  );
 
 void main() {
   float depth = texture(depthtex0, texcoord).r;
@@ -53,21 +53,17 @@ void main() {
   feetPlayerPos += cameraPosition;
   feetPlayerPos -= previousCameraPosition;
   vec3 previousViewPos = (gbufferPreviousModelView *
-    vec4(feetPlayerPos, 1.0)).xyz;
+      vec4(feetPlayerPos, 1.0)).xyz;
   vec4 previousClipPos = gbufferPreviousProjection * vec4(previousViewPos, 1.0);
   vec3 previousScreenPos = previousClipPos.xyz / previousClipPos.w * 0.5 + 0.5;
 
   color = texture(colortex0, texcoord);
 
   bool rejectSample = clamp01(previousScreenPos.xy) != previousScreenPos.xy;
+
+  // disable filtering on translucents because it makes water blurry
   #ifndef SSR_JITTER
   rejectSample = rejectSample || opaqueDepth != depth;
-
-  #if defined DISTANT_HORIZONS || defined VOXY
-  rejectSample =
-    rejectSample || depth == 1.0 && texture(dhDepthTex0, texcoord).r != 1.0;
-  #endif
-
   #endif
 
   vec4 historyColor = texture(colortex3, previousScreenPos.xy);
@@ -78,10 +74,10 @@ void main() {
 
   for (int i = 0; i < 8; i++) {
     vec3 neighbourhoodSample = texelFetch(
-      colortex0,
-      ivec2(gl_FragCoord.xy) + neighbourhoodOffsets[i],
-      0
-    ).rgb;
+        colortex0,
+        ivec2(gl_FragCoord.xy) + neighbourhoodOffsets[i],
+        0
+      ).rgb;
     maxCol = max(maxCol, neighbourhoodSample);
     minCol = min(minCol, neighbourhoodSample);
   }
@@ -91,7 +87,6 @@ void main() {
   color = mix(color, historyColor, 0.7 * float(!rejectSample));
 
   newHistory = color;
-
 }
 
 #endif

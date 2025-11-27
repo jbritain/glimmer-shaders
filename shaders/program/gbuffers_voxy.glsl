@@ -27,6 +27,7 @@
 
 #include "/lib/lighting/shading.glsl"
 #include "/lib/util/packing.glsl"
+#include "/lib/TAA.glsl"
 
 layout(location = 0) out vec4 color;
 layout(location = 1) out vec4 outData1;
