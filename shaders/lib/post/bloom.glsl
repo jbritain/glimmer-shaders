@@ -2,14 +2,14 @@
     Copyright (c) 2024 Josh Britain (jbritain)
     Licensed under the MIT license
 
-      _____   __   _                          
+      _____   __   _
      / ___/  / /  (_)  __ _   __ _  ___   ____
     / (_ /  / /  / /  /  ' \ /  ' \/ -_) / __/
-    \___/  /_/  /_/  /_/_/_//_/_/_/\__/ /_/   
-    
+    \___/  /_/  /_/  /_/_/_//_/_/_/\__/ /_/
+
     By jbritain
     https://jbritain.net
-                                            
+
 */
 
 #ifndef BLOOM_GLSL
@@ -44,51 +44,52 @@ struct BloomTile {
 
 BloomTile tileA = BloomTile(vec2(0.0), 1, 0.5); // 1/2 scale
 BloomTile tileB = BloomTile(
-  vec2(0.5 + 2 / (viewWidth * BLOOM_QUALITY), 0.0),
-  2,
-  0.25
-); // 1/4 scale
+    vec2(0.5 + 2 / (viewWidth), 0.0),
+    2,
+    0.25
+  ); // 1/4 scale
 BloomTile tileC = BloomTile(
-  vec2(0.75 + 4 / (viewWidth * BLOOM_QUALITY), 0.0),
-  3,
-  0.125
-); // 1/8 scale
+    vec2(0.75 + 4 / (viewWidth), 0.0),
+    3,
+    0.125
+  ); // 1/8 scale
 BloomTile tileD = BloomTile(
-  vec2(0.875 + 6 / (viewWidth * BLOOM_QUALITY), 0.0),
-  4,
-  0.0625
-); // 1/16 scale
+    vec2(0.875 + 6 / (viewWidth), 0.0),
+    4,
+    0.0625
+  ); // 1/16 scale
 BloomTile tileE = BloomTile(
-  vec2(0.9375 + 8 / (viewWidth * BLOOM_QUALITY), 0.0),
-  5,
-  0.03125
-); // 1/32 scale
+    vec2(0.9375 + 8 / (viewWidth), 0.0),
+    5,
+    0.03125
+  ); // 1/32 scale
 
 BloomTile tiles[5] = BloomTile[5](tileA, tileB, tileC, tileD, tileE);
 
 vec3 downSample(sampler2D sourceTexture, vec2 coord, bool doKarisAverage) {
+  return textureLod(sourceTexture, coord, 0).rgb;
   // a - b - c
   // - j - k -
   // d - e - f
   // - l - m -
   // g - h - i
 
-  float x = 1.0 / float(viewWidth * BLOOM_QUALITY);
-  float y = 1.0 / float(viewHeight * BLOOM_QUALITY);
+  float x = 1.0 / float(viewWidth);
+  float y = 1.0 / float(viewHeight);
 
-  vec3 a = texture(sourceTexture, vec2(coord.x - 2 * x, coord.y + 2 * y)).rgb;
-  vec3 b = texture(sourceTexture, vec2(coord.x, coord.y + 2 * y)).rgb;
-  vec3 c = texture(sourceTexture, vec2(coord.x + 2 * x, coord.y + 2 * y)).rgb;
-  vec3 d = texture(sourceTexture, vec2(coord.x - 2 * x, coord.y)).rgb;
-  vec3 e = texture(sourceTexture, vec2(coord.x, coord.y)).rgb;
-  vec3 f = texture(sourceTexture, vec2(coord.x + 2 * x, coord.y)).rgb;
-  vec3 g = texture(sourceTexture, vec2(coord.x - 2 * x, coord.y - 2 * y)).rgb;
-  vec3 h = texture(sourceTexture, vec2(coord.x, coord.y - 2 * y)).rgb;
-  vec3 i = texture(sourceTexture, vec2(coord.x + 2 * x, coord.y - 2 * y)).rgb;
-  vec3 j = texture(sourceTexture, vec2(coord.x - x, coord.y + y)).rgb;
-  vec3 k = texture(sourceTexture, vec2(coord.x + x, coord.y + y)).rgb;
-  vec3 l = texture(sourceTexture, vec2(coord.x - x, coord.y - y)).rgb;
-  vec3 m = texture(sourceTexture, vec2(coord.x + x, coord.y - y)).rgb;
+  vec3 a = textureLod(sourceTexture, vec2(coord.x - 2 * x, coord.y + 2 * y), 0).rgb;
+  vec3 b = textureLod(sourceTexture, vec2(coord.x, coord.y + 2 * y), 0).rgb;
+  vec3 c = textureLod(sourceTexture, vec2(coord.x + 2 * x, coord.y + 2 * y), 0).rgb;
+  vec3 d = textureLod(sourceTexture, vec2(coord.x - 2 * x, coord.y), 0).rgb;
+  vec3 e = textureLod(sourceTexture, vec2(coord.x, coord.y), 0).rgb;
+  vec3 f = textureLod(sourceTexture, vec2(coord.x + 2 * x, coord.y), 0).rgb;
+  vec3 g = textureLod(sourceTexture, vec2(coord.x - 2 * x, coord.y - 2 * y), 0).rgb;
+  vec3 h = textureLod(sourceTexture, vec2(coord.x, coord.y - 2 * y), 0).rgb;
+  vec3 i = textureLod(sourceTexture, vec2(coord.x + 2 * x, coord.y - 2 * y), 0).rgb;
+  vec3 j = textureLod(sourceTexture, vec2(coord.x - x, coord.y + y), 0).rgb;
+  vec3 k = textureLod(sourceTexture, vec2(coord.x + x, coord.y + y), 0).rgb;
+  vec3 l = textureLod(sourceTexture, vec2(coord.x - x, coord.y - y), 0).rgb;
+  vec3 m = textureLod(sourceTexture, vec2(coord.x + x, coord.y - y), 0).rgb;
 
   vec3 dsample;
   if (doKarisAverage) {
@@ -117,24 +118,25 @@ vec3 downSample(sampler2D sourceTexture, vec2 coord, bool doKarisAverage) {
 }
 
 vec3 upSample(sampler2D sourceTexture, vec2 coord) {
+  return textureLod(sourceTexture, coord, 0).rgb;
   //  1   | 1 2 1 |
   // -- * | 2 4 2 |
   // 16   | 1 2 1 |
 
-  float x = BLOOM_RADIUS / (viewWidth * BLOOM_QUALITY);
-  float y = BLOOM_RADIUS / (viewHeight * BLOOM_QUALITY);
+  float x = BLOOM_RADIUS / (viewWidth);
+  float y = BLOOM_RADIUS / (viewHeight);
 
-  vec3 a = texture(sourceTexture, vec2(coord.x - x, coord.y + y)).rgb;
-  vec3 b = texture(sourceTexture, vec2(coord.x, coord.y + y)).rgb;
-  vec3 c = texture(sourceTexture, vec2(coord.x + x, coord.y + y)).rgb;
+  vec3 a = textureLod(sourceTexture, vec2(coord.x - x, coord.y + y), 0).rgb;
+  vec3 b = textureLod(sourceTexture, vec2(coord.x, coord.y + y), 0).rgb;
+  vec3 c = textureLod(sourceTexture, vec2(coord.x + x, coord.y + y), 0).rgb;
 
-  vec3 d = texture(sourceTexture, vec2(coord.x - x, coord.y)).rgb;
-  vec3 e = texture(sourceTexture, vec2(coord.x, coord.y)).rgb;
-  vec3 f = texture(sourceTexture, vec2(coord.x + x, coord.y)).rgb;
+  vec3 d = textureLod(sourceTexture, vec2(coord.x - x, coord.y), 0).rgb;
+  vec3 e = textureLod(sourceTexture, vec2(coord.x, coord.y), 0).rgb;
+  vec3 f = textureLod(sourceTexture, vec2(coord.x + x, coord.y), 0).rgb;
 
-  vec3 g = texture(sourceTexture, vec2(coord.x - x, coord.y - y)).rgb;
-  vec3 h = texture(sourceTexture, vec2(coord.x, coord.y - y)).rgb;
-  vec3 i = texture(sourceTexture, vec2(coord.x + x, coord.y - y)).rgb;
+  vec3 g = textureLod(sourceTexture, vec2(coord.x - x, coord.y - y), 0).rgb;
+  vec3 h = textureLod(sourceTexture, vec2(coord.x, coord.y - y), 0).rgb;
+  vec3 i = textureLod(sourceTexture, vec2(coord.x + x, coord.y - y), 0).rgb;
 
   vec3 usample = e * 4.0;
   usample += (b + d + f + h) * 2.0;

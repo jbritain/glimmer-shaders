@@ -31,7 +31,7 @@ void main() {
 #include "/lib/post/tonemap.glsl"
 #include "/lib/post/processing.glsl"
 #include "/lib/util/textRenderer.glsl"
-#include "/lib/post/FXAA.glsl"
+#include "/lib/post/bloom.glsl"
 
 in vec2 texcoord;
 
@@ -44,14 +44,14 @@ void main() {
 
   #ifdef BLOOM
 
-  vec3 bloom = texture(colortex2, texcoord).rgb;
+  vec3 bloom = color.rgb + upSample(colortex2, scaleFromBloomTile(texcoord, tiles[0])).rgb;
 
-  vec4 mask = texture(colortex5, texcoord);
+  float rain = texture(colortex5, texcoord).r;
   color.rgb = mix(
       color.rgb,
       bloom,
       clamp01(
-        0.01 * BLOOM_STRENGTH + mask.r * 0.1 + wetness * 0.1 * EBS.y * biomeCanRainSmooth + blindness + 0.1 * float(isEyeInWater == 1)
+        0.01 * BLOOM_STRENGTH + rain * 0.1 + wetness * 0.1 * EBS.y + blindness
       )
     );
   color.rgb *= 1.0 - 0.8 * blindness;
@@ -59,21 +59,15 @@ void main() {
 
   color.rgb *= 1.0 - 0.95 * blindness;
 
+  color.rgb *= 2.0;
   color.rgb = tonemap(color.rgb);
 
   color = postProcess(color);
 
-  #if BLOCK_OUTLINE_MODE == 1
-  color.rgb = mix(color.rgb, vec3(BLOCK_OUTLINE_R, BLOCK_OUTLINE_G, BLOCK_OUTLINE_B), mask.g);
-  #elif BLOCK_OUTLINE_MODE == 2
-  color.rgb = mix(color.rgb, rgb(vec3(fract(frameTimeCounter / 10.0), 1.0, 1.0)), mask.g);
-  #endif
-
-  // color.rgb = mask.rgb;
-
   #ifdef DEBUG_ENABLE
   if (hideGUI) {
     color = texture(debugtex, texcoord);
+    color = texture(colortex2, texcoord);
   }
 
   beginText(ivec2(gl_FragCoord.xy / 2.0), ivec2(0, viewHeight / 2.0) + ivec2(8, -8));
@@ -86,9 +80,6 @@ void main() {
   if (!hideGUI) {
     printString((_P, _r, _e, _s, _s, _space, _F, _1, _space, _a, _n, _d, _space, _c, _a, _l, _l, _space, _s, _h, _o, _w, _opprn, _clprn));
   }
-
-  printLine();
-  printInt(int(encodedHeldLightColor));
 
   endText(color.rgb);
 
