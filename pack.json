@@ -1,0 +1,7 @@
+{
+  "programs": {
+    "gbuffers": {
+      "terrain": "opaque"
+    }
+  }
+}
