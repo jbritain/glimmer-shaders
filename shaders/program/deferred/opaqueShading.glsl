@@ -34,6 +34,8 @@ uniform sampler2D depthtex0;
 uniform usampler2D colortex1;
 uniform usampler2D colortex2;
 
+uniform sampler2D sunTransmittanceLUTTex;
+
 /* RENDERTARGETS: 0 */
 
 layout(location = 0) out vec4 color;
@@ -49,7 +51,7 @@ void main(){
   Material material = unpackMaterial(texture(colortex2, texcoord).rg);
   Gbuffer gbuffer = unpackGbuffer(texture(colortex1, texcoord).rgb);
 
-  color.rg = gbuffer.lightmap;
+  color.rgb = texture(sunTransmittanceLUTTex, texcoord).rgb;
 }
 
 #endif

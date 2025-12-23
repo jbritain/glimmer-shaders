@@ -34,24 +34,11 @@ def generate_gbuffers(pack):
 
 
 def generate_post_processing(pack):
-    for i, program in enumerate(pack["programs"]["deferred"]):
-      create_linked_shader_program(
-          f"deferred{i if i else ''}", f"program/deferred/{program['path']}.glsl")
-
-
-def generate_buffer_config(pack):
-  buffer_string = ["/*"]
-
-  for buffer_name, buffer in pack["buffers"].items():
-    if "format" in buffer.keys():
-      buffer_string.append(
-          f"const int {buffer_name}Format = {buffer["format"]};"
-      )
-
-  buffer_string.append("*/")
-
-  with open(f"{shaders_path}/{config_path}/buffers.glsl", "w") as f:
-    f.writelines([l + "\n" for l in buffer_string])
+    for stage in ["setup", "prepare", "composite", "deferred"]:
+      if os.path.exists(f"{shaders_path}/program/{stage}"):
+        for i, program in enumerate(pack["programs"][stage]):
+          create_linked_shader_program(
+              f"{stage}{i if i else ''}", f"program/{stage}/{program['path']}.glsl")
 
 
 def generate_pack():
@@ -60,7 +47,6 @@ def generate_pack():
 
   generate_gbuffers(pack)
   generate_post_processing(pack)
-  generate_buffer_config(pack)
 
 
 generate_pack()

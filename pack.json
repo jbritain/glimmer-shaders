@@ -3,6 +3,12 @@
     "gbuffers": {
       "terrain": "opaque"
     },
+    "setup": [
+      {
+        "path": "generateSunTransmittanceLUT",
+        "programs": ["csh"]
+      }
+    ],
     "deferred": [
       {
         "path": "opaqueShading",
