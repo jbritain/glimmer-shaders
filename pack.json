@@ -2,6 +2,23 @@
   "programs": {
     "gbuffers": {
       "terrain": "opaque"
+    },
+    "deferred": [
+      {
+        "path": "opaqueShading",
+        "programs": ["vsh", "fsh"]
+      }
+    ]
+  },
+  "buffers": {
+    "colortex0": {
+      "format": "RGB16F"
+    },
+    "colortex1": {
+      "format": "RGB16UI"
+    },
+    "colortex2": {
+      "format": "RG32UI"
     }
   }
 }
