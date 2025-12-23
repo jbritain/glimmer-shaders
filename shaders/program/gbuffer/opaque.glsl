@@ -68,7 +68,6 @@ void main(){
   gbuffer.geometryNormal = mat3(gbufferModelViewInverse) * tbn[2];
   gbuffer.surfaceNormal = mat3(gbufferModelViewInverse) * getSurfaceNormal(texcoord, tbn);
   gbuffer.lightmap = lightmap;
-  gbuffer.lightmap.g = 0.0;
 
   vec4 color = texture(gtexture, texcoord);
   color.rgb *= glcolor.rgb;
