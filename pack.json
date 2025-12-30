@@ -23,7 +23,9 @@
       {
         "path": "opaqueShading",
         "programs": ["vsh", "fsh"]
-      },
+      }
+    ],
+    "composite": [
       {
         "path": "RTWForwardAnalysis",
         "programs": ["csh"]
