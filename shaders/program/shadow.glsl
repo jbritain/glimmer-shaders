@@ -1,0 +1,62 @@
+/*
+    Copyright (c) 2025 Josh Britain (jbritain)
+    Licensed under the MIT license
+
+      _____   __   _
+     / ___/  / /  (_)  __ _   __ _  ___   ____
+    / (_ /  / /  / /  /  ' \ /  ' \/ -_) / __/
+    \___/  /_/  /_/  /_/_/_//_/_/_/\__/ /_/
+
+    By jbritain
+    https://jbritain.net
+
+*/
+#include "/lib/common.glsl"
+
+#ifdef vsh
+
+layout(r32ui) uniform uimage2D undistortedShadowMap;
+
+out vec2 texcoord;
+out vec4 glcolor;
+
+void main() {
+  gl_Position = ftransform();
+  vec3 screenPos = gl_Position.xyz * 0.5 + 0.5;
+  imageAtomicMax(
+    undistortedShadowMap,
+    ivec2(screenPos.xy * imageSize(undistortedShadowMap) + 0.5),
+    floatBitsToUint(1.0 - screenPos.z)
+  );
+
+  vec2 warp = vec2(
+    textureLod(colortex4, vec2(screenPos.x, 0.0), 0).r,
+    textureLod(colortex4, vec2(screenPos.y, 1.0), 0).r
+  );
+
+  screenPos.xy += warp;
+  gl_Position.xyz = screenPos * 2.0 - 1.0;
+
+  texcoord = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy;
+  glcolor = gl_Color;
+}
+#endif
+
+// ==============================================================================================
+
+#ifdef fsh
+
+in vec2 texcoord;
+in vec4 glcolor;
+
+/* RENDERTARGETS: 0 */
+layout(location = 0) out vec4 color;
+
+void main() {
+  color = texture(gtexture, texcoord) * glcolor;
+  if (color.a < alphaTestRef) {
+    discard;
+  }
+}
+
+#endif

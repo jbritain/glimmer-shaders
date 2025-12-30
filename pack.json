@@ -7,24 +7,39 @@
       {
         "path": "generateSunTransmittanceLUT",
         "programs": ["csh"]
+      },
+      {
+        "path": "generateMultipleScatteringLUT",
+        "programs": ["csh"]
+      }
+    ],
+    "prepare": [
+      {
+        "path": "generateSkyViewLUT",
+        "programs": ["csh"]
       }
     ],
     "deferred": [
       {
         "path": "opaqueShading",
         "programs": ["vsh", "fsh"]
+      },
+      {
+        "path": "RTWForwardAnalysis",
+        "programs": ["csh"]
+      },
+      {
+        "path": "RTWCalculateMaxWeights",
+        "programs": ["csh"]
+      },
+      {
+        "path": "RTWBlurMaxWeights",
+        "programs": ["vsh", "fsh"]
+      },
+      {
+        "path": "RTWComputeWarpFactor",
+        "programs": ["vsh", "fsh"]
       }
     ]
-  },
-  "buffers": {
-    "colortex0": {
-      "format": "RGB16F"
-    },
-    "colortex1": {
-      "format": "RGB16UI"
-    },
-    "colortex2": {
-      "format": "RG32UI"
-    }
   }
 }

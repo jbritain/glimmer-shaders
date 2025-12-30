@@ -91,10 +91,13 @@ DEFINE_genFType(pow8_)
 #define clamp01(x) clamp(x, 0.0, 1.0)
 
 #define saturate clamp01
-#define lerp mix
 
 #define RED vec3(1.0, 0.0, 0.0)
 #define GREEN vec3(0.0, 1.0, 0.0)
 #define BLUE vec3(0.0, 0.0, 1.0)
+
+float luminance(vec3 color) {
+  return dot(color, vec3(0.2126, 0.7152, 0.0722));
+}
 
 #endif // SYNTAX_GLSL

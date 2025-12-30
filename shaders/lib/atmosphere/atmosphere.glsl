@@ -37,6 +37,21 @@ const float mieAbsorptionBase = 4.4;
 
 const vec3 ozoneAbsorptionBase = vec3(0.65, 1.881, 0.085);
 
+float getMiePhase(float cosTheta) {
+  const float g = 0.8;
+  const float scale = 3.0 / (8.0 * PI);
+
+  float num = (1.0 - g * g) * (1.0 + cosTheta * cosTheta);
+  float denom = (2.0 + g * g) * pow(1.0 + g * g - 2.0 * g * cosTheta, 1.5);
+
+  return scale * num / denom;
+}
+
+float getRayleighPhase(float cosTheta) {
+  const float k = 3.0 / (16.0 * PI);
+  return k * (1.0 + cosTheta * cosTheta);
+}
+
 void getScatteringValues(vec3 pos, out vec3 rayleighScattering,
                          out float mieScattering, out vec3 extinction) {
   float altitudeKM = (length(pos) - groundRadiusMM) * 1000.0;
@@ -102,6 +117,36 @@ vec3 getValFromMultiScattLUT(sampler2D tex, vec2 bufferRes, vec3 pos,
                                      (atmosphereRadiusMM - groundRadiusMM))));
   uv /= bufferRes;
   return texture(tex, uv).rgb;
+}
+
+vec3 getValFromSkyLUT(vec3 rayDir) {
+  float height = atmospherePos.y;
+  vec3 up = vec3(0.0, 1.0, 0.0);
+
+  float horizonAngle = safeacos(
+      sqrt(height * height - groundRadiusMM * groundRadiusMM) / height);
+  float altitudeAngle =
+      horizonAngle - acos(dot(rayDir, up)); // Between -PI/2 and PI/2
+  float azimuthAngle;                       // Between 0 and 2*PI
+  if (abs(altitudeAngle) > 0.5 * PI - 0.0001) {
+    // Looking nearly straight up or down.
+    azimuthAngle = 0.0;
+  } else {
+    vec3 right = vec3(1.0, 0.0, 0.0);
+    vec3 forward = vec3(0.0, 0.0, -1.0);
+
+    vec3 projectedDir = normalize(rayDir - up * dot(rayDir, up));
+    float sinTheta = dot(projectedDir, right);
+    float cosTheta = dot(projectedDir, forward);
+    azimuthAngle = atan(sinTheta, cosTheta) + PI;
+  }
+
+  // Non-linear mapping of altitude angle. See Section 5.3 of the paper.
+  float v =
+      0.5 + 0.5 * sign(altitudeAngle) * sqrt(abs(altitudeAngle) * 2.0 / PI);
+  vec2 uv = vec2(azimuthAngle / (2.0 * PI), v);
+
+  return texture(skyViewLUTTex, uv).rgb;
 }
 
 vec3 mapAerialPerspectivePos(vec3 viewPos) {

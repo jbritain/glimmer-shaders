@@ -1,7 +1,19 @@
 #ifndef COMMON_GLSL
 #define COMMON_GLSL
 
+#include "/lib/common/settings.glsl"
+
 #include "/lib/common/syntax.glsl"
 #include "/lib/common/config.glsl"
+
+#include "/lib/common/uniforms.glsl"
+#include "/lib/common/spaceConversions.glsl"
+
+#include "/lib/common/debug.glsl"
+
+layout(std430, binding = 0) buffer environmentData {
+  vec3 sunlightColor;
+  vec3 skylightColor;
+};
 
 #endif

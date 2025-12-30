@@ -1,6 +1,7 @@
 import json
 import time
 import os
+import shutil
 # from watchdog.events import FileSystemEvent, FileSystemEventHandler
 # from watchdog.observers import Observer
 
@@ -13,40 +14,52 @@ OVERWORLD = ("OVERWORLD", "world0")
 NETHER = ("THE_NETHER", "world1")
 END = ("THE_END", "world-1")
 
-def create_linked_shader_program(program_path, file_path, program_types=["vsh", "fsh"], dimensions=[OVERWORLD, NETHER, END]):
-  for dim in dimensions:
-    for program_type in program_types:
-      if not os.path.exists(f"{shaders_path}/{dim[1]}/"):
-        os.makedirs(f"{shaders_path}/{dim[1]}/")
-      with open(f"{shaders_path}/{dim[1]}/{program_path}.{program_type}", "w") as p:
-        program_string = []
-        program_string.append(f"#version {version}")
-        program_string.append(f"#define WORLD_{dim[0]}")
-        program_string.append(f"#define {program_type}")
-        program_string.append(f"#include \"/{file_path}\"")
 
-        p.writelines([l + "\n" for l in program_string])
+def create_linked_shader_program(program_path, file_path, program_types=["vsh", "fsh"], dimensions=[OVERWORLD, NETHER, END]):
+    for dim in dimensions:
+        for program_type in program_types:
+            if not os.path.exists(f"{shaders_path}/{dim[1]}/"):
+                os.makedirs(f"{shaders_path}/{dim[1]}/")
+            with open(f"{shaders_path}/{dim[1]}/{program_path}.{program_type}", "w") as p:
+                program_string = []
+                program_string.append(f"#version {version}")
+                program_string.append(f"#define WORLD_{dim[0]}")
+                program_string.append(f"#define {program_type}")
+                program_string.append(f"#include \"/{file_path}\"")
+
+                p.writelines([l + "\n" for l in program_string])
+
 
 def generate_gbuffers(pack):
-  for program, file in pack["programs"]["gbuffers"].items():
-    create_linked_shader_program(
-        f"gbuffers_{program}", f"program/gbuffer/{file}.glsl")
+    for program, file in pack["programs"]["gbuffers"].items():
+        create_linked_shader_program(
+            f"gbuffers_{program}", f"program/gbuffer/{file}.glsl")
+
+    if os.path.exists(f"{shaders_path}/program/shadow.glsl"):
+        create_linked_shader_program(
+            f"shadow", f"program/shadow.glsl")
 
 
 def generate_post_processing(pack):
-    for stage in ["setup", "prepare", "composite", "deferred"]:
-      if os.path.exists(f"{shaders_path}/program/{stage}"):
-        for i, program in enumerate(pack["programs"][stage]):
-          create_linked_shader_program(
-              f"{stage}{i if i else ''}", f"program/{stage}/{program['path']}.glsl")
+    for stage in ["setup", "prepare", "composite", "deferred", "shadowcomp"]:
+        if os.path.exists(f"{shaders_path}/program/{stage}"):
+            for i, program in enumerate(pack["programs"][stage]):
+                create_linked_shader_program(
+                    f"{stage}{i if i else ''}", f"program/{stage}/{program['path']}.glsl", program["programs"])
+    if os.path.exists(f"{shaders_path}/program/final.glsl"):
+        create_linked_shader_program(
+            f"final", f"program/final.glsl")
 
 
 def generate_pack():
-  with open(json_path) as j:
-    pack = json.loads("".join(j.readlines()))
+    with open(json_path) as j:
+        pack = json.loads("".join(j.readlines()))
 
-  generate_gbuffers(pack)
-  generate_post_processing(pack)
+    for dim in [OVERWORLD, NETHER, END]:
+        if os.path.exists(f"{shaders_path}/{dim[1]}"):
+            shutil.rmtree(f"{shaders_path}/{dim[1]}")
+    generate_gbuffers(pack)
+    generate_post_processing(pack)
 
 
 generate_pack()
