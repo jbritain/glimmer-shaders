@@ -56,8 +56,6 @@ void main() {
   } else if(gl_FragCoord.y < 266 && gl_FragCoord.x < 256){
     color = texelFetch(colortex4, ivec2(gl_FragCoord.x, 0), 0).rgb;
   }
-
-  // color = texture(colortex3, texcoord).rgb;
 }
 
 #endif

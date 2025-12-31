@@ -45,6 +45,7 @@ void main() {
 
 #include "/lib/util/gbuffer.glsl"
 #include "/lib/material/material.glsl"
+#include "/lib/util/dither.glsl"
 
 in vec2 lightmap;
 in vec2 texcoord;
@@ -65,7 +66,7 @@ void main() {
 
   vec4 color = texture(gtexture, texcoord);
   color.rgb *= glcolor.rgb;
-  if (color.a < alphaTestRef) {
+  if (color.a < max(alphaTestRef, blueNoise(gl_FragCoord.xy, frameCounter).r)) {
     discard;
   }
 

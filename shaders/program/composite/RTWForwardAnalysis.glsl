@@ -17,6 +17,7 @@ const vec2 workGroupsRender = vec2(1.0, 1.0);
 layout(r32ui) uniform uimage2D shadowImportanceMap;
 
 #include "/lib/common.glsl"
+#include "/lib/material/material.glsl"
 
 void main() {
   ivec2 texelCoord = ivec2(gl_GlobalInvocationID.xy);
@@ -26,6 +27,7 @@ void main() {
 
   vec2 texcoord = texelCoord / (resolution * workGroupsRender);
   float depth = textureLod(depthtex0, texcoord, 0).r;
+  Gbuffer gbuffer = unpackGbuffer(texture(colortex1, texcoord).rgb);
 
   if(depth == 1.0){
     return;
@@ -43,6 +45,7 @@ void main() {
 
   uint weight = uint(1000);
   weight += uint((1.0 - depth) * 1000);
+  weight += uint(clamp01(dot(gbuffer.geometryNormal, gbufferModelViewInverse[2].xyz)) * 2000);
 
   imageAtomicAdd(shadowImportanceMap, ivec2(shadowScreenPos.xy * 256), weight);
 }

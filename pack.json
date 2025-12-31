@@ -1,7 +1,8 @@
 {
   "programs": {
     "gbuffers": {
-      "terrain": "opaque"
+      "terrain": "opaque",
+      "entities": "opaque"
     },
     "setup": [
       {
@@ -17,9 +18,17 @@
       {
         "path": "generateSkyViewLUT",
         "programs": ["csh"]
+      },
+      {
+        "path": "sampleSkylightColour",
+        "programs": ["csh"]
       }
     ],
     "deferred": [
+      {
+        "path": "SSAO",
+        "programs": ["vsh", "fsh"]
+      },
       {
         "path": "opaqueShading",
         "programs": ["vsh", "fsh"]
@@ -40,6 +49,10 @@
       },
       {
         "path": "RTWComputeWarpFactor",
+        "programs": ["vsh", "fsh"]
+      },
+      {
+        "path": "temporalFilter",
         "programs": ["vsh", "fsh"]
       }
     ]

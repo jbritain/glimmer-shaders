@@ -29,6 +29,7 @@ void main() {
 #include "/lib/material/material.glsl"
 #include "/lib/atmosphere/sky.glsl"
 #include "/lib/lighting/brdf.glsl"
+#include "/lib/util/dither.glsl"
 
 in vec2 texcoord;
 
@@ -37,8 +38,8 @@ in vec2 texcoord;
 layout(location = 0) out vec4 color;
 
 void main() {
-    float depth = texture(depthtex0, texcoord).r;
-    vec3 viewPos = screenSpaceToViewSpace(vec3(texcoord, depth));
+  float depth = texture(depthtex0, texcoord).r;
+  vec3 viewPos = screenSpaceToViewSpace(vec3(texcoord, depth));
 
   Material material = unpackMaterial(texture(colortex2, texcoord).rg);
   Gbuffer gbuffer = unpackGbuffer(texture(colortex1, texcoord).rgb);
@@ -67,6 +68,7 @@ void main() {
     textureLod(colortex4, vec2(shadowScreenPos.x, 0.0), 0).r,
     textureLod(colortex4, vec2(shadowScreenPos.y, 1.0), 0).r
   );
+
   float shadow = texture(shadowtex0HW, shadowScreenPos + vec3(warp, 0.0)).r;
 
   color = texture(shadowtex0, texcoord);
@@ -79,6 +81,9 @@ void main() {
     ) *
     sunlightColor * shadow;
 
+  float occlusion = texture(colortex3, texcoord).r;
+
+  color.rgb += gbuffer.lightmap.y * skylightColor * material.albedo * occlusion;
 }
 
 #endif

@@ -142,6 +142,8 @@ uniform sampler3D aerialPerspectiveLUTTex;
 uniform usampler2D undistortedShadowMapTex;
 uniform usampler2D shadowImportanceMapTex;
 
+uniform sampler3D blueNoiseTex;
+
 uniform bool isDay;
 uniform vec3 sunDir;
 uniform vec3 moonDir;

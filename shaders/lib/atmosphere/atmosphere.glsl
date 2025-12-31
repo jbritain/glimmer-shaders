@@ -6,7 +6,7 @@
     https://www.shadertoy.com/view/slSXRW
 */
 
-const float sunAngularRadius = 0.2 * PI / 180.0;
+const float sunAngularRadius = 0.4 * PI / 180.0;
 const float moonAngularRadius = PI / 180.0;
 
 const vec3 sunIrradiance = vec3(1.0, 0.949, 0.937) * 126e3 * 1e-6;

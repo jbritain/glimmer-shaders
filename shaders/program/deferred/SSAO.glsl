@@ -26,30 +26,28 @@ void main() {
 
 #ifdef fsh
 
+#include "/lib/material/material.glsl"
+#include "/lib/lighting/ssao.glsl"
+
 in vec2 texcoord;
 
-/* RENDERTARGETS: 4 */
+/* RENDERTARGETS: 3 */
 
-layout(location = 0) out float warp;
-
-// TODO: REPLACE THIS WITH AN ACTUALLY GOOD PREFIX SUM ALGORITHM
-// this is an affront to optimisation
+layout(location = 0) out float occlusion;
 
 void main() {
-  int k = int(gl_FragCoord.x);
-  int n = 256;
+  occlusion = 1.0;
+  float depth = texture(depthtex0, texcoord).r;
+  vec3 viewPos = screenSpaceToViewSpace(vec3(texcoord, depth));
 
-  float totalWeightToK = 0.0;
-  int j = 0;
-  for(; j < k; j++){
-    totalWeightToK += texelFetch(colortex4, ivec2(j, gl_FragCoord.y), 0).r + 100;
-  }
-  float totalWeightToN = totalWeightToK;
-  for(; j < n; j++){
-    totalWeightToN += texelFetch(colortex4, ivec2(j, gl_FragCoord.y), 0).r + 100;
+  Gbuffer gbuffer = unpackGbuffer(texture(colortex1, texcoord).rgb);
+
+  if (depth == 1.0) {
+    return;
   }
 
-  warp = totalWeightToK / totalWeightToN - float(k) / float(n);
+  occlusion = SSAO(viewPos, gbuffer.geometryNormal);
+  show(occlusion);
 }
 
 #endif
