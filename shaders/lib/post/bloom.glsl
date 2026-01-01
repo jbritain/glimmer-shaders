@@ -118,7 +118,6 @@ vec3 downSample(sampler2D sourceTexture, vec2 coord, bool doKarisAverage) {
 }
 
 vec3 upSample(sampler2D sourceTexture, vec2 coord) {
-  return textureLod(sourceTexture, coord, 0).rgb;
   //  1   | 1 2 1 |
   // -- * | 2 4 2 |
   // 16   | 1 2 1 |
