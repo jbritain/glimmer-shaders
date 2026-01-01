@@ -111,7 +111,7 @@ uvec2 packMaterial(Material material) {
   float packedF0 =
     material.metalID == NO_METAL
       ? material.f0.r
-      : (material.metalID + 230) / 255.0;
+      : (material.metalID + 229) / 255.0;
   data.g = bitfieldInsert(data.g, uint(packedF0 * 255), 8, 8);
   data.g = bitfieldInsert(data.g, uint(material.subsurface * 255), 16, 8);
   data.g = bitfieldInsert(data.g, uint(material.ao * 255), 24, 8);

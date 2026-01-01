@@ -39,6 +39,10 @@ void main() {
   occlusion = 1.0;
   float depth = texture(depthtex0, texcoord).r;
   vec3 viewPos = screenSpaceToViewSpace(vec3(texcoord, depth));
+  vec3 playerPos = transformView(viewPos, gbufferModelViewInverse);
+  vec3 previousPos = playerPos + cameraPosition - previousCameraPosition;
+  previousPos = transformView(previousPos, gbufferPreviousModelView);
+  previousPos = viewSpaceToScreenSpace(previousPos, gbufferPreviousProjection);
 
   Gbuffer gbuffer = unpackGbuffer(texture(colortex1, texcoord).rgb);
 
@@ -47,7 +51,11 @@ void main() {
   }
 
   occlusion = SSAO(viewPos, gbuffer.geometryNormal);
-  show(occlusion);
+  if(clamp01(previousPos) == previousPos){
+    float previousOcclusion = texture(colortex3, previousPos.xy).r;
+    occlusion = mix(occlusion, previousOcclusion, 0.9);
+  }
+
 }
 
 #endif

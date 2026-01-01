@@ -90,4 +90,9 @@ vec3 viewSpaceToScreenSpaceOrtho(vec3 viewPosition, mat4 proj) {
   return ndcPosition * 0.5 + 0.5;
 }
 
+vec3 screenSpaceToViewSpaceOrtho(vec3 screenPosition, mat4 projInv) {
+  vec4 viewPosition = projInv * vec4(screenPosition * 2.0 - 1.0, 1.0);
+  return viewPosition.xyz / viewPosition.w;
+}
+
 #endif

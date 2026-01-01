@@ -44,7 +44,7 @@ void main() {
   );
 
   uint weight = uint(1000);
-  weight += uint((1.0 - depth) * 1000);
+  weight += uint((1.0 - clamp01(-viewPos.z / far)) * 1000);
   weight += uint(clamp01(dot(gbuffer.geometryNormal, gbufferModelViewInverse[2].xyz)) * 2000);
 
   imageAtomicAdd(shadowImportanceMap, ivec2(shadowScreenPos.xy * 256), weight);

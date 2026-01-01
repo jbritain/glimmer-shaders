@@ -40,6 +40,10 @@
         "programs": ["csh"]
       },
       {
+        "path": "RTWBackwardAnalysis",
+        "programs": ["csh"]
+      },
+      {
         "path": "RTWCalculateMaxWeights",
         "programs": ["csh"]
       },
@@ -54,6 +58,73 @@
       {
         "path": "temporalFilter",
         "programs": ["vsh", "fsh"]
+      },
+      {
+        "path": "bloomDownsample",
+        "programs": ["vsh", "fsh"],
+        "defines": {
+          "TILE_INDEX": "0"
+        }
+      },
+      {
+        "path": "bloomDownsample",
+        "programs": ["vsh", "fsh"],
+        "defines": {
+          "TILE_INDEX": "1"
+        }
+      },
+      {
+        "path": "bloomDownsample",
+        "programs": ["vsh", "fsh"],
+        "defines": {
+          "TILE_INDEX": "2"
+        }
+      },
+      {
+        "path": "bloomDownsample",
+        "programs": ["vsh", "fsh"],
+        "defines": {
+          "TILE_INDEX": "3"
+        }
+      },
+      {
+        "path": "bloomDownsample",
+        "programs": ["vsh", "fsh"],
+        "defines": {
+          "TILE_INDEX": "4"
+        }
+      },
+      {
+        "path": "bloomUpsample",
+        "programs": ["vsh", "fsh"],
+        "defines": {
+          "TILE_INDEX": "3"
+        },
+        "blend": "ONE ONE ZERO ZERO"
+      },
+      {
+        "path": "bloomUpsample",
+        "programs": ["vsh", "fsh"],
+        "defines": {
+          "TILE_INDEX": "2"
+        },
+        "blend": "ONE ONE ZERO ZERO"
+      },
+      {
+        "path": "bloomUpsample",
+        "programs": ["vsh", "fsh"],
+        "defines": {
+          "TILE_INDEX": "1"
+        },
+        "blend": "ONE ONE ZERO ZERO"
+      },
+      {
+        "path": "bloomUpsample",
+        "programs": ["vsh", "fsh"],
+        "defines": {
+          "TILE_INDEX": "0"
+        },
+        "blend": "ONE ONE ZERO ZERO"
       }
     ]
   }

@@ -1,1 +1,3 @@
 #define DEBUG_ENABLE
+
+#define BLOOM_RADIUS 1.0

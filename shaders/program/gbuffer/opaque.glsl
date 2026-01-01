@@ -52,7 +52,7 @@ in vec2 texcoord;
 in vec4 glcolor;
 in mat3 tbn;
 
-/* RENDERTARGETS: 1,2 */
+/* RENDERTARGETS: 1,2,3 */
 layout(location = 0) out uvec3 gbufferData;
 layout(location = 1) out uvec2 materialData;
 
@@ -66,7 +66,7 @@ void main() {
 
   vec4 color = texture(gtexture, texcoord);
   color.rgb *= glcolor.rgb;
-  if (color.a < max(alphaTestRef, blueNoise(gl_FragCoord.xy, frameCounter).r)) {
+  if (color.a < max(alphaTestRef, blueNoise(gl_FragCoord.xy, frameCounter).r * float(renderStage == MC_RENDER_STAGE_ENTITIES))) {
     discard;
   }
 

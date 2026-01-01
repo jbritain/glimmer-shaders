@@ -91,8 +91,7 @@ void getMulScattValues(vec3 pos, vec3 sunDir, out vec3 lumTotal, out vec3 fms) {
         float mieInScattering = mieScattering * miePhaseValue;
         vec3 inScattering =
           (rayleighInScattering + mieInScattering) *
-          sunTransmittance *
-          sunIrradiance;
+          sunTransmittance;
 
         // Integrated scattering within path segment.
         vec3 scatteringIntegral =

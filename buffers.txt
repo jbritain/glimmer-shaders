@@ -4,3 +4,4 @@ colortex2: material (albedo, specular map etc)
 colortex3: ssao
 colortex4: RTWSM warp maps
 colortex5: previous frame colour
+colortex6: bloom

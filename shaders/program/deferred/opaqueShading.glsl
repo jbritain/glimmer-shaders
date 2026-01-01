@@ -83,7 +83,10 @@ void main() {
 
   float occlusion = texture(colortex3, texcoord).r;
 
-  color.rgb += gbuffer.lightmap.y * skylightColor * material.albedo * occlusion;
+  if(material.metalID == NO_METAL){
+    color.rgb += gbuffer.lightmap.y * skylightColor * material.albedo * occlusion;
+  }
+
 }
 
 #endif
