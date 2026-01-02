@@ -2,6 +2,7 @@
 #define SYNTAX_GLSL
 
 const float PI = 3.14159265358;
+const float TAU = PI * 2.0;
 
 // macro wizardry by BruceKnowsHow
 #define DEFINE_genFType(func)                                                  \

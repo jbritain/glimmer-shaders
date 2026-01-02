@@ -38,7 +38,7 @@ void main() {
   vec3 viewPos = transformView(playerPos, gbufferModelView);
   vec3 screenPos = viewSpaceToScreenSpace(viewPos);
 
-  uint weight = uint((1.0 - clamp01(-viewPos.z / far)) * 1000);
+  uint weight = uint((1.0 - clamp01(-viewPos.z / far)) * 0);
 
   imageAtomicAdd(shadowImportanceMap, texelCoord, weight);
 }

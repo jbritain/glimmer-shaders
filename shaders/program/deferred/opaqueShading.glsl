@@ -30,6 +30,8 @@ void main() {
 #include "/lib/atmosphere/sky.glsl"
 #include "/lib/lighting/brdf.glsl"
 #include "/lib/util/dither.glsl"
+#include "/lib/lighting/shadows.glsl"
+#include "/lib/lighting/subsurfaceScattering.glsl"
 
 in vec2 texcoord;
 
@@ -41,9 +43,6 @@ void main() {
   float depth = texture(depthtex0, texcoord).r;
   vec3 viewPos = screenSpaceToViewSpace(vec3(texcoord, depth));
 
-  Material material = unpackMaterial(texture(colortex2, texcoord).rg);
-  Gbuffer gbuffer = unpackGbuffer(texture(colortex1, texcoord).rgb);
-
   if (depth == 1.0) {
     color.rgb = getSky(
       mat3(gbufferModelViewInverse) * normalize(viewPos),
@@ -52,26 +51,15 @@ void main() {
     return;
   }
 
-  vec3 shadowViewPos = transformView(
-    transformView(viewPos, gbufferModelViewInverse),
-    shadowModelView
-  );
+  vec3 feetPlayerPos = transformView(viewPos, gbufferModelViewInverse);
 
-  vec3 shadowViewNormal = mat3(shadowModelView) * gbuffer.geometryNormal;
-  shadowViewPos += shadowViewNormal * 0.1 * (dot(gbuffer.geometryNormal, worldLightDir) * 0.5 + 0.5);
+  Material material = unpackMaterial(texture(colortex2, texcoord).rg);
+  Gbuffer gbuffer = unpackGbuffer(texture(colortex1, texcoord).rgb);
 
-  vec3 shadowScreenPos = viewSpaceToScreenSpaceOrtho(
-    shadowViewPos,
-    shadowProjection
-  );
-  vec2 warp = vec2(
-    textureLod(colortex4, vec2(shadowScreenPos.x, 0.0), 0).r,
-    textureLod(colortex4, vec2(shadowScreenPos.y, 1.0), 0).r
-  );
+  // show(material.subsurface);
 
-  float shadow = texture(shadowtex0HW, shadowScreenPos + vec3(warp, 0.0)).r;
-
-  color = texture(shadowtex0, texcoord);
+  float blockerDistance;
+  vec3 shadow = getShadow(feetPlayerPos, gbuffer.geometryNormal, material.subsurface, blockerDistance);
   color.rgb =
     brdf(
       material,
@@ -83,9 +71,21 @@ void main() {
 
   float occlusion = texture(colortex3, texcoord).r;
 
+  vec3 specularc = texture(colortex7, texcoord).rgb;
+  vec3 f = fresnelRoughness(material, dot(gbuffer.geometryNormal, -normalize(feetPlayerPos)));
+
+  // TODO: SSS should probably not be multiplied by AO
+  vec3 diffuse = vec3(0.0);
   if(material.metalID == NO_METAL){
-    color.rgb += gbuffer.lightmap.y * skylightColor * material.albedo * occlusion;
+    vec3 subsurfaceScattering = getSubsurfaceScattering(material.albedo, material.subsurface, blockerDistance, length(shadow), normalize(feetPlayerPos), gbuffer.geometryNormal) * sunlightColor;
+    diffuse = gbuffer.lightmap.y * skylightColor * material.albedo * occlusion;
+    diffuse += subsurfaceScattering * occlusion;
+    f *= step(ROUGH_SSR_THRESHOLD, maxVec3(f));
   }
+
+  
+
+  color.rgb += mix(diffuse, specularc, f);
 
 }
 

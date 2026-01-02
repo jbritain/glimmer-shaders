@@ -47,6 +47,9 @@ const ivec2 neighbourhoodOffsets[8] = ivec2[8](
 
 void main() {
   float depth = texture(depthtex0, texcoord).r;
+
+  color = texture(colortex0, texcoord);
+
   float opaqueDepth = texture(depthtex2, texcoord).r;
   vec3 viewPos = screenSpaceToViewSpace(vec3(texcoord, depth));
   vec3 feetPlayerPos = (gbufferModelViewInverse * vec4(viewPos, 1.0)).xyz;
@@ -57,7 +60,6 @@ void main() {
   vec4 previousClipPos = gbufferPreviousProjection * vec4(previousViewPos, 1.0);
   vec3 previousScreenPos = previousClipPos.xyz / previousClipPos.w * 0.5 + 0.5;
 
-  color = texture(colortex0, texcoord);
 
   bool rejectSample = clamp01(previousScreenPos.xy) != previousScreenPos.xy;
 
@@ -82,6 +84,7 @@ void main() {
   color = mix(color, historyColor, 0.7 * float(!rejectSample));
 
   newHistory = color;
+  newHistory.a = depth;
 }
 
 #endif

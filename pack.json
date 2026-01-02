@@ -2,7 +2,8 @@
   "programs": {
     "gbuffers": {
       "terrain": "opaque",
-      "entities": "opaque"
+      "entities": "opaque",
+      "hand": "opaque"
     },
     "setup": [
       {
@@ -30,11 +31,23 @@
         "programs": ["vsh", "fsh"]
       },
       {
+        "path": "opaqueSSR",
+        "programs": ["vsh", "fsh"]
+      },
+      {
         "path": "opaqueShading",
         "programs": ["vsh", "fsh"]
       }
     ],
     "composite": [
+      {
+        "path": "getClouds",
+        "programs": ["vsh", "fsh"]
+      },
+      {
+        "path": "blendClouds",
+        "programs": ["vsh", "fsh"]
+      },
       {
         "path": "RTWForwardAnalysis",
         "programs": ["csh"]
@@ -52,8 +65,8 @@
         "programs": ["vsh", "fsh"]
       },
       {
-        "path": "RTWComputeWarpFactor",
-        "programs": ["vsh", "fsh"]
+        "path": "RTWComputeWarpFactorFastish",
+        "programs": ["csh"]
       },
       {
         "path": "temporalFilter",

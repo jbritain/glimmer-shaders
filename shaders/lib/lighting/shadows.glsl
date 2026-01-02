@@ -1,0 +1,87 @@
+#ifndef SHADOWS_GLSL
+#define SHADOWS_GLSL
+
+#include "/lib/util/dither.glsl"
+
+vec3 sampleShadow(vec3 shadowScreenPos) {
+  float transparentShadow = texture(shadowtex0HW, shadowScreenPos).r;
+
+  if (transparentShadow >= 1.0 - 1e-6) {
+    return vec3(transparentShadow);
+  }
+
+  float opaqueShadow = texture(shadowtex1HW, shadowScreenPos).r;
+
+  if (opaqueShadow <= 1e-6) {
+    return vec3(opaqueShadow);
+  }
+
+  vec4 shadowColorData = texture(shadowcolor0, shadowScreenPos.xy);
+  vec3 shadowColor =
+    pow(shadowColorData.rgb, vec3(2.2)) * (1.0 - shadowColorData.a);
+  return mix(shadowColor * opaqueShadow, vec3(1.0), transparentShadow);
+}
+
+vec3 sampleShadowPCF(vec3 shadowScreenPos, float radius, float jitter){
+  vec3 shadow = vec3(0.0);
+
+  for(int i = 0; i < SHADOW_PCF_SAMPLES; i++){
+    vec2 offset = vogelDisc(i, SHADOW_PCF_SAMPLES, jitter) * radius;
+    vec3 offsetPos = shadowScreenPos + vec3(offset, 0.0);
+    vec2 warp = vec2(
+      texture(colortex4, vec2(offsetPos.x, 0.0)).r,
+      texture(colortex4, vec2(offsetPos.y, 1.0)).r
+    );
+    offsetPos += vec3(warp, 0.0);
+    shadow += sampleShadow(offsetPos);
+  }
+  return shadow / SHADOW_PCF_SAMPLES;
+}
+
+float getBlockerDistance(vec3 shadowScreenPos, float jitter){
+  float blockerDistanceSum = 0.0;
+  uint blockerCount = 0;
+  for(int i = 0; i < PCSS_SEARCH_SAMPLES; i++){
+    vec2 offset = vogelDisc(i, PCSS_SEARCH_SAMPLES, jitter) * PCSS_SEARCH_RADIUS / shadowDistance;
+    vec2 offsetPos = shadowScreenPos.xy + offset;
+    vec2 warp = vec2(
+      texture(colortex4, vec2(offsetPos.x, 0.0)).r,
+      texture(colortex4, vec2(offsetPos.y, 1.0)).r
+    );
+    offsetPos += warp;
+    float blockerDistance = max(0.0, shadowScreenPos.z - texture(shadowtex0, offsetPos).r);
+    blockerDistanceSum += blockerDistance;
+    if(blockerDistance > 0.0){
+      blockerCount++;
+    }
+  }
+  if(blockerCount > 0){
+    return blockerDistanceSum / float(blockerCount);
+  } else {
+    return 0.0;
+  }
+}
+
+vec3 getShadow(vec3 playerPos, vec3 playerNormal, float subsurface, out float blockerDistance) {
+  float jitter = interleavedGradientNoise(floor(gl_FragCoord.xy), frameCounter);
+  vec3 shadowViewPos = transformView(playerPos, shadowModelView);
+
+  vec3 shadowViewNormal = mat3(shadowModelView) * playerNormal;
+  shadowViewPos +=
+    shadowViewNormal * 0.1 * sqrt(1.0 - pow2(dot(playerNormal, worldLightDir)));
+
+  vec3 shadowScreenPos = viewSpaceToScreenSpaceOrtho(
+    shadowViewPos,
+    shadowProjection
+  );
+  shadowScreenPos.z /= 2.0;
+
+  blockerDistance = getBlockerDistance(shadowScreenPos, jitter);
+
+  float radius = mix(PCSS_MIN_RADIUS / shadowDistance, PCSS_MAX_RADIUS / shadowDistance, blockerDistance);
+
+  vec3 shadow = sampleShadowPCF(shadowScreenPos, radius, jitter);
+  return shadow;
+}
+
+#endif

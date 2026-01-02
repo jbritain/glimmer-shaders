@@ -35,6 +35,7 @@ void main() {
   );
 
   screenPos.xy += warp;
+  screenPos.z /= 2.0;
   gl_Position.xyz = screenPos * 2.0 - 1.0;
 
   texcoord = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy;

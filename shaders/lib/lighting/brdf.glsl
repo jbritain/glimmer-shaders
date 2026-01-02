@@ -89,24 +89,17 @@ float geometrySmith(vec3 N, vec3 V, vec3 L, float K) {
   return ggx1 * ggx2;
 }
 
+// TODO: HCM
+
 vec3 fresnel(Material material, float NoV) {
-
-    // normal schlick approx.
-    return clamp01(vec3(material.f0 + (1.0 - material.f0) * pow5(1.0 - NoV)));
-
+  // normal schlick approx.
+  return clamp01(vec3(material.f0 + (1.0 - material.f0) * pow5(1.0 - NoV)));
 }
 
 vec3 fresnelRoughness(Material material, float NoV) {
-  if (material.metalID == NO_METAL || material.metalID == OTHER_METAL) {
-    // you aren't supposed to square the roughness but stuff was ending up too shiny
-    return material.f0 +
-    (max(vec3(1.0 - material.roughness), material.f0) - material.f0) *
-      pow5(clamp01(1.0 - NoV));
-  } else {
-    return material.albedo +
-    (max(vec3(1.0 - material.roughness), material.albedo) - material.albedo) *
-      pow5(clamp01(1.0 - NoV));
-  }
+  return material.f0 +
+  (max(vec3(1.0 - material.roughness), material.f0) - material.f0) *
+    pow5(clamp01(1.0 - NoV));
 }
 
 vec3 brdf(
@@ -165,11 +158,11 @@ vec3 brdf(
   if (material.metalID != NO_METAL) Rd = vec3(0.0);
 
   return (Rs + Rd) *
-    areaLightNormalization(
-      max(0.001, material.roughness),
-      dot(L, H),
-      sunAngularRadius
-    );
+  areaLightNormalization(
+    max(0.001, material.roughness),
+    dot(L, H),
+    sunAngularRadius
+  );
 }
 
 #endif // BRDF_GLSL

@@ -68,7 +68,6 @@ def generate_properties(pack):
             lines = lines[0:lines.index("# !AUTOGENERATE\n") + 1]
 
         lines = lines + [l + "\n" for l in pack["properties"]]
-        print("\n".join(lines))
         f.seek(0)
         f.write("".join(lines))
         f.truncate()
