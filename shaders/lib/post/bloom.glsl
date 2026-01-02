@@ -67,7 +67,6 @@ BloomTile tileE = BloomTile(
 BloomTile tiles[5] = BloomTile[5](tileA, tileB, tileC, tileD, tileE);
 
 vec3 downSample(sampler2D sourceTexture, vec2 coord, bool doKarisAverage) {
-  return textureLod(sourceTexture, coord, 0).rgb;
   // a - b - c
   // - j - k -
   // d - e - f
