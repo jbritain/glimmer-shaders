@@ -39,7 +39,7 @@ void main() {
   color = texture(colortex0, texcoord).rgb;
 
   vec3 bloom = texture(colortex6, texcoord * 0.5).rgb;
-  color = mix(color, bloom, 0.02);
+  color = mix(color, bloom, 0.001);
 
   color /= 15;
   color = tonemap(color);
@@ -51,17 +51,17 @@ void main() {
   }
   #endif
 
-  if(gl_FragCoord.x < 256 && gl_FragCoord.y < 256){
-    color = vec3(
-      texelFetch(shadowImportanceMapTex, ivec2(gl_FragCoord.xy), 0).r,
-      texelFetch(shadowtex0, ivec2(gl_FragCoord.xy * shadowMapResolution / 256), 0).r,
-      0.0
-      );
-  } else if(gl_FragCoord.x < 266 && gl_FragCoord.y < 256) {
-    color = texelFetch(colortex4, ivec2(gl_FragCoord.y, 1), 0).rgb;
-  } else if(gl_FragCoord.y < 266 && gl_FragCoord.x < 256){
-    color = texelFetch(colortex4, ivec2(gl_FragCoord.x, 0), 0).rgb;
-  }
+  // if(gl_FragCoord.x < 256 && gl_FragCoord.y < 256){
+  //   color = vec3(
+  //     texelFetch(shadowImportanceMapTex, ivec2(gl_FragCoord.xy), 0).r,
+  //     texelFetch(shadowtex0, ivec2(gl_FragCoord.xy * shadowMapResolution / 256), 0).r,
+  //     0.0
+  //     );
+  // } else if(gl_FragCoord.x < 266 && gl_FragCoord.y < 256) {
+  //   color = texelFetch(colortex4, ivec2(gl_FragCoord.y, 1), 0).rgb;
+  // } else if(gl_FragCoord.y < 266 && gl_FragCoord.x < 256){
+  //   color = texelFetch(colortex4, ivec2(gl_FragCoord.x, 0), 0).rgb;
+  // }
 }
 
 #endif

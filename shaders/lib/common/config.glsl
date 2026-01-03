@@ -8,6 +8,9 @@ const int colortex5Format = RGBA16F;
 const int colortex6Format = RGB16F;
 const int colortex7Format = RGB16F;
 const int colortex8Format = RGBA16F;
+const int colortex9Format = R11F_G11F_B10F;
+
+const int shadowcolor1Format = RG8;
 */
 
 const int shadowMapResolution = 2048;
@@ -21,3 +24,4 @@ const bool colortex4Clear = false;
 const bool colortex5Clear = false;
 const bool colortex7Clear = false;
 const bool colortex8Clear = false;
+const bool colortex9Clear = false;

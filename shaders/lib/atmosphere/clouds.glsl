@@ -13,13 +13,13 @@
 */
 
 #include "/lib/util/dither.glsl"
+#include "/lib/atmosphere/atmosphere.glsl"
 
 uniform sampler3D cloudshapetex;
 uniform sampler3D clouddetailtex;
 uniform sampler2D cloudcoveragetex;
 uniform sampler2D vanillacloudtex;
 
-#define OVERWORLD_EXCLUSIVE
 
 // #define VANILLA_CLOUDS
 
@@ -31,8 +31,8 @@ uniform sampler2D vanillacloudtex;
     #define CLOUDS_DENSITY 2.0
     #define CLOUDS_MULTIPLE_SCATTERING 500.0
 #else
-    #define CLOUDS_BASE_ALTITUDE 200
-    #define CLOUDS_TOP_ALTITUDE 400
+    #define CLOUDS_BASE_ALTITUDE 100
+    #define CLOUDS_TOP_ALTITUDE 300
     #define CLOUD_PRIMARY_SAMPLES 24
     #define CLOUD_SECONDARY_SAMPLES 4
     #define CLOUDS_DENSITY 0.17
@@ -296,19 +296,16 @@ vec4 getClouds(inout vec3 position, bool sky){
         transmittance *= sampleTransmittance;
     }
 
-    // // apply aerial perspective to clouds
-    // if(hasHitStart){
-    //     vec3 camera = vec3(0, earthRadius + cameraPosition.y - seaLevel, 0);
-    //     vec3 atmoTransmittance;
-
-    //     // this works on the assumption that any significant aerial perspective
-    //     // will be on a cloud with sky behind it
-    //     // therefore instead of rendering the atmosphere on top of it
-    //     // we can just fade it back into the sky
-    //     vec3 atmoScattering = atmo_getSegmentInscatteringEnvmap(camera, dir * sign(dir.y), length(position), worldLightDir, skyLUTtex, atmoTransmittance);
-    //     scattering *= atmoTransmittance.b;
-    //     transmittance = mix(1.0, transmittance, atmoTransmittance.b);
-    // }
+    // apply aerial perspective to clouds
+    if(hasHitStart){
+        // fuck it - random density value
+        // the assumption here is that any clouds far enough away to have aerial perspective
+        // applied to them are unlikely to have any terrain behind them
+        // so we can just fade them out into the sky
+        float atmoTransmittance = exp(-length(position) * 1e-4);
+        scattering *= atmoTransmittance;
+        transmittance = mix(1.0, transmittance, atmoTransmittance);
+    }
 
     return vec4(scattering, transmittance);
 }

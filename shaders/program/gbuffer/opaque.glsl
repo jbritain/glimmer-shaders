@@ -28,7 +28,7 @@ void main() {
   gl_Position = ftransform();
   texcoord = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy;
 
-  vec2 lmcoord = (gl_TextureMatrix[1] * gl_MultiTexCoord1).xy;
+  vec2 lmcoord = (mat2(gl_TextureMatrix[1]) * gl_MultiTexCoord1.xy);
   lightmap = lmcoord / (30.0 / 32.0) - 1.0 / 32.0;
 
   tbn[0] = normalize(gl_NormalMatrix * at_tangent.xyz);

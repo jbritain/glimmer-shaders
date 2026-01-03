@@ -3,7 +3,8 @@ colortex1: gbuffer (normals, lightmap)
 colortex2: material (albedo, specular map etc)
 colortex3: ssao
 colortex4: RTWSM warp maps
-colortex5: previous frame colour
+colortex5: previous frame colour and depth
 colortex6: bloom
 colortex7: SSR
 colortex8: clouds
+colortex9: global illumination

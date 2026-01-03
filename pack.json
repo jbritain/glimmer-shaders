@@ -31,6 +31,10 @@
         "programs": ["vsh", "fsh"]
       },
       {
+        "path": "RSM",
+        "programs": ["vsh", "fsh"]
+      },
+      {
         "path": "opaqueSSR",
         "programs": ["vsh", "fsh"]
       },

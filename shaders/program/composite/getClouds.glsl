@@ -47,8 +47,9 @@ void main() {
     previousPos = viewSpaceToScreenSpace(previousPos, gbufferPreviousProjection);
 
     vec4 previousClouds = catmullRom5(colortex8, previousPos.xy);
-    float previousDepth = texture(colortex5, previousPos.xy).a;
-    show(previousDepth);
+    float previousZ = texture(colortex5, previousPos.xy).a;
+    float previousDepth = viewSpaceToScreenSpace(previousZ, gbufferPreviousProjection);
+    // show(previousDepth);
 
     if(saturate(previousPos.xy) == previousPos.xy && previousDepth == 1.0){
       clouds = mix(previousClouds, clouds, 0.05);

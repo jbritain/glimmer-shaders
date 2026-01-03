@@ -1,0 +1,73 @@
+/*
+    Copyright (c) 2025 Josh Britain (jbritain)
+    Licensed under the MIT license
+
+      _____   __   _
+     / ___/  / /  (_)  __ _   __ _  ___   ____
+    / (_ /  / /  / /  /  ' \ /  ' \/ -_) / __/
+    \___/  /_/  /_/  /_/_/_//_/_/_/\__/ /_/
+
+    By jbritain
+    https://jbritain.net
+
+*/
+#include "/lib/common.glsl"
+
+#ifdef vsh
+out vec2 texcoord;
+
+void main() {
+  gl_Position = ftransform();
+  texcoord = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy;
+}
+#endif
+
+// ==============================================================================================
+
+#ifdef fsh
+
+#include "/lib/lighting/reflectiveShadowMapping.glsl"
+#include "/lib/material/material.glsl"
+
+in vec2 texcoord;
+
+/* RENDERTARGETS: 9 */
+
+layout(location = 0) out vec3 RSM;
+
+void main() {
+  RSM = vec3(0.0);
+  float depth = texture(depthtex0, texcoord).r;
+  vec3 viewPos = screenSpaceToViewSpace(vec3(texcoord, depth));
+  vec3 feetPlayerPos = transformView(viewPos, gbufferModelViewInverse);
+
+  if (depth == 1.0) {
+    return;
+  }
+
+  Gbuffer gbuffer = unpackGbuffer(texture(colortex1, texcoord).rgb);
+  RSM = getReflectiveShadowMap(feetPlayerPos, gbuffer.geometryNormal);
+
+  vec3 previousPos = feetPlayerPos + cameraPosition - previousCameraPosition;
+  vec3 previousViewPos = transformView(previousPos, gbufferPreviousModelView);
+  previousPos = viewSpaceToScreenSpace(
+    previousViewPos,
+    gbufferPreviousProjection
+  );
+
+  vec3 actualPreviousPos = previousViewPos;
+  actualPreviousPos.z = texture(colortex5, previousPos.xy).a;
+
+  if (
+    clamp01(previousPos) == previousPos &&
+    distance(actualPreviousPos, previousViewPos) < 0.1
+  ) {
+    vec3 previousRSM = texture(colortex9, previousPos.xy).rgb;
+    RSM = mix(RSM, previousRSM, 0.9);
+  }
+
+  // show(RSM);
+
+}
+
+#endif

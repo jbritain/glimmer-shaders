@@ -19,9 +19,11 @@ layout(r32ui) uniform uimage2D undistortedShadowMap;
 
 out vec2 texcoord;
 out vec4 glcolor;
+out vec3 normal;
 
 void main() {
   gl_Position = ftransform();
+  normal = normalize(gl_NormalMatrix * gl_Normal);
   vec3 screenPos = gl_Position.xyz * 0.5 + 0.5;
   imageAtomicMax(
     undistortedShadowMap,
@@ -49,15 +51,18 @@ void main() {
 
 in vec2 texcoord;
 in vec4 glcolor;
+in vec3 normal;
 
-/* RENDERTARGETS: 0 */
+/* RENDERTARGETS: 0,1 */
 layout(location = 0) out vec4 color;
+layout(location = 1) out vec2 encodedNormal;
 
 void main() {
   color = texture(gtexture, texcoord) * glcolor;
   if (color.a < alphaTestRef) {
     discard;
   }
+  encodedNormal = normal.xy * 0.5 + 0.5;
 }
 
 #endif

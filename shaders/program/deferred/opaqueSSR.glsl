@@ -43,9 +43,10 @@ vec3 SSRSample(
   inout vec3 origin,
   vec3 dir,
   vec3 normal,
+  float skyLightmap,
   float jitter,
   int samples,
-  bool refine, 
+  bool refine,
   out float hitLength
 ) {
   vec3 rayPos;
@@ -70,9 +71,9 @@ vec3 SSRSample(
     rayPos = viewSpaceToScreenSpace(rayPos, gbufferPreviousProjection);
     return texture(colortex5, rayPos.xy).rgb;
   } else {
-    hitLength = far;
+    hitLength = 0.0;
     rayPos = viewSpaceToScreenSpace(origin);
-    return getSky(mat3(gbufferModelViewInverse) * reflectedDir, false);
+    return getSky(mat3(gbufferModelViewInverse) * reflectedDir, false) * skyLightmap;
   }
 }
 
@@ -96,6 +97,7 @@ void main() {
       viewPos,
       viewDir,
       viewNormal,
+      gbuffer.lightmap.y,
       interleavedGradientNoise(floor(gl_FragCoord.xy), frameCounter),
       SMOOTH_SSR_STEPS,
       true,
@@ -123,25 +125,40 @@ void main() {
           viewPos,
           viewDir,
           roughNormal,
+          gbuffer.lightmap.y,
           noise.z,
           ROUGH_SSR_STEPS,
-          false,
+          true,
           hitLength
         );
+        averageHitLength += hitLength;
       }
       SSRColor /= float(ROUGH_SSR_SAMPLES);
       averageHitLength /= float(ROUGH_SSR_SAMPLES);
 
       vec3 reflectDir = reflect(viewDir, viewNormal);
-      vec3 projectedPos = viewPos + reflectDir * averageHitLength;
+      vec3 projectedPos = viewPos + viewDir * averageHitLength;
       projectedPos = transformView(projectedPos, gbufferModelViewInverse);
       projectedPos += cameraPosition - previousCameraPosition;
-      projectedPos = transformView(projectedPos, gbufferPreviousModelView);
-      projectedPos -= reflectDir * averageHitLength;
-      projectedPos = viewSpaceToScreenSpace(projectedPos, gbufferPreviousProjection);
-      if(clamp01(projectedPos) == projectedPos){
+      vec3 projectedViewPos = transformView(
+        projectedPos,
+        gbufferPreviousModelView
+      );
+      projectedViewPos -= normalize(projectedViewPos) * averageHitLength;
+      projectedPos = viewSpaceToScreenSpace(
+        projectedViewPos,
+        gbufferPreviousProjection
+      );
+
+      vec3 actualProjectedPos = projectedViewPos;
+      actualProjectedPos.z = texture(colortex5, projectedPos.xy).a;
+
+      if (
+        clamp01(projectedPos) == projectedPos &&
+        distance(projectedViewPos, actualProjectedPos) < 0.1
+      ) {
         vec3 previousSSR = texture(colortex7, projectedPos.xy).rgb;
-        SSRColor = mix(SSRColor, previousSSR, 0.9);
+        SSRColor = mix(SSRColor, previousSSR, 0.5);
       }
 
     }
