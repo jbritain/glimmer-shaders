@@ -130,7 +130,7 @@ float getCloudDensity(vec3 rayPos, bool highQuality){
         float density = remap(lowFrequencyNoise.r, lowFrequencyFBM * 0.7, 1.0, 0.0, 1.0);
         density = sqrt(density);
         
-        float heightFactor = min(linearstep(0.0, 0.15, heightInPlane), 1.0 - linearstep(0.15, 1.0, heightInPlane));
+        float heightFactor = min(linearstep(0.0, 0.3, heightInPlane), 1.0 - linearstep(0.3, 1.0, heightInPlane));
         density *= heightFactor;
 
         density = remap(density, 1.0 - coverage, 1.0, 0.0, 1.0);
