@@ -39,7 +39,7 @@ uniform sampler2D vanillacloudtex;
     #define CLOUDS_MULTIPLE_SCATTERING 500.0
 #endif
 
-const float cloudScattering = 0.8;
+const float cloudScattering = 2.0;
 const float cloudAbsorption = 0.44;
 const float cloudExtinction = cloudScattering + cloudAbsorption;
 
@@ -130,7 +130,7 @@ float getCloudDensity(vec3 rayPos, bool highQuality){
         float density = remap(lowFrequencyNoise.r, lowFrequencyFBM * 0.7, 1.0, 0.0, 1.0);
         density = sqrt(density);
         
-        float heightFactor = min(linearstep(0.0, 0.3, heightInPlane), 1.0 - linearstep(0.3, 1.0, heightInPlane));
+        float heightFactor = min(smoothstep(0.0, 0.2, heightInPlane), 1.0 - linearstep(0.2, 1.0, heightInPlane));
         density *= heightFactor;
 
         density = remap(density, 1.0 - coverage, 1.0, 0.0, 1.0);
