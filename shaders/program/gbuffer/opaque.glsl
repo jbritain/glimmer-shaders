@@ -31,6 +31,10 @@ void main() {
   vec2 lmcoord = (mat2(gl_TextureMatrix[1]) * gl_MultiTexCoord1.xy);
   lightmap = lmcoord / (30.0 / 32.0) - 1.0 / 32.0;
 
+  if(at_midBlock.w > 0.0){
+    lightmap.x = 0.0;
+  }
+
   tbn[0] = normalize(gl_NormalMatrix * at_tangent.xyz);
   tbn[2] = normalize(gl_NormalMatrix * gl_Normal);
   tbn[1] = normalize(cross(tbn[0], tbn[2]) * at_tangent.w);
@@ -52,17 +56,29 @@ in vec2 texcoord;
 in vec4 glcolor;
 in mat3 tbn;
 
+#ifdef SSAO
+/* RENDERTARGETS: 1,2 */
+#else
 /* RENDERTARGETS: 1,2,3 */
+#endif
+
 layout(location = 0) out uvec3 gbufferData;
 layout(location = 1) out uvec2 materialData;
+#ifndef SSAO
+layout(location = 2) out float occlusion;
+#endif
 
 void main() {
+  #ifndef SSAO
+  occlusion = pow2(glcolor.a);
+  #endif
+
   Gbuffer gbuffer;
 
   gbuffer.geometryNormal = mat3(gbufferModelViewInverse) * tbn[2];
   gbuffer.surfaceNormal =
     mat3(gbufferModelViewInverse) * getSurfaceNormal(texcoord, tbn);
-  gbuffer.lightmap = lightmap;
+  gbuffer.lightmap = applyLightmapFalloff(lightmap);
 
   vec4 color = texture(gtexture, texcoord);
   color.rgb *= glcolor.rgb;

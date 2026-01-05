@@ -11,6 +11,8 @@
 
 #include "/lib/common/debug.glsl"
 
+#include "/lib/material/materialIDs.glsl"
+
 layout(std430, binding = 0) buffer environmentData {
   vec3 sunlightColor;
   vec3 skylightColor;

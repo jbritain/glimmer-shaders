@@ -1,12 +1,9 @@
 #ifndef SSAO_GLSL
 #define SSAO_GLSL
 
-#define SSAO_SAMPLES 64
-#define SSAO_RADIUS 2.0
-
 #include "/lib/util/dither.glsl"
 
-float SSAO(vec3 viewPos, vec3 worldNormal) {
+float getSSAO(vec3 viewPos, vec3 worldNormal) {
   vec3 normal = mat3(gbufferModelView) * worldNormal;
 
   mat3 tbn;

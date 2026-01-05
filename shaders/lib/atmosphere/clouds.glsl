@@ -21,31 +21,16 @@ uniform sampler2D cloudcoveragetex;
 uniform sampler2D vanillacloudtex;
 
 
-// #define VANILLA_CLOUDS
-
-#ifdef VANILLA_CLOUDS
-    #define CLOUDS_BASE_ALTITUDE 192
-    #define CLOUDS_TOP_ALTITUDE 196
-    #define CLOUD_PRIMARY_SAMPLES 16
-    #define CLOUD_SECONDARY_SAMPLES 1
-    #define CLOUDS_DENSITY 2.0
-    #define CLOUDS_MULTIPLE_SCATTERING 500.0
-#else
-    #define CLOUDS_BASE_ALTITUDE 100
-    #define CLOUDS_TOP_ALTITUDE 300
-    #define CLOUD_PRIMARY_SAMPLES 24
-    #define CLOUD_SECONDARY_SAMPLES 4
-    #define CLOUDS_DENSITY 0.17
-    #define CLOUDS_MULTIPLE_SCATTERING 500.0
-#endif
+#define CLOUDS_BASE_ALTITUDE 400
+#define CLOUDS_TOP_ALTITUDE 500
+#define CLOUD_PRIMARY_SAMPLES 16
+#define CLOUD_SECONDARY_SAMPLES 4
+#define CLOUDS_DENSITY 0.085
+#define CLOUDS_MULTIPLE_SCATTERING 500.0
 
 const float cloudScattering = 2.0;
 const float cloudAbsorption = 0.44;
 const float cloudExtinction = cloudScattering + cloudAbsorption;
-
-float linearstep(float edge0, float edge1, float x) {
-    return clamp((x - edge0) / (edge1 - edge0), 0.0, 1.0);
-}
 
 float remap(float val, float oMin, float oMax, float nMin, float nMax) {
     return mix(nMin, nMax, linearstep(oMin, oMax, val));
@@ -123,6 +108,7 @@ float getCloudDensity(vec3 rayPos, bool highQuality){
         // Shape and detail textures generated with jaekmichie97's noise generator (https://github.com/jcm2606/volume-noise-generator)
         float coverage = smoothstep(0.7, 1.0, texture(cloudcoveragetex, fract(rayPos.xz / 7500.0)).r);
         coverage *= heightInPlane * 0.3 + 0.7;
+
         // coverage = sqrt(coverage);
 
         vec4 lowFrequencyNoise = texture(cloudshapetex, fract(rayPos.xyz / 300.0));
@@ -130,7 +116,7 @@ float getCloudDensity(vec3 rayPos, bool highQuality){
         float density = remap(lowFrequencyNoise.r, lowFrequencyFBM * 0.7, 1.0, 0.0, 1.0);
         density = sqrt(density);
         
-        float heightFactor = min(smoothstep(0.0, 0.2, heightInPlane), 1.0 - linearstep(0.2, 1.0, heightInPlane));
+        float heightFactor = min(smoothstep(0.0, 0.2, heightInPlane / 2), 1.0 - linearstep(0.2, 1.0, heightInPlane / 2));
         density *= heightFactor;
 
         density = remap(density, 1.0 - coverage, 1.0, 0.0, 1.0);
@@ -143,7 +129,7 @@ float getCloudDensity(vec3 rayPos, bool highQuality){
             float highFrequencyFBM = highFrequencyNoise.r * 0.625 + highFrequencyNoise.g * 0.25 + highFrequencyNoise.b * 0.125;
             highFrequencyFBM = mix(highFrequencyFBM, 1.0 - highFrequencyFBM, saturate(heightInPlane * 10.0));
 
-            density = remap(density, highFrequencyFBM * 0.5, 1.0, 0.0, 1.0);
+            density = remap(density, highFrequencyFBM * 0.7, 1.0, 0.0, 1.0);
         } else {
             density = remap(density, 0.25, 1.0, 0.0, 1.0); // the remap operation from the high quality noise affects the overall density - this emulates that
         }
@@ -152,7 +138,7 @@ float getCloudDensity(vec3 rayPos, bool highQuality){
 
 
 
-        return density * CLOUDS_DENSITY;
+        return density * CLOUDS_DENSITY * (1.0 + wetness);
     #endif
 }
 
@@ -263,7 +249,6 @@ vec4 getClouds(inout vec3 position, bool sky){
     position = mix(start, end, 0.5) - cameraPosition;
 
     for(int i = 0; i < CLOUD_PRIMARY_SAMPLES; i++, rayPos += rayStep){
-        float heightFactor;
         float density = getCloudDensity(rayPos, true);
         if(density < 0.01){
             continue;

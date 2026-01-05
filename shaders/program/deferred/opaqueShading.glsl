@@ -80,13 +80,21 @@ void main() {
     vec3 subsurfaceScattering = getSubsurfaceScattering(material.albedo, material.subsurface, blockerDistance, length(shadow), normalize(feetPlayerPos), gbuffer.geometryNormal) * sunlightColor;
     diffuse = gbuffer.lightmap.y * skylightColor * material.albedo * occlusion;
     diffuse += subsurfaceScattering * occlusion;
+    #ifdef RSM
     diffuse += texture(colortex9, texcoord).rgb * sunlightColor * material.albedo;
-    f *= step(ROUGH_SSR_THRESHOLD, maxVec3(f));
+    #endif
+    if(material.roughness != 0.0){
+      f *= step(ROUGH_SSR_THRESHOLD, maxVec3(f));
+    }
+
   }
 
   color.rgb += mix(diffuse, specularc, f);
 
-  color.rgb +=  material.emission *  material.albedo * EMISSIVE_STRENGTH;
+  color.rgb += material.emission * material.albedo * EMISSIVE_STRENGTH;
+
+  color.rgb += material.albedo * gbuffer.lightmap.x * blocklightColor * EMISSIVE_STRENGTH;
+  show(gbuffer.lightmap);
 
 }
 

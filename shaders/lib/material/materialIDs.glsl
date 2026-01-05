@@ -1,0 +1,1 @@
+bool materialIsWater(uint id){return id == 1000;}

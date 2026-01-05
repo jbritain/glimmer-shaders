@@ -26,26 +26,36 @@ void main() {
   }
 
   vec2 texcoord = texelCoord / (resolution * workGroupsRender);
-  float depth = textureLod(depthtex0, texcoord, 0).r;
+  float depth0 = textureLod(depthtex0, texcoord, 0).r;
+  float depth1 = textureLod(depthtex2, texcoord, 0).r;
   Gbuffer gbuffer = unpackGbuffer(texture(colortex1, texcoord).rgb);
 
-  if(depth == 1.0){
+
+  if(depth0 == 1.0){
     return;
   }
 
-  vec3 viewPos = screenSpaceToViewSpace(vec3(texcoord, depth));
-  vec3 shadowViewPos = transformView(
-    transformView(viewPos, gbufferModelViewInverse),
-    shadowModelView
-  );
-  vec3 shadowScreenPos = viewSpaceToScreenSpaceOrtho(
-    shadowViewPos,
-    shadowProjection
-  );
 
-  uint weight = uint(1000);
-  // weight += uint((1.0 - clamp01(-viewPos.z / far)) * 1000);
-  // weight += uint(clamp01(dot(gbuffer.geometryNormal, gbufferModelViewInverse[2].xyz)) * 2000);
+  for(int i = 0; i < (depth0 == depth1 ? 1 : 2); i++){
+    uint weight = uint(1000);
+    float depth = ((i == 0) ? depth0 : depth1);
+    vec3 viewPos = screenSpaceToViewSpace(vec3(texcoord, depth));
+    vec3 shadowViewPos = transformView(
+      transformView(viewPos, gbufferModelViewInverse),
+      shadowModelView
+    );
+    vec3 shadowScreenPos = viewSpaceToScreenSpaceOrtho(
+      shadowViewPos,
+      shadowProjection
+    );
+    imageAtomicAdd(shadowImportanceMap, ivec2(shadowScreenPos.xy * 256), weight);
+  }
 
-  imageAtomicAdd(shadowImportanceMap, ivec2(shadowScreenPos.xy * 256), weight);
+  
+
+
+
+
+
+  
 }

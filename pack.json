@@ -3,7 +3,9 @@
     "gbuffers": {
       "terrain": "opaque",
       "entities": "opaque",
-      "hand": "opaque"
+      "entities_translucent": "translucent",
+      "hand": "opaque",
+      "water": "translucent"
     },
     "setup": [
       {
@@ -28,11 +30,13 @@
     "deferred": [
       {
         "path": "SSAO",
-        "programs": ["vsh", "fsh"]
+        "programs": ["vsh", "fsh"],
+        "enabledBy": "SSAO"
       },
       {
         "path": "RSM",
-        "programs": ["vsh", "fsh"]
+        "programs": ["vsh", "fsh"],
+        "enabledBy": "RSM"
       },
       {
         "path": "opaqueSSR",
@@ -46,11 +50,18 @@
     "composite": [
       {
         "path": "getClouds",
-        "programs": ["vsh", "fsh"]
+        "programs": ["vsh", "fsh"],
+        "enabledBy": "CLOUDS"
       },
       {
         "path": "blendClouds",
-        "programs": ["vsh", "fsh"]
+        "programs": ["vsh", "fsh"],
+        "enabledBy": "CLOUDS"
+      },
+      {
+        "path": "blendTranslucents",
+        "programs": ["vsh", "fsh"],
+        "enabledBy": "CLOUDS"
       },
       {
         "path": "RTWForwardAnalysis",
@@ -144,5 +155,8 @@
         "blend": "ONE ONE ZERO ZERO"
       }
     ]
+  },
+  "blockMappings": {
+    "water": "water"
   }
 }

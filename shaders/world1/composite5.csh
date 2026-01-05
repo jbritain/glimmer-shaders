@@ -1,4 +1,4 @@
 #version 460 compatibility
 #define WORLD_THE_NETHER
 #define csh
-#include "/program/composite/RTWForwardAnalysis.glsl"
+#include "/program/composite/RTWCalculateMaxWeights.glsl"

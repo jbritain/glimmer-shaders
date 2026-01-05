@@ -33,10 +33,10 @@ in vec2 texcoord;
 
 /* RENDERTARGETS: 9 */
 
-layout(location = 0) out vec3 RSM;
+layout(location = 0) out vec3 globalIllumination;
 
 void main() {
-  RSM = vec3(0.0);
+  globalIllumination = vec3(0.0);
   float depth = texture(depthtex0, texcoord).r;
   vec3 viewPos = screenSpaceToViewSpace(vec3(texcoord, depth));
   vec3 feetPlayerPos = transformView(viewPos, gbufferModelViewInverse);
@@ -46,7 +46,7 @@ void main() {
   }
 
   Gbuffer gbuffer = unpackGbuffer(texture(colortex1, texcoord).rgb);
-  RSM = getReflectiveShadowMap(feetPlayerPos, gbuffer.geometryNormal);
+  globalIllumination = getReflectiveShadowMap(feetPlayerPos, gbuffer.geometryNormal);
 
   vec3 previousPos = feetPlayerPos + cameraPosition - previousCameraPosition;
   vec3 previousViewPos = transformView(previousPos, gbufferPreviousModelView);
@@ -62,11 +62,11 @@ void main() {
     clamp01(previousPos) == previousPos &&
     distance(actualPreviousPos, previousViewPos) < 0.1
   ) {
-    vec3 previousRSM = texture(colortex9, previousPos.xy).rgb;
-    RSM = mix(RSM, previousRSM, 0.9);
+    vec3 previousglobalIllumination = texture(colortex9, previousPos.xy).rgb;
+    globalIllumination = mix(globalIllumination, previousglobalIllumination, 0.9);
   }
 
-  // show(RSM);
+  // show(globalIllumination);
 
 }
 

@@ -7,12 +7,13 @@ import shutil
 
 json_path = "./pack.json"
 shaders_path = "shaders"
-config_path = "lib/config"
+material_id_path = "lib/material/materialIDs.glsl"
 version = "460 compatibility"
 
 OVERWORLD = ("OVERWORLD", "world0")
 NETHER = ("THE_NETHER", "world1")
 END = ("THE_END", "world-1")
+all_dimensions = OVERWORLD, NETHER, END
 
 
 def create_linked_shader_program(program_path, file_path, program_types=["vsh", "fsh"], dimensions=[OVERWORLD, NETHER, END], defines={}):
@@ -48,12 +49,21 @@ def generate_post_processing(pack):
     for stage in ["setup", "prepare", "composite", "deferred", "shadowcomp"]:
         if os.path.exists(f"{shaders_path}/program/{stage}"):
             for i, program in enumerate(pack["programs"][stage]):
+                program_name = f"{stage}{i if i else ''}"
+
                 create_linked_shader_program(
-                    f"{stage}{i if i else ''}", f"program/{stage}/{program['path']}.glsl", program["programs"], defines=(program["defines"] if "defines" in program.keys() else {}))
+                    program_name, f"program/{stage}/{program['path']}.glsl", program["programs"], defines=(program["defines"] if "defines" in program.keys() else {}))
+
 
                 if 'blend' in program.keys():
                     pack["properties"].append(
-                        f"blend.{stage}{i if i else ''} = {program['blend']}")
+                        f"blend.{program_name} = {program['blend']}")
+
+                if 'enabledBy' in program.keys():
+                    for dim in all_dimensions:
+                        pack['properties'].append(
+                            f"program.{dim[1]}/{program_name}.enabled = {program['enabledBy']}"
+                        )
 
 
     if os.path.exists(f"{shaders_path}/program/final.glsl"):
@@ -73,18 +83,32 @@ def generate_properties(pack):
         f.truncate()
 
 
+def generate_material_ids(pack):
+    block_properties = []
+    mappings = []
+    for i, (group_name, blocks) in enumerate(pack["blockMappings"].items()):
+        block_properties.append(f"block.{i + 1000} = {blocks}")
+        mappings.append(
+            f"bool materialIs{group_name.title()}(uint id){{return id == {i + 1000};}}")
+
+    with open(f"{shaders_path}/block.properties", "w") as f:
+        f.writelines(block_properties)
+    with open(f"{shaders_path}/{material_id_path}", "w") as f:
+        f.writelines(mappings)
+
 def generate_pack():
     with open(json_path) as j:
         pack = json.loads("".join(j.readlines()))
 
     pack["properties"] = []
 
-    for dim in [OVERWORLD, NETHER, END]:
+    for dim in all_dimensions:
         if os.path.exists(f"{shaders_path}/{dim[1]}"):
             shutil.rmtree(f"{shaders_path}/{dim[1]}")
     generate_gbuffers(pack)
     generate_post_processing(pack)
     generate_properties(pack)
+    generate_material_ids(pack)
 
 
 generate_pack()

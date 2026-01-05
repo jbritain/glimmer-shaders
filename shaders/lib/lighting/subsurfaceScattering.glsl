@@ -9,13 +9,13 @@ vec3 getSubsurfaceScattering(vec3 albedo, float factor, float blockerDistance, f
   }
   
   if(blockerDistance < 1e-6){
-    return 0.25 * albedo;
+    return 0.25 * isotropicPhase * albedo / PI;
   }
 
   float VoL = dot(playerDir, worldLightDir);
 
-  float sz = blockerDistance * 600 / factor;
-  vec3 scatter = 0.25 * isotropicPhase * albedo * (exp(-sz) + 3.0 * exp(-sz / 3.0));
+  float sz = blockerDistance * 250 / factor;
+  vec3 scatter = 0.25 * isotropicPhase * albedo * (exp(-sz) + 3.0 * exp(-sz / 3.0)) / PI;
 
   // if(dot(playerNormal, worldLightDir) > 0.0){
   //   scatter *= shadow;

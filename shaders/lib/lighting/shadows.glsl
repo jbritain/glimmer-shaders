@@ -113,4 +113,27 @@ vec3 getShadow(
   return shadow;
 }
 
+float getShadowFast(vec3 playerPos, vec3 playerNormal){
+  vec3 shadowViewPos = transformView(playerPos, shadowModelView);
+
+  vec3 shadowViewNormal = mat3(shadowModelView) * playerNormal;
+  shadowViewPos +=
+    shadowViewNormal * 0.3 * sqrt(1.0 - pow2(dot(playerNormal, worldLightDir)));
+
+  vec3 shadowScreenPos = viewSpaceToScreenSpaceOrtho(
+    shadowViewPos,
+    shadowProjection
+  );
+  shadowScreenPos.z /= 2.0;
+
+  vec2 warp = vec2(
+    texture(colortex4, vec2(shadowScreenPos.x, 0.0)).r,
+    texture(colortex4, vec2(shadowScreenPos.y, 1.0)).r
+  );
+  shadowScreenPos.xy += warp;
+
+  float shadow = texture(shadowtex0HW, shadowScreenPos).r;
+  return shadow;
+}
+
 #endif

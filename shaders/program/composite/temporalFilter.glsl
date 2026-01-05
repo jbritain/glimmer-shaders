@@ -53,6 +53,11 @@ void main() {
   float opaqueDepth = texture(depthtex2, texcoord).r;
   vec3 viewPos = screenSpaceToViewSpace(vec3(texcoord, depth));
   newHistory.a = viewPos.z;
+
+  if(depth != opaqueDepth){
+    return;
+  }
+
   vec3 feetPlayerPos = (gbufferModelViewInverse * vec4(viewPos, 1.0)).xyz;
   feetPlayerPos += cameraPosition;
   feetPlayerPos -= previousCameraPosition;
