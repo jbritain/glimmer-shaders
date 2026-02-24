@@ -3,5 +3,4 @@
 #define vsh
 #define WORLD_THE_END
 
-#define TILE_INDEX 3
-#include "/program/bloomUpsample.glsl"
+#include "/program/c48_writeLuminance.glsl"

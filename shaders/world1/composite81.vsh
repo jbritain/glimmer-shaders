@@ -3,4 +3,5 @@
 #define vsh
 #define WORLD_THE_END
 
+#define TILE_INDEX 1
 #include "/program/bloomDownsample.glsl"

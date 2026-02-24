@@ -3,5 +3,4 @@
 #define vsh
 #define WORLD_THE_NETHER
 
-#define TILE_INDEX 3
-#include "/program/bloomDownsample.glsl"
+#include "/program/c48_writeLuminance.glsl"
