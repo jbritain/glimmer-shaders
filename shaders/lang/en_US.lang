@@ -47,7 +47,7 @@ option.AMBIENT_STRENGTH.comment=The minimum amount of light there can be in any 
 option.OLD_LIGHTING=Old Lighting
 option.OLD_LIGHTING.comment=Enables the vanilla lighting based on the facing direction. §9No performance impact!
 
-option.FLOODFILL=coloured Blocklight
+option.FLOODFILL=Coloured Blocklight
 option.FLOODFILL.comment=Makes the light emitted by blocks match their colour. Requires §eshadows §fto be enabled. §6Moderate performance impact.
 
 option.EMISSION_STRENGTH=Emissive Strength
