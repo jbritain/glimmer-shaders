@@ -67,7 +67,6 @@ void main() {
   #ifdef DEBUG_ENABLE
   if (hideGUI) {
     color = texture(debugtex, texcoord);
-    color = texture(colortex2, texcoord);
   }
 
   beginText(ivec2(gl_FragCoord.xy / 2.0), ivec2(0, viewHeight / 2.0) + ivec2(8, -8));

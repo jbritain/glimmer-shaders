@@ -50,6 +50,10 @@ layout(location = 1) out vec3 occlusion;
 void main() {
   color = texture(colortex0, texcoord);
 
+  #if GODRAYS > 0
+  occlusion = vec3(1.0);
+  #endif
+
   float depth = texture(depthtex0, texcoord).r;
   if (depth == 1.0) {
     vec3 viewPos = screenSpaceToViewSpace(vec3(texcoord, depth));

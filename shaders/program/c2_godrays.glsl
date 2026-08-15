@@ -62,7 +62,7 @@ void main() {
 
   sampleCoord -=
     deltaTexcoord *
-      interleavedGradientNoise(floor(gl_FragCoord.xy), frameCounter);
+    interleavedGradientNoise(floor(gl_FragCoord.xy), frameCounter);
 
   for (int i = 0; i < GODRAYS_SAMPLES; i++) {
     vec3 scatterSample = texture(colortex4, sampleCoord).rgb;
@@ -127,7 +127,10 @@ void main() {
     // if(isEyeInWater == 1){
     //     scattering += vec3(texture(shadowtex1HW, screenSamplePos).r) * cloudShadow;
     // } else {
-    scattering += vec3(texture(shadowtex0HW, screenSamplePos).r) * cloudShadow * length(sampleDelta);
+    scattering +=
+      vec3(texture(shadowtex0HW, screenSamplePos).r) *
+      cloudShadow *
+      length(sampleDelta);
     // }
 
     samplePos += sampleDelta;
