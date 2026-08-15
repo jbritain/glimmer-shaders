@@ -88,25 +88,25 @@ void main() {
       blocklightColor = texture(floodfillVoxelMapTex1, voxelPosInterp).rgb;
     }
     color.rgb = getShadedColor(
-        material,
-        normal,
-        normal,
-        blocklightColor,
-        lightmap,
-        viewPos,
-        1.0,
-        1.0
-      );
+      material,
+      normal,
+      normal,
+      blocklightColor,
+      lightmap,
+      viewPos,
+      1.0,
+      1.0
+    );
     #else
     color.rgb = getShadedColor(
-        material,
-        normal,
-        normal,
-        lightmap,
-        viewPos,
-        1.0,
-        1.0
-      );
+      material,
+      normal,
+      normal,
+      lightmap,
+      viewPos,
+      1.0,
+      1.0
+    );
 
     #endif
 

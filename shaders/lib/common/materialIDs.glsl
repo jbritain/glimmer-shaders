@@ -33,101 +33,97 @@ bool isIce(int id) {
 
 
 bool isLava(int id) {
-    return id == 1022 || id == DH_BLOCK_LAVA;
+    return id == 1014 || id == DH_BLOCK_LAVA;
 }
 
 
 bool isPlant(int id) {
-    return id == 1003 || id == 1004 || id == 1005 || id == 1006 || id == 1008 || id == 1009 || id == 1012 || id == 1024 || id == 1025 || id == 1026;
+    return id == 1003 || id == 1004 || id == 1006 || id == 1016 || id == 1020 || id == 1022 || id == 1024 || id == 1026 || id == 1028 || id == 1030;
 }
 
 
 bool isLeaves(int id) {
-    return id == 1009 || id == DH_BLOCK_LEAVES;
-}
-
-
-struct SwayValues {
-	int NONE;
-	int UPPER;
-	int LOWER;
-	int SHORT;
-	int HANGING;
-	int FLOATING;
-	int FULL;
-};
-const SwayValues Sway = SwayValues(0, 1, 2, 3, 4, 5, 6);
-int sway(int id) {
-    if (id == 1004) {
-        return Sway.UPPER;
-    } else if (id == 1005) {
-        return Sway.LOWER;
-    } else if (id == 1006 || id == 1025) {
-        return Sway.SHORT;
-    } else if (id == 1007 || id == 1008 || id == 1014 || id == 1016) {
-        return Sway.HANGING;
-    } else if (id == 1009) {
-        return Sway.FULL;
-    } else if (id == 1026) {
-        return Sway.FLOATING;
-    } else {
-        return Sway.NONE;
-    }
+    return id == 1004 || id == DH_BLOCK_LEAVES;
 }
 
 
 bool isTintedGlass(int id) {
-    return id == 1010;
+    return id == 1005;
 }
 
 
 bool isFireLightColor(int id) {
-    return id == 1011 || id == 1012 || id == 1022 || id == 1027;
+    return id == 1006 || id == 1014 || id == 1017 || id == 1033;
 }
 
 
 bool isTorchLightColor(int id) {
-    return id == 1013 || id == 1014;
+    return id == 1007 || id == 1031;
 }
 
 
 bool isSoulFireLightColor(int id) {
-    return id == 1015 || id == 1016 || id == 1028;
+    return id == 1008 || id == 1018 || id == 1032;
 }
 
 
 bool isRedstoneLightColor(int id) {
-    return id == 1017;
+    return id == 1009;
 }
 
 
 bool isPurpleFroglight(int id) {
-    return id == 1018;
+    return id == 1010;
 }
 
 
 bool isYellowFroglight(int id) {
-    return id == 1019;
+    return id == 1011;
 }
 
 
 bool isGreenFroglight(int id) {
-    return id == 1020;
+    return id == 1012;
 }
 
 
 bool isMaxEmission(int id) {
-    return id == 1021 || id == 1022;
+    return id == 1013 || id == 1014;
 }
 
 
 bool isLetsLightThrough(int id) {
-    return id == 1023 || id == 1024 || id == 1025 || id == 1026 || id == 1027 || id == 1028;
+    return id == 1015 || id == 1016 || id == 1017 || id == 1018 || id == 1023 || id == 1027;
 }
 
 
 bool isEndPortal(int id) {
-    return id == 1029;
+    return id == 1019;
+}
+
+
+bool isGrass(int id) {
+    return id == 1020 || id == 1024 || id == 1028;
+}
+
+
+bool isTopHalf(int id) {
+    return id == 1021 || id == 1022 || id == 1023 || id == 1024;
+}
+
+
+bool isBottomHalf(int id) {
+    return id == 1025 || id == 1026 || id == 1027 || id == 1028;
+}
+
+
+bool isHanging(int id) {
+    return id == 1029 || id == 1030 || id == 1031 || id == 1032;
+}
+
+
+bool isFire(int id) {
+    return id == 1033;
 }
 
 

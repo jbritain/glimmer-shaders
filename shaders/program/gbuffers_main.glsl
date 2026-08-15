@@ -56,7 +56,7 @@ void main() {
 
   if (
     renderStage == MC_RENDER_STAGE_HAND_SOLID ||
-      renderStage == MC_RENDER_STAGE_HAND_TRANSLUCENT
+    renderStage == MC_RENDER_STAGE_HAND_TRANSLUCENT
   ) {
     gl_Position = ftransform();
     return;
@@ -67,7 +67,7 @@ void main() {
   #ifdef WAVING_BLOCKS
   feetPlayerPos =
     getSway(materialID, feetPlayerPos + cameraPosition, at_midBlock.xyz) -
-      cameraPosition;
+    cameraPosition;
   #endif
 
   // if(isWater(materialID)){
@@ -79,9 +79,9 @@ void main() {
   #ifdef PARALLAX
   vec2 halfSize = abs(texcoord - mc_midTexCoord);
   textureBounds = vec4(
-      mc_midTexCoord.xy - halfSize,
-      mc_midTexCoord.xy + halfSize
-    );
+    mc_midTexCoord.xy - halfSize,
+    mc_midTexCoord.xy + halfSize
+  );
 
   singleTexSize = halfSize * 2.0;
   pixelTexSize = ivec2(singleTexSize * atlasSize);
@@ -156,12 +156,8 @@ void main() {
   vec3 playerPos = (gbufferModelViewInverse * vec4(viewPos, 1.0)).xyz;
 
   float parallaxShadow = 1.0;
+  float jitter = interleavedGradientNoise(floor(gl_FragCoord.xy), frameCounter);
   #ifdef PARALLAX
-
-  float pomJitter = interleavedGradientNoise(
-      floor(gl_FragCoord.xy),
-      frameCounter
-    );
 
   vec3 parallaxPos;
   vec2 dx = dFdx(texcoord);
@@ -169,30 +165,30 @@ void main() {
   vec2 texcoord = texcoord;
   if (
     !isLava(materialID) &&
-      (renderStage == MC_RENDER_STAGE_TERRAIN_SOLID ||
-        renderStage == MC_RENDER_STAGE_ENTITIES ||
-        renderStage == MC_RENDER_STAGE_TERRAIN_TRANSLUCENT)
+    (renderStage == MC_RENDER_STAGE_TERRAIN_SOLID ||
+      renderStage == MC_RENDER_STAGE_ENTITIES ||
+      renderStage == MC_RENDER_STAGE_TERRAIN_TRANSLUCENT)
   ) {
     texcoord = getParallaxTexcoord(
-        texcoord,
-        viewPos,
-        tbnMatrix,
-        parallaxPos,
-        dx,
-        dy,
-        pomJitter
-      );
+      texcoord,
+      viewPos,
+      tbnMatrix,
+      parallaxPos,
+      dx,
+      dy,
+      jitter
+    );
 
     #ifdef PARALLAX_SHADOW
 
     parallaxShadow = getParallaxShadow(
-        parallaxPos,
-        tbnMatrix,
-        dx,
-        dy,
-        pomJitter,
-        viewPos
-      );
+      parallaxPos,
+      tbnMatrix,
+      dx,
+      dy,
+      jitter,
+      viewPos
+    );
     #endif
   }
   #endif
@@ -213,6 +209,12 @@ void main() {
     ambientOcclusion = glcolor.a;
   }
 
+  // #ifdef TEMPORAL_FILTER
+  // if (renderStage == MC_RENDER_STAGE_PARTICLES && albedo.a > alphaTestRef) {
+  //   albedo.a = step(jitter, albedo.a);
+  // }
+  // #endif
+
   if (albedo.a < alphaTestRef) {
     discard;
   }
@@ -230,13 +232,13 @@ void main() {
   if (isLava(materialID)) {
     vec3 worldPos = playerPos + cameraPosition;
     float noise = texture(
-        perlinNoiseTex,
-        mod(worldPos.xz / 100 + vec2(0.0, frameTimeCounter * 0.005), 1.0)
-      ).r;
+      perlinNoiseTex,
+      mod(worldPos.xz / 100 + vec2(0.0, frameTimeCounter * 0.005), 1.0)
+    ).r;
     noise *= texture(
-        perlinNoiseTex,
-        mod(worldPos.xz / 200 + vec2(frameTimeCounter * 0.005, 0.0), 1.0)
-      ).r;
+      perlinNoiseTex,
+      mod(worldPos.xz / 200 + vec2(frameTimeCounter * 0.005, 0.0), 1.0)
+    ).r;
     albedo.rgb *= noise;
     albedo.rgb *= 4.0;
   }
@@ -258,9 +260,9 @@ void main() {
   material.f0 = vec3(0.04);
   if (
     material.emission == 0.0 &&
-      emission > 0.0 &&
-      (renderStage == MC_RENDER_STAGE_TERRAIN_SOLID ||
-        renderStage == MC_RENDER_STAGE_TERRAIN_TRANSLUCENT)
+    emission > 0.0 &&
+    (renderStage == MC_RENDER_STAGE_TERRAIN_SOLID ||
+      renderStage == MC_RENDER_STAGE_TERRAIN_TRANSLUCENT)
   ) {
     material.emission = luminance(albedo.rgb) * emission;
   }
@@ -280,7 +282,7 @@ void main() {
 
   if (
     isMaxEmission(materialID) ||
-      renderStage == MC_RENDER_STAGE_ENTITIES && entityId == 1
+    renderStage == MC_RENDER_STAGE_ENTITIES && entityId == 1
   ) {
     material.emission = 1.0;
   }
@@ -310,15 +312,15 @@ void main() {
   float dist = length(playerPos);
   float falloff =
     (1.0 - clamp01(smoothstep(0.0, 15.0, dist))) *
-      max(heldBlockLightValue, heldBlockLightValue2) /
-      15.0;
+    max(heldBlockLightValue, heldBlockLightValue2) /
+    15.0;
 
   #ifdef DIRECTIONAL_LIGHTMAPS
   falloff *= mix(
-      dot(normalize(-viewPos), mappedNormal),
-      1.0,
-      material.sss * 0.25 + 0.75
-    );
+    dot(normalize(-viewPos), mappedNormal),
+    1.0,
+    material.sss * 0.25 + 0.75
+  );
   #endif
 
   lightmap.x = max(lightmap.x, falloff);
@@ -342,13 +344,13 @@ void main() {
     #ifdef DIRECTIONAL_LIGHTMAPS
     vec3 offset =
       -mat3(gbufferModelViewInverse) * tbnMatrix[2] * 0.5 +
-        mat3(gbufferModelViewInverse) * mappedNormal;
+      mat3(gbufferModelViewInverse) * mappedNormal;
     offset = mix(offset, vec3(0.0), material.sss * 0.25);
     vec3 voxelPosInterp = mapVoxelPosInterp(playerPos + offset);
     #else
     vec3 voxelPosInterp = mapVoxelPosInterp(
-        playerPos + mat3(gbufferModelViewInverse) * tbnMatrix[2] * 0.5
-      );
+      playerPos + mat3(gbufferModelViewInverse) * tbnMatrix[2] * 0.5
+    );
     #endif
     sampleColoredLight = clamp01(voxelPosInterp) == voxelPosInterp;
     #endif
@@ -364,8 +366,8 @@ void main() {
 
       if (
         luminance(blocklightColor) < 0.2 &&
-          lightmap.x > 0.5 &&
-          renderStage == MC_RENDER_STAGE_PARTICLES
+        lightmap.x > 0.5 &&
+        renderStage == MC_RENDER_STAGE_PARTICLES
       ) {
         material.emission = lightmap.x;
       }
@@ -374,44 +376,44 @@ void main() {
       float dist = length(playerPos);
       float falloff =
         (1.0 - clamp01(smoothstep(0.0, 15.0, dist))) *
-          max(heldBlockLightValue, heldBlockLightValue2) /
-          15.0;
+        max(heldBlockLightValue, heldBlockLightValue2) /
+        15.0;
 
       #ifdef DIRECTIONAL_LIGHTMAPS
       falloff *= mix(
-          dot(normalize(-viewPos), mappedNormal),
-          1.0,
-          material.sss * 0.25 + 0.75
-        );
+        dot(normalize(-viewPos), mappedNormal),
+        1.0,
+        material.sss * 0.25 + 0.75
+      );
       #endif
 
       blocklightColor +=
         pow(vec3(255, 152, 54), vec3(2.2)) *
-          1e-8 *
-          max0(exp(-(1.0 - falloff * 10.0)));
+        1e-8 *
+        max0(exp(-(1.0 - falloff * 10.0)));
       #endif
 
       color.rgb = getShadedColor(
-          material,
-          mappedNormal,
-          tbnMatrix[2],
-          blocklightColor,
-          lightmap,
-          viewPos,
-          parallaxShadow,
-          ambientOcclusion
-        );
+        material,
+        mappedNormal,
+        tbnMatrix[2],
+        blocklightColor,
+        lightmap,
+        viewPos,
+        parallaxShadow,
+        ambientOcclusion
+      );
       #endif
     } else {
       color.rgb = getShadedColor(
-          material,
-          mappedNormal,
-          tbnMatrix[2],
-          lightmap,
-          viewPos,
-          parallaxShadow,
-          ambientOcclusion
-        );
+        material,
+        mappedNormal,
+        tbnMatrix[2],
+        lightmap,
+        viewPos,
+        parallaxShadow,
+        ambientOcclusion
+      );
     }
 
     color.a = albedo.a;
@@ -419,10 +421,10 @@ void main() {
 
   if (isEndPortal(blockEntityId)) {
     color.rgb = endPortal(
-        normalize(playerPos - gbufferModelViewInverse[3].xyz),
-        mat3(gbufferModelViewInverse) * tbnMatrix[2],
-        playerPos - gbufferModelViewInverse[3].xyz
-      );
+      normalize(playerPos - gbufferModelViewInverse[3].xyz),
+      mat3(gbufferModelViewInverse) * tbnMatrix[2],
+      playerPos - gbufferModelViewInverse[3].xyz
+    );
   }
 
   if (renderStage == MC_RENDER_STAGE_OUTLINE) {
