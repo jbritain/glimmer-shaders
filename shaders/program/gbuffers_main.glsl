@@ -18,6 +18,7 @@
 #include "/lib/sway.glsl"
 #include "/lib/water/waveNormals.glsl"
 #include "/lib/TAA.glsl"
+#include "/mcwind/mcwind.glsl"
 
 in vec2 mc_Entity;
 in vec4 at_tangent;
@@ -111,6 +112,7 @@ void main() {
 #include "/lib/dhBlend.glsl"
 #include "/lib/endPortal.glsl"
 #include "/lib/water/puddles.glsl"
+#include "/mcwind/mcwind.glsl"
 
 in vec2 lmcoord;
 in vec2 texcoord;
@@ -152,6 +154,7 @@ layout(location = 1) out vec4 outData1;
 layout(location = 2) out vec4 mask;
 
 void main() {
+  int materialID = materialID;
   mask = vec4(0.0);
   vec3 playerPos = (gbufferModelViewInverse * vec4(viewPos, 1.0)).xyz;
 
@@ -276,8 +279,32 @@ void main() {
   }
 
   if (isWater(materialID)) {
-    mappedNormal = tbnMatrix[2];
-    material.roughness = 0.0;
+    
+    vec3 feetPlayerPos = (gbufferModelViewInverse * vec4(viewPos, 1.0)).xyz;
+    mcw_Water waterData = mcw_readWater(feetPlayerPos.xz + cameraPosition.xz);
+    float foamFactor = pow2(1.0 - waterData.shoreDist / 7.0);
+
+    vec2 foamPos = feetPlayerPos.xz + cameraPosition.xz;
+    foamPos.x += sin(frameTimeCounter) * sin(foamPos.y) * 0.5 * (1.0 - foamFactor);
+    foamPos.y += sin(frameTimeCounter * 2) * sin(foamPos.x/ 2) * 0.2 * (1.0 - foamFactor);
+    foamPos = fract(foamPos / 50);
+    float foam = texture(perlinNoiseTex, foamPos).r;
+
+    foam = linearstep(0.4, 1.0, foam);
+
+
+    float foamMinThreshold = 0.2;//fract(frameTimeCounter * 0.01 + sin(foamPos.x / 5));
+    float foamMaxThreshold = fract(foamMinThreshold + foamFactor * 0.2);
+    
+    foam = step(foamMinThreshold,foam) * step(foam, foamMaxThreshold);
+
+    if(foam > 0.5){
+      material.albedo.rgb = vec3(0.5);
+      materialID = 0;
+    }
+
+    // mappedNormal = tbnMatrix[2];
+    // material.roughness = 0.0;
   }
 
   if (

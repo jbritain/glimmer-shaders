@@ -41,6 +41,7 @@ in vec2 texcoord;
 #include "/lib/atmosphere/fog.glsl"
 #include "/lib/atmosphere/clouds.glsl"
 #include "/lib/water/waterParallax.glsl"
+#include "/mcwind/mcwind.glsl"
 
 /* RENDERTARGETS: 0 */
 layout(location = 0) out vec4 color;
@@ -117,6 +118,9 @@ void main() {
     float heightmapFactor = sqrt(
       sin(PI * 0.5 * clamp01(abs(dot(normal, viewDir))))
     );
+
+
+
     if (worldNormal.y > 0.99) {
       // only do parallax for flat water surface
       worldWaveNormal = getWaterParallaxNormal(
