@@ -36,13 +36,18 @@ in vec2 texcoord;
 layout(location = 0) out vec4 blurredDepth;
 
 void main() {
-  blurredDepth = blur9(
+  blurredDepth.xy = blur9(
     shadowcolor1,
     texcoord,
     textureSize(shadowcolor1, 0),
     DIRECTION,
     0
-  );
+  ).xy;
+  blurredDepth.z = max9(    shadowcolor1,
+    texcoord,
+    textureSize(shadowcolor1, 0),
+    DIRECTION,
+    0).z;
 
   blurredDepth.a = 1.0; // iris bug where blending is enabled in shadowcomp
 }

@@ -137,7 +137,7 @@ vec3 getShadowing(
     );
 
     if (faceNoL > 1e-6) {
-      vec2 vsm = texture(shadowcolor1, shadowScreenPos.xy).rg;
+      vec3 vsm = texture(shadowcolor1, shadowScreenPos.xy).rgb;
 
       float mu = vsm.x;
       float omegaSquared = vsm.y - pow2(vsm.x);
@@ -145,6 +145,8 @@ vec3 getShadowing(
       shadow = vec3(
         clamp01(omegaSquared / (omegaSquared + pow2(shadowScreenPos.z - mu)))
       );
+
+      shadow *= step(shadowScreenPos.z, vsm.z);
     }
 
   }

@@ -123,7 +123,7 @@ in vec3 feetPlayerPos;
 
 /* RENDERTARGETS: 0,1 */
 layout(location = 0) out vec4 color;
-layout(location = 1) out vec2 VSM;
+layout(location = 1) out vec3 VSM;
 
 void main() {
   color = texture(gtexture, texcoord) * glcolor;
@@ -165,7 +165,7 @@ void main() {
 
   color.rgb = pow(color.rgb, vec3(2.2));
 
-  VSM = vec2(gl_FragCoord.z, pow2(gl_FragCoord.z));
+  VSM = vec3(gl_FragCoord.z, pow2(gl_FragCoord.z), gl_FragCoord.z);
 }
 
 #endif

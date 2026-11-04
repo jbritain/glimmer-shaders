@@ -47,6 +47,24 @@ vec4 blur9(
   return color;
 }
 
+vec4 max9(
+  sampler2D image,
+  vec2 uv,
+  vec2 resolution,
+  vec2 direction,
+  float lod
+) {
+  vec4 color = vec4(0.0);
+  vec2 off1 = vec2(1.3846153846) * direction;
+  vec2 off2 = vec2(3.2307692308) * direction;
+  color = max(color, textureLod(image, uv, lod));
+  color = max(color, textureLod(image, uv + off1 / resolution, lod));
+  color = max(color, textureLod(image, uv - off1 / resolution, lod));
+  color = max(color, textureLod(image, uv + off2 / resolution, lod));
+  color = max(color, textureLod(image, uv - off2 / resolution, lod));
+  return color;
+}
+
 vec4 blur13(
   sampler2D image,
   vec2 uv,

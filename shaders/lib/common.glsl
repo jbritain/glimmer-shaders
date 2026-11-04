@@ -15,6 +15,10 @@
 #ifndef COMMON_GLSL
 #define COMMON_GLSL
 
+const bool shadowtex0Nearest = true;
+const bool shadowtex1Nearest = true;
+const bool shadowcolor1Nearest = true;
+
 #include "/lib/common/settings.glsl"
 
 #include "/lib/common/debug.glsl"
@@ -68,7 +72,7 @@ const bool colortex3Clear = false;
 
     const int colortex0Format = RGBA16F;
     const int colortex5Format = R8;
-    const int shadowcolor1Format = RG16;
+    const int shadowcolor1Format = RGB32F;
 */
 const bool colortex0Clear = false; // only so we can keep mipmaps from the previous frame
 
