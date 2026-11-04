@@ -33,13 +33,13 @@ const vec2 skyViewLUTRes = vec2(200.0, 200.0);
 const vec3 groundAlbedo = vec3(0.3);
 
 // These are per megameter.
-const vec3 rayleighScatteringBase = vec3(5.802, 13.558, 33.1);
+const vec3 rayleighScatteringBase = vec3(6.602, 12.39, 29.4);
 const float rayleighAbsorptionBase = 0.0;
 
 const float mieScatteringBase = 3.996;
 const float mieAbsorptionBase = 4.4;
 
-const vec3 ozoneAbsorptionBase = vec3(0.65, 1.881, 0.085);
+vec3 ozoneAbsorptionBase = vec3(2.341, 1.54, 0.0);
 
 void getScatteringValues(vec3 pos, out vec3 rayleighScattering,
                          out float mieScattering, out vec3 extinction) {
